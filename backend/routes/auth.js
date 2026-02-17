@@ -1,47 +1,50 @@
 // routes/auth.js
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { getDbConnection } from '../database/dbManager.js';
 
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'cambiar-este-secret-en-produccion';
 
-// Base de datos de usuarios (en producción, esto debería estar en la DB)
-const users = {
-  admin: {
-    password: 'motobombon123',
-    role: 'admin',
-    name: 'Paula Espinosa'
-  },
-  supervisor: {
-    password: 'supervisor123',
-    role: 'supervisor',
-    name: 'Supervisor'
-  }
-};
-
 router.post('/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, sucursalId } = req.body;
     
     if (!username || !password) {
       return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
     }
+
+    if (!sucursalId) {
+      return res.status(400).json({ error: 'Debe seleccionar una sucursal' });
+    }
     
-    const user = users[username.toLowerCase()];
+    // Obtener la conexión a la BD de la sucursal
+    const db = await getDbConnection(sucursalId);
+    
+    // Buscar usuario en la base de datos de la sucursal
+    const user = await db.get(
+      'SELECT * FROM usuarios WHERE username = ? AND activo = 1',
+      [username.toLowerCase()]
+    );
     
     if (!user) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     
-    // Comparar contraseña simple
+    // Comparar contraseña (en producción debería usar bcrypt)
     if (user.password !== password) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     
-    // Generar JWT
+    // Generar JWT incluyendo la sucursal
     const token = jwt.sign(
-      { username, role: user.role, name: user.name },
+      { 
+        username: user.username, 
+        role: user.role, 
+        name: user.name,
+        sucursalId: sucursalId 
+      },
       JWT_SECRET,
       { expiresIn: '24h' } // Token válido por 24 horas
     );
@@ -49,9 +52,10 @@ router.post('/login', async (req, res) => {
     res.json({
       token,
       user: {
-        username,
+        username: user.username,
         role: user.role,
-        name: user.name
+        name: user.name,
+        sucursalId: sucursalId
       }
     });
     

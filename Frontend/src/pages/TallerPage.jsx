@@ -1,16 +1,21 @@
 // Frontend/src/pages/TallerPage.jsx
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { addCita, getCitas } from "../services/citasService";
 import talleresService from "../services/talleresService";
 import serviciosService from "../services/serviciosService";
 
 export default function TallerPage() {
+  const { sucursalId } = useParams();
+  const navigate = useNavigate();
   const [talleres, setTalleres] = useState([]);
   const [servicios, setServicios] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [motosEnEspera, setMotosEnEspera] = useState(0);
   
+  // Obtener el nombre de la sucursal del localStorage
+  const sucursalNombre = localStorage.getItem('motobombon_sucursal_nombre') || 'Sucursal';
   
   const [form, setForm] = useState({
     taller_id: "",
@@ -24,11 +29,17 @@ export default function TallerPage() {
   });
 
   useEffect(() => {
+    // Si no hay sucursal en la URL, redirigir al selector
+    if (!sucursalId) {
+      navigate('/');
+      return;
+    }
+    
     const params = new URLSearchParams(window.location.search);
     loadTalleres();
     loadServicios();
     loadMotosEnEspera();
-  }, []);
+  }, [sucursalId, navigate]);
 
   const loadTalleres = async () => {
     try {
@@ -254,6 +265,17 @@ export default function TallerPage() {
   return (
     <div className="taller-page" style={{ minHeight: "100vh", background: "#050505", padding: "20px" }}>
       <div className="taller-card" style={{ maxWidth: "900px", margin: "0 auto", background: "#0b0b0f", border: "1px solid #EB0463", borderRadius: "14px", boxShadow: "0 20px 60px rgba(235,4,99,0.25)", padding: "20px" }}>
+        {/* Indicador de sucursal */}
+        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+          <p style={{ 
+            fontSize: '0.9rem', 
+            color: '#EB0463',
+            fontWeight: '600'
+          }}>
+            📍 {sucursalNombre}
+          </p>
+        </div>
+        
         {mensaje.texto && (
           <div className={`notificacion ${mensaje.tipo}`}>
             {mensaje.texto}

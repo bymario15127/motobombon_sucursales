@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import sucursalMiddleware from "./middleware/sucursal.js";
 import citasRouter from "./routes/citas.js";
 import serviciosRouter from "./routes/servicios.js";
 import lavadoresRouter from "./routes/lavadores.js";
@@ -63,15 +64,18 @@ if (!fs.existsSync(servicesDir)) {
 }
 app.use('/uploads', express.static(uploadsDir));
 
+// Rutas sin middleware de sucursal
 app.use("/api/auth", authRouter);
-app.use("/api/citas", citasRouter);
-app.use("/api/servicios", serviciosRouter);
-app.use("/api/lavadores", lavadoresRouter);
-app.use("/api/nomina", nominaRouter);
-app.use("/api/talleres", talleresRouter);
-app.use("/api/clientes", clientesRouter);
-app.use("/api/productos", productosRouter);
-app.use("/api/finanzas", finanzasRouter);
+
+// Aplicar middleware de sucursal a todas las rutas que lo necesiten
+app.use("/api/citas", sucursalMiddleware, citasRouter);
+app.use("/api/servicios", sucursalMiddleware, serviciosRouter);
+app.use("/api/lavadores", sucursalMiddleware, lavadoresRouter);
+app.use("/api/nomina", sucursalMiddleware, nominaRouter);
+app.use("/api/talleres", sucursalMiddleware, talleresRouter);
+app.use("/api/clientes", sucursalMiddleware, clientesRouter);
+app.use("/api/productos", sucursalMiddleware, productosRouter);
+app.use("/api/finanzas", sucursalMiddleware, finanzasRouter);
 app.use("/api/debug", debugRouter);
 // Rutas de promociones/reportes deshabilitadas
 

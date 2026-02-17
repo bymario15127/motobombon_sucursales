@@ -1,30 +1,15 @@
 // backend/routes/finanzas.js
 import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getDbFromRequest } from "../database/dbManager.js";
 import { verifyToken, requireAdminOrSupervisor } from "../middleware/auth.js";
 import ExcelJS from "exceljs";
 
 const router = express.Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let db;
-
-const dbReady = (async () => {
-  db = await open({
-    filename: path.join(__dirname, "../database/database.sqlite"),
-    driver: sqlite3.Database,
-  });
-})();
-
 // GET - Dashboard financiero (resumen general)
 router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { mes, anio, desde, hasta } = req.query;
     
     // Si no se especifica mes/año, usar el actual
@@ -363,7 +348,7 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
 // GET - Listar todos los gastos con filtros
 router.get("/gastos", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { tipo, categoria, desde, hasta } = req.query;
     
     let query = "SELECT * FROM gastos WHERE 1=1";
@@ -402,7 +387,7 @@ router.get("/gastos", verifyToken, requireAdminOrSupervisor, async (req, res) =>
 // POST - Crear gasto
 router.post("/gastos", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { tipo, categoria, descripcion, monto, fecha, empleado_id, metodo_pago, estado, notas } = req.body;
     const registrado_por = req.user.username;
 
@@ -442,7 +427,7 @@ router.post("/gastos", verifyToken, requireAdminOrSupervisor, async (req, res) =
 // PUT - Actualizar gasto
 router.put("/gastos/:id", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     const { tipo, categoria, descripcion, monto, fecha, empleado_id, metodo_pago, estado, notas } = req.body;
 
@@ -471,7 +456,7 @@ router.put("/gastos/:id", verifyToken, requireAdminOrSupervisor, async (req, res
 // DELETE - Eliminar gasto
 router.delete("/gastos/:id", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { id } = req.params;
 
     await db.run("DELETE FROM gastos WHERE id = ?", [id]);
@@ -485,7 +470,7 @@ router.delete("/gastos/:id", verifyToken, requireAdminOrSupervisor, async (req, 
 // GET - Reporte de movimientos (ingresos y gastos combinados)
 router.get("/movimientos", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { mes, anio, desde, hasta } = req.query;
     
     const fecha = new Date();
@@ -618,7 +603,7 @@ router.get("/movimientos", verifyToken, requireAdminOrSupervisor, async (req, re
 // GET - Exportar reporte detallado a Excel
 router.get("/exportar-excel", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { mes, anio, desde, hasta } = req.query;
     
     const fecha = new Date();
@@ -935,7 +920,7 @@ router.get("/exportar-excel", verifyToken, requireAdminOrSupervisor, async (req,
 // GET - Obtener historial de utilidades mensuales
 router.get("/utilidades-historial", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { anio, limite } = req.query;
     const limiteRegistros = limite ? parseInt(limite) : 12;
 
@@ -966,7 +951,7 @@ router.get("/utilidades-historial", verifyToken, requireAdminOrSupervisor, async
 // POST - Guardar/Cerrar utilidad del mes (para acumular al siguiente)
 router.post("/cerrar-mes", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { mes, anio, utilidadNeta, ingresosTotales, gastosTotales } = req.body;
 
     if (!mes || !anio || utilidadNeta === undefined) {

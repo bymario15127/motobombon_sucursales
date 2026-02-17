@@ -1,22 +1,70 @@
 // src/pages/LandingPage.jsx
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { sucursalId } = useParams();
+
+  // Obtener el nombre de la sucursal del localStorage
+  const sucursalNombre = localStorage.getItem('motobombon_sucursal_nombre') || 'Sucursal';
+
+  useEffect(() => {
+    // Si no hay sucursal en la URL, redirigir al selector
+    if (!sucursalId) {
+      navigate('/');
+    }
+  }, [sucursalId, navigate]);
 
   return (
     <div className="centered-page" style={{ background: '#000000' }}>
       <div className="container" style={{ maxWidth: '600px', textAlign: 'center' }}>
+        {/* Botón para cambiar sucursal */}
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            left: '1rem',
+            padding: '0.5rem 1rem',
+            fontSize: '0.85rem',
+            borderRadius: '8px',
+            border: '1px solid #666',
+            background: 'rgba(0,0,0,0.5)',
+            color: '#fff',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.borderColor = '#EB0463';
+            e.target.style.background = 'rgba(235,4,99,0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.borderColor = '#666';
+            e.target.style.background = 'rgba(0,0,0,0.5)';
+          }}
+        >
+          ← Cambiar Sucursal
+        </button>
+
         <div style={{ marginBottom: '3rem' }}>
           <h1 style={{ 
             fontFamily: 'Yeseva One, serif', 
             fontSize: '3rem', 
             color: '#ffffff',
             textShadow: '0 0 20px #EB0463',
-            marginBottom: '1rem'
+            marginBottom: '0.5rem'
           }}>
             MOTOBOMBON
           </h1>
+          <p style={{ 
+            fontSize: '1rem', 
+            color: '#EB0463',
+            fontWeight: '600',
+            marginBottom: '0.5rem'
+          }}>
+            📍 {sucursalNombre}
+          </p>
           <p style={{ fontSize: '1.2rem', color: '#cccccc' }}>
             Tu moto brillante como nueva 🏍️✨
           </p>
@@ -28,7 +76,7 @@ export default function LandingPage() {
           marginTop: '3rem'
         }}>
           <button
-            onClick={() => navigate('/reserva')}
+            onClick={() => navigate(`/${sucursalId}/reserva`)}
             style={{
               padding: '2rem',
               fontSize: '1.3rem',
@@ -54,7 +102,7 @@ export default function LandingPage() {
           </button>
 
           <button
-            onClick={() => navigate('/taller')}
+            onClick={() => navigate(`/${sucursalId}/taller`)}
             style={{
               padding: '1.2rem',
               fontSize: '0.95rem',

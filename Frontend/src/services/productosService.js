@@ -1,19 +1,11 @@
 // src/services/productosService.js
-const API_URL = "/api/productos";
+import { fetchWithSucursal, getHeaders } from './apiHelper.js';
 
-const getAuthHeader = () => {
-  const token = localStorage.getItem("motobombon_token");
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`
-  };
-};
+const API_URL = "/api/productos";
 
 export const obtenerProductos = async () => {
   try {
-    const response = await fetch(API_URL, {
-      headers: getAuthHeader()
-    });
+    const response = await fetchWithSucursal(API_URL);
     if (!response.ok) throw new Error("Error obteniendo productos");
     return response.json();
   } catch (error) {
@@ -24,9 +16,9 @@ export const obtenerProductos = async () => {
 
 export const crearProducto = async (producto) => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetchWithSucursal(API_URL, {
       method: "POST",
-      headers: getAuthHeader(),
+      headers: getHeaders(),
       body: JSON.stringify(producto)
     });
     if (!response.ok) {
@@ -42,9 +34,9 @@ export const crearProducto = async (producto) => {
 
 export const actualizarProducto = async (id, producto) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetchWithSucursal(`${API_URL}/${id}`, {
       method: "PUT",
-      headers: getAuthHeader(),
+      headers: getHeaders(),
       body: JSON.stringify(producto)
     });
     if (!response.ok) {
@@ -60,9 +52,9 @@ export const actualizarProducto = async (id, producto) => {
 
 export const eliminarProducto = async (id) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`, {
+    const response = await fetchWithSucursal(`${API_URL}/${id}`, {
       method: "DELETE",
-      headers: getAuthHeader()
+      headers: getHeaders()
     });
     if (!response.ok) {
       const error = await response.json();
@@ -77,9 +69,9 @@ export const eliminarProducto = async (id) => {
 
 export const registrarVenta = async (producto_id, cantidad, metodo_pago = 'efectivo') => {
   try {
-    const response = await fetch(`${API_URL}/venta/registrar`, {
+    const response = await fetchWithSucursal(`${API_URL}/venta/registrar`, {
       method: "POST",
-      headers: getAuthHeader(),
+      headers: getHeaders(),
       body: JSON.stringify({
         producto_id,
         cantidad,
@@ -100,9 +92,7 @@ export const registrarVenta = async (producto_id, cantidad, metodo_pago = 'efect
 export const obtenerReporteDiario = async (fecha = null) => {
   try {
     const params = fecha ? `?fecha=${fecha}` : "";
-    const response = await fetch(`${API_URL}/reportes/diarias${params}`, {
-      headers: getAuthHeader()
-    });
+    const response = await fetchWithSucursal(`${API_URL}/reportes/diarias${params}`);
     if (!response.ok) throw new Error("Error obteniendo reporte diario");
     return response.json();
   } catch (error) {
@@ -118,9 +108,7 @@ export const obtenerReporteGanancias = async (desde = null, hasta = null) => {
     if (hasta) params.append("hasta", hasta);
     
     const queryString = params.toString() ? `?${params.toString()}` : "";
-    const response = await fetch(`${API_URL}/reportes/ganancias${queryString}`, {
-      headers: getAuthHeader()
-    });
+    const response = await fetchWithSucursal(`${API_URL}/reportes/ganancias${queryString}`);
     if (!response.ok) throw new Error("Error obteniendo reporte de ganancias");
     return response.json();
   } catch (error) {
@@ -131,9 +119,9 @@ export const obtenerReporteGanancias = async (desde = null, hasta = null) => {
 
 export const eliminarVenta = async (id) => {
   try {
-    const response = await fetch(`${API_URL}/venta/${id}`, {
+    const response = await fetchWithSucursal(`${API_URL}/venta/${id}`, {
       method: "DELETE",
-      headers: getAuthHeader()
+      headers: getHeaders()
     });
     if (!response.ok) {
       const error = await response.json();

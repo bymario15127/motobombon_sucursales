@@ -381,9 +381,21 @@ export default function ProductosManagement() {
                   {productos.map(producto => (
                     <tr key={producto.id}>
                       <td>{producto.nombre}</td>
-                      <td>${producto.precio_compra.toLocaleString()}</td>
-                      <td>${producto.precio_venta.toLocaleString()}</td>
-                      <td>{(((producto.precio_venta - producto.precio_compra) / producto.precio_compra) * 100).toFixed(1)}%</td>
+                      <td>
+                        {producto.precio_compra != null
+                          ? `$${Number(producto.precio_compra).toLocaleString()}`
+                          : '—'}
+                      </td>
+                      <td>
+                        {producto.precio_venta != null
+                          ? `$${Number(producto.precio_venta).toLocaleString()}`
+                          : '—'}
+                      </td>
+                      <td>
+                        {(producto.precio_compra != null && Number(producto.precio_compra) > 0 && producto.precio_venta != null)
+                          ? `${(((Number(producto.precio_venta) - Number(producto.precio_compra)) / Number(producto.precio_compra)) * 100).toFixed(1)}%`
+                          : '—'}
+                      </td>
                       <td>{producto.stock}</td>
                       <td>
                         <button 

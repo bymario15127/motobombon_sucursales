@@ -1,83 +1,14 @@
 // backend/routes/citas.js
 import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getDbFromRequest } from "../database/dbManager.js";
 import { procesarLavadaCliente } from "./clientes.js";
 
 const router = express.Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let db;
-(async () => {
-  db = await open({
-    filename: path.join(__dirname, "../database/database.sqlite"),
-    driver: sqlite3.Database,
-  });
-  // Ensure table and required columns exist in 'citas' to avoid runtime errors in older DBs
-  try {
-    // Crear tabla si no existe
-    await db.exec(`
-      CREATE TABLE IF NOT EXISTS citas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        cliente TEXT NOT NULL,
-        fecha TEXT NOT NULL,
-        hora TEXT NOT NULL,
-        servicio TEXT NOT NULL,
-        telefono TEXT,
-        email TEXT,
-        comentarios TEXT,
-        estado TEXT DEFAULT 'pendiente',
-        placa TEXT,
-        marca TEXT,
-        modelo TEXT,
-        cilindraje INTEGER,
-        metodo_pago TEXT,
-        lavador_id INTEGER,
-        tipo_cliente TEXT DEFAULT 'cliente',
-        taller_id INTEGER,
-        promocion_id INTEGER,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    const columns = await db.all("PRAGMA table_info(citas)");
-    const col = (n) => columns.some((c) => c.name === n);
-
-    const pending = [];
-    if (!col("email")) pending.push("ALTER TABLE citas ADD COLUMN email TEXT");
-    if (!col("placa")) pending.push("ALTER TABLE citas ADD COLUMN placa TEXT");
-    if (!col("marca")) pending.push("ALTER TABLE citas ADD COLUMN marca TEXT");
-    if (!col("modelo")) pending.push("ALTER TABLE citas ADD COLUMN modelo TEXT");
-    if (!col("cilindraje")) pending.push("ALTER TABLE citas ADD COLUMN cilindraje INTEGER");
-    if (!col("metodo_pago")) pending.push("ALTER TABLE citas ADD COLUMN metodo_pago TEXT");
-    if (!col("lavador_id")) pending.push("ALTER TABLE citas ADD COLUMN lavador_id INTEGER");
-    if (!col("tipo_cliente")) pending.push("ALTER TABLE citas ADD COLUMN tipo_cliente TEXT DEFAULT 'cliente'");
-    if (!col("taller_id")) pending.push("ALTER TABLE citas ADD COLUMN taller_id INTEGER");
-    if (!col("promocion_id")) pending.push("ALTER TABLE citas ADD COLUMN promocion_id INTEGER");
-
-    for (const stmt of pending) {
-      try {
-        await db.exec(stmt);
-      } catch (e) {
-        // If running concurrently or already applied, ignore duplicate errors
-        if (!/duplicate column|already exists/i.test(e.message || "")) {
-          console.error("Schema update error:", e.message);
-        }
-      }
-    }
-  } catch (e) {
-    console.error("Failed to verify/patch citas schema:", e.message);
-    // continue; server will still try, but POST may fail with clearer logs
-  }
-})();
-
 // GET all (solo del día actual por defecto)
 router.get("/", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     // Obtener fecha actual en formato YYYY-MM-DD en zona horaria de Colombia (UTC-5)
     const today = () => {
       const d = new Date();
@@ -136,6 +67,7 @@ router.get("/", async (req, res) => {
 // GET horarios ocupados para una fecha específica
 router.get("/ocupados/:fecha", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { fecha } = req.params;
     
     if (!fecha.match(/^\d{4}-\d{2}-\d{2}$/)) {
@@ -161,6 +93,7 @@ const toMinutes = (hhmm) => {
 // POST create (hora y fecha opcionales; si no se envían, se registra para HOY y sin hora)
 router.post("/", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     console.log("📥 [POST /api/citas] Payload recibido:", req.body);
     const { cliente, servicio, fecha, hora, telefono, email, comentarios, estado, placa, marca, modelo, cilindraje, metodo_pago, lavador_id, tipo_cliente, taller_id, promocion_id } = req.body;
     
@@ -244,6 +177,7 @@ router.post("/", async (req, res) => {
 // PUT update
 router.put("/:id", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     const fields = req.body;
     
@@ -328,7 +262,7 @@ router.put("/:id", async (req, res) => {
       const telefono = fields.telefono || citaAnterior.telefono;
       
       if (email && cliente) {
-        const resultado = await procesarLavadaCliente(email, cliente, telefono);
+        const resultado = await procesarLavadaCliente(db, email, cliente, telefono);
         
         if (resultado.success && resultado.cuponGenerado) {
           console.log(`🎉 ¡Cupón generado para ${email}!`);
@@ -363,6 +297,7 @@ router.put("/:id", async (req, res) => {
 // DELETE (soft delete - marca como eliminada, no borra)
 router.delete("/:id", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     
     if (!id || isNaN(id)) {
@@ -414,6 +349,7 @@ export default router;
 // GET /citas/papelera - Ver citas eliminadas
 router.get("/papelera/ver", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const columns = await db.all("PRAGMA table_info(citas)");
     const tieneDeletedAt = columns.some((c) => c.name === "deleted_at");
 
@@ -443,6 +379,7 @@ router.get("/papelera/ver", async (req, res) => {
 // POST /citas/papelera/recuperar/:id - Recuperar una cita
 router.post("/papelera/recuperar/:id", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { id } = req.params;
 
     if (!id || isNaN(id)) {
@@ -484,6 +421,7 @@ router.post("/papelera/recuperar/:id", async (req, res) => {
 // DELETE /citas/papelera/permanente/:id - Eliminar permanentemente
 router.delete("/papelera/permanente/:id", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { id } = req.params;
 
     if (!id || isNaN(id)) {

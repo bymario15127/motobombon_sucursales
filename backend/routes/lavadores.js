@@ -1,26 +1,13 @@
 // backend/routes/lavadores.js
 import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getDbFromRequest } from "../database/dbManager.js";
 
 const router = express.Router();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let db;
-(async () => {
-  db = await open({
-    filename: path.join(__dirname, "../database/database.sqlite"),
-    driver: sqlite3.Database,
-  });
-})();
 
 // GET todos los lavadores
 router.get("/", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const lavadores = await db.all("SELECT * FROM lavadores ORDER BY nombre");
     res.json(lavadores);
   } catch (error) {
@@ -32,6 +19,7 @@ router.get("/", async (req, res) => {
 // GET solo lavadores activos
 router.get("/activos", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const lavadores = await db.all("SELECT * FROM lavadores WHERE activo = 1 ORDER BY nombre");
     res.json(lavadores);
   } catch (error) {
@@ -43,6 +31,7 @@ router.get("/activos", async (req, res) => {
 // POST crear lavador
 router.post("/", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { nombre, cedula, activo, comision_porcentaje } = req.body;
     
     if (!nombre) {
@@ -64,6 +53,7 @@ router.post("/", async (req, res) => {
 // PUT actualizar lavador
 router.put("/:id", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     const { nombre, cedula, activo, comision_porcentaje } = req.body;
     
@@ -94,6 +84,7 @@ router.put("/:id", async (req, res) => {
 // DELETE lavador (eliminación lógica, marcarlo como inactivo)
 router.delete("/:id", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     
     if (!id || isNaN(id)) {

@@ -1,73 +1,16 @@
 // backend/routes/servicios.js
 import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getDbFromRequest } from "../database/dbManager.js";
 
 const router = express.Router();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Orden preferido para mostrar servicios clave primero
 const PREFERRED_ORDER = ["BASIC", "DELUXE", "GOLD"];
 
-let db;
-// Garantiza que la BD esté lista antes de atender solicitudes
-const dbReady = (async () => {
-  db = await open({
-    filename: path.join(__dirname, "../database/database.sqlite"),
-    driver: sqlite3.Database,
-  });
-  // Asegurar tabla servicios en instalaciones antiguas
-  try {
-    await db.exec(`
-      CREATE TABLE IF NOT EXISTS servicios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL,
-        duracion INTEGER NOT NULL,
-        precio REAL,
-        descripcion TEXT,
-        imagen TEXT,
-        precio_bajo_cc REAL,
-        precio_alto_cc REAL,
-        imagen_bajo_cc TEXT,
-        imagen_alto_cc TEXT,
-        precio_base_comision_bajo REAL,
-        precio_base_comision_alto REAL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-    // Parchear columnas faltantes en instalaciones antiguas
-    const cols = await db.all("PRAGMA table_info(servicios)");
-    const has = (n) => Array.isArray(cols) && cols.some(c => c.name === n);
-    const alterStmts = [];
-    if (!has('precio_bajo_cc')) alterStmts.push("ALTER TABLE servicios ADD COLUMN precio_bajo_cc REAL");
-    if (!has('precio_alto_cc')) alterStmts.push("ALTER TABLE servicios ADD COLUMN precio_alto_cc REAL");
-    if (!has('imagen_bajo_cc')) alterStmts.push("ALTER TABLE servicios ADD COLUMN imagen_bajo_cc TEXT");
-    if (!has('imagen_alto_cc')) alterStmts.push("ALTER TABLE servicios ADD COLUMN imagen_alto_cc TEXT");
-    if (!has('precio_base_comision_bajo')) alterStmts.push("ALTER TABLE servicios ADD COLUMN precio_base_comision_bajo REAL");
-    if (!has('precio_base_comision_alto')) alterStmts.push("ALTER TABLE servicios ADD COLUMN precio_base_comision_alto REAL");
-
-    for (const stmt of alterStmts) {
-      try {
-        await db.exec(stmt);
-      } catch (e) {
-        if (!/duplicate column|already exists/i.test(e.message || "")) {
-          console.error("Error aplicando parche de esquema en servicios:", e.message);
-        }
-      }
-    }
-  } catch (e) {
-    console.error("No se pudo asegurar tabla servicios:", e.message);
-  }
-})();
-
 // GET solo servicios
 router.get("/", async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const orderCase = PREFERRED_ORDER.map((name, idx) => `WHEN '${name}' THEN ${idx}`).join(" ");
     const servicios = await db.all(
       `SELECT * FROM servicios
@@ -84,7 +27,7 @@ router.get("/", async (req, res) => {
 // POST create servicio
 router.post("/", async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const {
       nombre,
       duracion,
@@ -167,7 +110,7 @@ router.post("/", async (req, res) => {
 // PUT update servicio
 router.put("/:id", async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     const {
       nombre,
@@ -226,7 +169,7 @@ router.put("/:id", async (req, res) => {
 // DELETE servicio
 router.delete("/:id", async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { id } = req.params;
 
     if (!id || isNaN(id)) {

@@ -1,26 +1,13 @@
 // backend/routes/talleres.js
 import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getDbFromRequest } from "../database/dbManager.js";
 
 const router = express.Router();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let db;
-(async () => {
-  db = await open({
-    filename: path.join(__dirname, "../database/database.sqlite"),
-    driver: sqlite3.Database,
-  });
-})();
 
 // GET all talleres activos
 router.get("/", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const talleres = await db.all("SELECT * FROM talleres WHERE activo = 1 ORDER BY nombre");
     res.json(talleres);
   } catch (error) {
@@ -32,6 +19,7 @@ router.get("/", async (req, res) => {
 // GET all talleres (incluyendo inactivos) - solo para admin
 router.get("/admin/all", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const talleres = await db.all("SELECT * FROM talleres ORDER BY nombre");
     res.json(talleres);
   } catch (error) {
@@ -43,6 +31,7 @@ router.get("/admin/all", async (req, res) => {
 // POST create taller
 router.post("/", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { nombre, contacto, telefono, email, precio_bajo_cc, precio_alto_cc } = req.body;
     
     if (!nombre) {
@@ -67,6 +56,7 @@ router.post("/", async (req, res) => {
 // PUT update taller
 router.put("/:id", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     const { nombre, contacto, telefono, email, precio_bajo_cc, precio_alto_cc, activo } = req.body;
     
@@ -93,6 +83,7 @@ router.put("/:id", async (req, res) => {
 // DELETE taller (eliminación permanente)
 router.delete("/:id", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     
     if (!id || isNaN(id)) {

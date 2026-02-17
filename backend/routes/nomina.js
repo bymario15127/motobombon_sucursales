@@ -1,26 +1,8 @@
 // backend/routes/nomina.js - Reporte de nómina y métodos de pago
 import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getDbFromRequest } from "../database/dbManager.js";
 
 const router = express.Router();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let db;
-(async () => {
-  try {
-    db = await open({
-      filename: path.join(__dirname, "../database/database.sqlite"),
-      driver: sqlite3.Database,
-    });
-  } catch (e) {
-    console.error("Error inicializando DB en nomina:", e.message);
-  }
-})();
 
 // Helpers de precio
 const ccIsBajo = (cc) => {
@@ -106,6 +88,7 @@ function calcularBaseComision(cita, ctx) {
 // GET /api/nomina - Retorna reporte de nómina
 router.get("/", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { fechaInicio, fechaFin } = req.query;
     const now = new Date();
     const primerDiaDelMes = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -240,6 +223,7 @@ router.get("/", async (req, res) => {
 // GET /api/nomina/exportar-excel - Exportar reporte a Excel
 router.get("/exportar-excel", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const XLSX = (await import('xlsx')).default;
     const { fechaInicio, fechaFin } = req.query;
     const now = new Date();

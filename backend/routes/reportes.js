@@ -1,27 +1,14 @@
 // backend/routes/reportes.js
 import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getDbFromRequest } from "../database/dbManager.js";
 import XLSX from "xlsx";
 
 const router = express.Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let db;
-(async () => {
-  db = await open({
-    filename: path.join(__dirname, "../database/database.sqlite"),
-    driver: sqlite3.Database,
-  });
-})();
-
 // GET /api/reportes/promociones-excel?from=YYYY-MM-DD&to=YYYY-MM-DD
 router.get("/promociones-excel", async (req, res) => {
   try {
+    const db = getDbFromRequest(req);
     const { from, to, mode } = req.query;
 
     const filters = [];

@@ -1,67 +1,14 @@
 // backend/routes/productos.js
 import express from "express";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
-import path from "path";
-import { fileURLToPath } from "url";
+import { getDbFromRequest } from "../database/dbManager.js";
 import { verifyToken, requireAdminOrSupervisor } from "../middleware/auth.js";
 
 const router = express.Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-let db;
-
-const dbReady = (async () => {
-  db = await open({
-    filename: path.join(__dirname, "../database/database.sqlite"),
-    driver: sqlite3.Database,
-  });
-
-  // Crear tablas si no existen
-  try {
-    await db.exec(`
-      CREATE TABLE IF NOT EXISTS productos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL UNIQUE,
-        precio_compra REAL NOT NULL,
-        precio_venta REAL NOT NULL,
-        stock INTEGER DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    await db.exec(`
-      CREATE TABLE IF NOT EXISTS ventas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        producto_id INTEGER NOT NULL,
-        cantidad INTEGER NOT NULL,
-        precio_unitario REAL NOT NULL,
-        total REAL NOT NULL,
-        metodo_pago TEXT DEFAULT 'efectivo',
-        registrado_por TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (producto_id) REFERENCES productos(id)
-      )
-    `);
-
-    // Agregar columna metodo_pago si no existe
-    const columns = await db.all("PRAGMA table_info(ventas)");
-    const hasMetodoPago = columns.some(col => col.name === 'metodo_pago');
-    if (!hasMetodoPago) {
-      await db.exec("ALTER TABLE ventas ADD COLUMN metodo_pago TEXT DEFAULT 'efectivo'");
-    }
-  } catch (error) {
-    console.error("❌ Error creando tablas:", error);
-  }
-})();
-
 // GET - Listar todos los productos
 router.get("/", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const productos = await db.all("SELECT * FROM productos ORDER BY nombre");
     res.json(productos);
   } catch (error) {
@@ -73,7 +20,7 @@ router.get("/", verifyToken, requireAdminOrSupervisor, async (req, res) => {
 // POST - Crear nuevo producto
 router.post("/", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { nombre, precio_compra, precio_venta, stock = 0 } = req.body;
 
     if (!nombre || !precio_compra || !precio_venta) {
@@ -108,7 +55,7 @@ router.post("/", verifyToken, requireAdminOrSupervisor, async (req, res) => {
 // PUT - Actualizar producto
 router.put("/:id", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { id } = req.params;
     const { nombre, precio_compra, precio_venta, stock } = req.body;
 
@@ -138,7 +85,7 @@ router.put("/:id", verifyToken, requireAdminOrSupervisor, async (req, res) => {
 // DELETE - Eliminar producto
 router.delete("/:id", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { id } = req.params;
 
     await db.run("DELETE FROM productos WHERE id = ?", [id]);
@@ -152,7 +99,7 @@ router.delete("/:id", verifyToken, requireAdminOrSupervisor, async (req, res) =>
 // POST - Registrar venta
 router.post("/venta/registrar", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { producto_id, cantidad, metodo_pago = 'efectivo' } = req.body;
     const registrado_por = req.user.username;
 
@@ -175,7 +122,13 @@ router.post("/venta/registrar", verifyToken, requireAdminOrSupervisor, async (re
       return res.status(400).json({ error: "Stock insuficiente" });
     }
 
-    const total = cantidad * producto.precio_venta;
+    const precioUnitario = producto.precio_venta ?? producto.precio;
+
+    if (precioUnitario == null || Number(precioUnitario) <= 0) {
+      return res.status(400).json({ error: "Producto sin precio de venta. Actualiza el producto." });
+    }
+
+    const total = cantidad * Number(precioUnitario);
 
     // Obtener fecha/hora actual del sistema (ya configurado en zona horaria Colombia)
     const ahora = new Date();
@@ -190,7 +143,7 @@ router.post("/venta/registrar", verifyToken, requireAdminOrSupervisor, async (re
     // Registrar venta con fecha/hora de Colombia
     const result = await db.run(
       "INSERT INTO ventas (producto_id, cantidad, precio_unitario, total, metodo_pago, registrado_por, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [producto_id, cantidad, producto.precio_venta, total, metodo_pago, registrado_por, fechaHoraColombia]
+      [producto_id, cantidad, Number(precioUnitario), total, metodo_pago, registrado_por, fechaHoraColombia]
     );
 
     // Actualizar stock
@@ -203,7 +156,7 @@ router.post("/venta/registrar", verifyToken, requireAdminOrSupervisor, async (re
       id: result.lastID,
       producto_id,
       cantidad,
-      precio_unitario: producto.precio_venta,
+      precio_unitario: Number(precioUnitario),
       total,
       registrado_por
     });
@@ -216,7 +169,7 @@ router.post("/venta/registrar", verifyToken, requireAdminOrSupervisor, async (re
 // GET - Reportes de ventas
 router.get("/reportes/diarias", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { fecha } = req.query;
 
     let query = `
@@ -268,7 +221,7 @@ router.get("/reportes/diarias", verifyToken, requireAdminOrSupervisor, async (re
 // GET - Resumen de ganancias por período
 router.get("/reportes/ganancias", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { desde, hasta } = req.query;
 
     let query = `
@@ -311,7 +264,7 @@ router.get("/reportes/ganancias", verifyToken, requireAdminOrSupervisor, async (
 // DELETE - Eliminar venta
 router.delete("/venta/:id", verifyToken, requireAdminOrSupervisor, async (req, res) => {
   try {
-    await dbReady;
+    const db = getDbFromRequest(req);
     const { id } = req.params;
 
     // Obtener la venta antes de eliminarla para devolver el stock
