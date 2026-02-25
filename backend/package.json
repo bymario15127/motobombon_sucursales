@@ -6,13 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "init": "node database/init.js",
-    "init-lavadores": "node database/initLavadores.js",
-    "init-services": "node database/initServicios.js",
-    "init-productos": "node database/initProductos.js",
-    "init-finanzas": "node database/initFinanzas.js",
-    "init-all": "node database/initAll.js",
-    "init-clientes": "node database/initClientes.js"
+    "init": "node database/initAllSucursales.js",
+    "init-all": "node database/initAllSucursales.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -1,6 +1,7 @@
 // Frontend/src/components/admin/FinanzasManager.jsx
 import { useState, useEffect } from "react";
 import { getDashboard, getGastos, crearGasto, actualizarGasto, eliminarGasto, getMovimientos } from "../../services/finanzasService";
+import { fetchWithSucursal, getHeaders } from "../../services/apiHelper.js";
 import "./FinanzasManager.css";
 
 export default function FinanzasManager() {
@@ -129,12 +130,9 @@ export default function FinanzasManager() {
     try {
       const params = new URLSearchParams({ mes, anio, desde, hasta });
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      const token = localStorage.getItem('motobombon_token') || localStorage.getItem('token');
-      const response = await fetch(`${baseUrl}/api/finanzas/exportar-excel?${params}`, {
+      const response = await fetchWithSucursal(`${baseUrl}/api/finanzas/exportar-excel?${params}`, {
         method: 'GET',
-        headers: {
-          'Authorization': token ? `Bearer ${token}` : undefined
-        }
+        headers: getHeaders()
       });
       if (!response.ok) throw new Error('Error descargando archivo');
       const blob = await response.blob();

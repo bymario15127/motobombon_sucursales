@@ -1,6 +1,7 @@
 // backend/database/initAllSucursales.js
 // Script para inicializar datos de todas las sucursales
 import { getDbConnection, getAllSucursales } from './dbManager.js';
+import { initSucursalDb } from './initSucursales.js';
 
 /**
  * Inicializar datos de una sucursal específica
@@ -9,6 +10,9 @@ async function initDataSucursal(sucursalId) {
   console.log(`\n📋 Inicializando datos para ${sucursalId}...`);
   
   try {
+    // Asegurar que el esquema exista antes de insertar datos
+    await initSucursalDb(sucursalId);
+
     const db = await getDbConnection(sucursalId);
 
     // 1. Servicios predeterminados

@@ -1,5 +1,5 @@
 // src/services/serviciosService.js
-import { fetchWithSucursal, getHeaders } from './apiHelper.js';
+import { fetchWithSucursal, getHeaders, getSucursalActual } from './apiHelper.js';
 
 // Use relative URLs - works in both dev (via Vite proxy) and prod (via Nginx proxy)
 const API_URL = "/api/servicios";
@@ -8,15 +8,22 @@ const UPLOAD_URL = "/api/upload-image";
 // Cache para servicios (se actualiza cada 5 minutos)
 let serviciosCache = null;
 let cacheTimestamp = 0;
+let cacheSucursalId = null;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
 export function invalidateServiciosCache() {
   serviciosCache = null;
   cacheTimestamp = 0;
+  cacheSucursalId = null;
 }
 
 export async function getServicios({ force = false } = {}) {
   const now = Date.now();
+  const currentSucursal = getSucursalActual();
+
+  if (cacheSucursalId && cacheSucursalId !== currentSucursal) {
+    invalidateServiciosCache();
+  }
 
   if (!force && serviciosCache && (now - cacheTimestamp) < CACHE_DURATION) {
     return serviciosCache;
@@ -31,6 +38,7 @@ export async function getServicios({ force = false } = {}) {
   const data = await res.json();
   serviciosCache = data;
   cacheTimestamp = now;
+  cacheSucursalId = currentSucursal;
 
   return data;
 }

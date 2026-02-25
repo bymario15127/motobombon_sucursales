@@ -54,12 +54,9 @@ export async function deleteCita(id) {
 
 export async function updateCita(id, data) {
   const role = localStorage.getItem('motobombon_user_role') || '';
-  const res = await fetch(`${API_URL}/${id}`, {
+  const res = await fetchWithSucursal(`${API_URL}/${id}`, {
     method: "PUT",
-    headers: { 
-      "Content-Type": "application/json",
-      "x-user-role": role
-    },
+    headers: getHeaders({ "x-user-role": role }),
     body: JSON.stringify(data),
   });
   return res.json();

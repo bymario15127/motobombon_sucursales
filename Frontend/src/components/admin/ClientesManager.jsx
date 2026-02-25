@@ -1,6 +1,7 @@
 // Frontend/src/components/admin/ClientesManager.jsx
 import { useState, useEffect } from "react";
 import { getClientes, verificarCupon, usarCupon, exportarClientesExcel } from "../../services/clientesService";
+import { fetchWithSucursal, getHeaders } from "../../services/apiHelper.js";
 import "../../App.css";
 
 export default function ClientesManager() {
@@ -64,7 +65,7 @@ export default function ClientesManager() {
     
     try {
       // Buscar la cita más reciente del cliente de hoy
-      const response = await fetch('/api/citas');
+      const response = await fetchWithSucursal('/api/citas');
       const todasCitas = await response.json();
       
       const hoy = new Date();
@@ -248,9 +249,9 @@ export default function ClientesManager() {
               if (emailPrincipal === emailDuplicado) { alert("Emails deben ser diferentes"); return; }
               if (!confirm(`¿Fusionar ${emailDuplicado} en ${emailPrincipal}?`)) return;
               try {
-                const response = await fetch("/api/clientes/fusionar", {
+                const response = await fetchWithSucursal("/api/clientes/fusionar", {
                   method: "POST",
-                  headers: { "Content-Type": "application/json" },
+                  headers: getHeaders(),
                   body: JSON.stringify({ emailPrincipal, emailDuplicado })
                 });
                 const data = await response.json();

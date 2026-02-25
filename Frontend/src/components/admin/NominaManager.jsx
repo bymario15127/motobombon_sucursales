@@ -1,5 +1,6 @@
 // src/components/admin/NominaManager.jsx
 import { useState, useEffect } from 'react';
+import { fetchWithSucursal } from '../../services/apiHelper.js';
 
 const NominaManager = () => {
   const [reporteNomina, setReporteNomina] = useState(null);
@@ -15,7 +16,7 @@ const NominaManager = () => {
     try {
       setLoading(true);
       const API_URL = import.meta.env.VITE_API_URL || '';
-      const res = await fetch(`${API_URL}/api/nomina?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`);
+      const res = await fetchWithSucursal(`${API_URL}/api/nomina?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`);
       const data = await res.json();
       setReporteNomina(data);
     } catch (error) {
@@ -39,7 +40,7 @@ const NominaManager = () => {
       const API_URL = import.meta.env.VITE_API_URL || '';
       const url = `${API_URL}/api/nomina/exportar-excel?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
       
-      const response = await fetch(url);
+      const response = await fetchWithSucursal(url);
       const blob = await response.blob();
       
       // Crear un enlace temporal para descargar el archivo

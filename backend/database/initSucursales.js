@@ -1,6 +1,10 @@
 // backend/database/initSucursales.js
 // Script para inicializar las bases de datos de cada sucursal
 import { getDbConnection, getAllSucursales } from './dbManager.js';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
 
 /**
  * Inicializar todas las tablas necesarias para una sucursal
@@ -129,6 +133,12 @@ async function initSucursalDb(sucursalId) {
         email TEXT NOT NULL UNIQUE,
         nombre TEXT NOT NULL,
         telefono TEXT,
+        placa TEXT,
+        marca TEXT,
+        modelo TEXT,
+        cilindraje INTEGER,
+        puntos INTEGER DEFAULT 0,
+        lavadas INTEGER DEFAULT 0,
         lavadas_completadas INTEGER DEFAULT 0,
         lavadas_gratis_pendientes INTEGER DEFAULT 0,
         total_lavadas_historico INTEGER DEFAULT 0,
@@ -143,6 +153,12 @@ async function initSucursalDb(sucursalId) {
       const hasClienteCol = (n) => Array.isArray(colsClientes) && colsClientes.some(c => c.name === n);
       const alterClientes = [];
       if (!hasClienteCol('email')) alterClientes.push("ALTER TABLE clientes ADD COLUMN email TEXT");
+      if (!hasClienteCol('placa')) alterClientes.push("ALTER TABLE clientes ADD COLUMN placa TEXT");
+      if (!hasClienteCol('marca')) alterClientes.push("ALTER TABLE clientes ADD COLUMN marca TEXT");
+      if (!hasClienteCol('modelo')) alterClientes.push("ALTER TABLE clientes ADD COLUMN modelo TEXT");
+      if (!hasClienteCol('cilindraje')) alterClientes.push("ALTER TABLE clientes ADD COLUMN cilindraje INTEGER");
+      if (!hasClienteCol('puntos')) alterClientes.push("ALTER TABLE clientes ADD COLUMN puntos INTEGER DEFAULT 0");
+      if (!hasClienteCol('lavadas')) alterClientes.push("ALTER TABLE clientes ADD COLUMN lavadas INTEGER DEFAULT 0");
       if (!hasClienteCol('lavadas_completadas')) alterClientes.push("ALTER TABLE clientes ADD COLUMN lavadas_completadas INTEGER DEFAULT 0");
       if (!hasClienteCol('lavadas_gratis_pendientes')) alterClientes.push("ALTER TABLE clientes ADD COLUMN lavadas_gratis_pendientes INTEGER DEFAULT 0");
       if (!hasClienteCol('total_lavadas_historico')) alterClientes.push("ALTER TABLE clientes ADD COLUMN total_lavadas_historico INTEGER DEFAULT 0");
@@ -380,10 +396,12 @@ async function initAllSucursales() {
   process.exit(0);
 }
 
-// Ejecutar automáticamente cuando se corra este script
-initAllSucursales().catch(error => {
-  console.error('💥 Error fatal:', error);
-  process.exit(1);
-});
+// Ejecutar automáticamente solo cuando se corra este script directamente
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  initAllSucursales().catch(error => {
+    console.error('💥 Error fatal:', error);
+    process.exit(1);
+  });
+}
 
 export { initSucursalDb, initAllSucursales };

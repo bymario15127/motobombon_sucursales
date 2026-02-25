@@ -8,12 +8,15 @@ export default function ServiciosManager() {
   const [editingService, setEditingService] = useState(null);
   const [formData, setFormData] = useState({
     nombre: "",
+    import { useMemo } from "react";
     duracion: "",
     precio_bajo_cc: "",
     precio_alto_cc: "",
     descripcion: "",
     imagen: "/img/default.jpg",
     imagen_bajo_cc: "",
+      const [currentPage, setCurrentPage] = useState(1);
+      const pageSize = 12;
     imagen_alto_cc: ""
   });
 
@@ -23,6 +26,7 @@ export default function ServiciosManager() {
 
   const loadServicios = async () => {
     try {
+          setCurrentPage(1);
       const data = await serviciosService.getServicios();
       setServicios(data);
     } catch (error) {
@@ -34,31 +38,51 @@ export default function ServiciosManager() {
     e.preventDefault();
     
     try {
-      const url = editingService 
-        ? `/api/servicios/${editingService.id}`
-        : "/api/servicios";
-      
-      const method = editingService ? "PUT" : "POST";
-      
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          duracion: parseInt(formData.duracion),
-          precio_bajo_cc: parseFloat(formData.precio_bajo_cc),
-          precio_alto_cc: parseFloat(formData.precio_alto_cc),
-          // Mantener precio para compatibilidad (usar el precio bajo como default)
-          precio: parseFloat(formData.precio_bajo_cc)
-        })
-      });
+      const payload = {
 
-      if (response.ok) {
-        invalidateServiciosCache();
-        loadServicios();
-        resetForm();
-        alert(editingService ? "Servicio actualizado" : "Servicio creado");
+      const totalPages = Math.max(1, Math.ceil(servicios.length / pageSize));
+      const pagedServicios = useMemo(() => {
+        const start = (currentPage - 1) * pageSize;
+        return servicios.slice(start, start + pageSize);
+      }, [servicios, currentPage]);
+        ...formData,
+        duracion: parseInt(formData.duracion),
+        precio_bajo_cc: parseFloat(formData.precio_bajo_cc),
+        precio_alto_cc: parseFloat(formData.precio_alto_cc),
+        // Mantener precio para compatibilidad (usar el precio bajo como default)
+        precio: parseFloat(formData.precio_bajo_cc)
+      };
+
+      if (editingService) {
+        await serviciosService.updateServicio(editingService.id, payload);
+      } else {
+        await serviciosService.addServicio(payload);
+
+          {totalPages > 1 && (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap' }}>
+              <button
+                className="btn-secondary"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+              <span style={{ color: '#fff' }}>Pagina {currentPage} de {totalPages}</span>
+              <button
+                className="btn-secondary"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
       }
+
+      invalidateServiciosCache();
+            {pagedServicios.map((servicio) => (
+      resetForm();
+      alert(editingService ? "Servicio actualizado" : "Servicio creado");
     } catch (error) {
       console.error("Error al guardar servicio:", error);
       alert("Error al guardar el servicio");
@@ -84,15 +108,10 @@ export default function ServiciosManager() {
     if (!confirm("¿Eliminar este servicio?")) return;
     
     try {
-      const response = await fetch(`/api/servicios/${id}`, {
-        method: "DELETE"
-      });
-      
-      if (response.ok) {
-        invalidateServiciosCache();
-        loadServicios();
-        alert("Servicio eliminado");
-      }
+      await serviciosService.deleteServicio(id);
+      invalidateServiciosCache();
+      loadServicios();
+      alert("Servicio eliminado");
     } catch (error) {
       console.error("Error al eliminar servicio:", error);
       alert("Error al eliminar el servicio");
