@@ -40,8 +40,84 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 1rem;
+  min-height: 100dvh;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
   box-sizing: border-box;
+}
+
+/* ========== Selector de Sucursal (responsive móvil) ========== */
+.sucursal-selector-page {
+  width: 100%;
+  max-width: 900px;
+  text-align: center;
+}
+.sucursal-selector-header {
+  margin-bottom: clamp(1.5rem, 5vw, 3rem);
+}
+.sucursal-selector-title {
+  font-family: 'Yeseva One', serif;
+  font-size: clamp(1.75rem, 8vw, 3.5rem);
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(235, 4, 99, 0.6);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 0.02em;
+  word-break: break-word;
+}
+.sucursal-selector-subtitle {
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  color: #EB0463;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  font-family: 'Poppins', sans-serif;
+}
+.sucursal-selector-hint {
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+  color: #9ca3af;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+.sucursal-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: clamp(1rem, 4vw, 2rem);
+  margin-top: clamp(1.5rem, 4vw, 3rem);
+}
+.sucursal-selector-card {
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border-radius: 20px;
+  border: 2px solid #EB0463;
+  background: rgba(235, 4, 99, 0.1);
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.sucursal-selector-card:hover,
+.sucursal-selector-card:active {
+  background: linear-gradient(135deg, rgba(235, 4, 99, 0.4), rgba(255, 26, 117, 0.3));
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(235, 4, 99, 0.5);
+}
+.sucursal-selector-card .card-icon {
+  font-size: clamp(2rem, 8vw, 3rem);
+  margin-bottom: 0.75rem;
+}
+.sucursal-selector-card .card-name {
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  font-weight: 700;
+  margin: 0 0 0.35rem 0;
+  color: #ffffff;
+}
+.sucursal-selector-card .card-address {
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+  color: #e5e7eb;
+  margin: 0 0 0.2rem 0;
+}
+.sucursal-selector-card .card-city {
+  font-size: clamp(0.75rem, 2.2vw, 0.85rem);
+  color: #9ca3af;
+  margin: 0;
 }
 
 /* ========== Landing (selector sucursal / home) ========== */
