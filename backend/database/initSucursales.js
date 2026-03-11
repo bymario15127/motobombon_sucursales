@@ -54,6 +54,30 @@ async function initSucursalDb(sucursalId) {
       )
     `);
 
+    // Parchear columnas faltantes en servicios (precio/imagen por CC y comisión)
+    try {
+      const colsServicios = await db.all("PRAGMA table_info(servicios)");
+      const hasServCol = (n) => Array.isArray(colsServicios) && colsServicios.some(c => c.name === n);
+      const alterServicios = [];
+      if (!hasServCol("precio_bajo_cc")) alterServicios.push("ALTER TABLE servicios ADD COLUMN precio_bajo_cc REAL");
+      if (!hasServCol("precio_alto_cc")) alterServicios.push("ALTER TABLE servicios ADD COLUMN precio_alto_cc REAL");
+      if (!hasServCol("imagen_bajo_cc")) alterServicios.push("ALTER TABLE servicios ADD COLUMN imagen_bajo_cc TEXT");
+      if (!hasServCol("imagen_alto_cc")) alterServicios.push("ALTER TABLE servicios ADD COLUMN imagen_alto_cc TEXT");
+      if (!hasServCol("precio_base_comision_bajo")) alterServicios.push("ALTER TABLE servicios ADD COLUMN precio_base_comision_bajo REAL");
+      if (!hasServCol("precio_base_comision_alto")) alterServicios.push("ALTER TABLE servicios ADD COLUMN precio_base_comision_alto REAL");
+      for (const stmt of alterServicios) {
+        try {
+          await db.exec(stmt);
+        } catch (e) {
+          if (!/duplicate column|already exists/i.test(e.message || "")) {
+            console.error("Error aplicando parche de esquema en servicios:", e.message);
+          }
+        }
+      }
+    } catch (e) {
+      console.error("No se pudo asegurar columnas de servicios:", e.message);
+    }
+
     // Tabla de lavadores
     await db.exec(`
       CREATE TABLE IF NOT EXISTS lavadores (

@@ -139,6 +139,9 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Método de pago inválido. Use 'codigo_qr', 'efectivo' o 'tarjeta'" });
     }
 
+    // Si no se envía hora (orden de llegada), guardamos cadena vacía para cumplir NOT NULL
+    const horaParaDb = horaFinal != null && horaFinal !== "" ? horaFinal : "";
+
     // Si no se envía hora, no aplicamos verificación de traslapes
     if (horaFinal) {
       // Regla simplificada: solo bloqueamos misma hora exacta en la fecha (evita falsos positivos por duración)
@@ -153,11 +156,11 @@ router.post("/", async (req, res) => {
         });
       }
     }
-    
+
     try {
       const result = await db.run(
         "INSERT INTO citas (cliente, servicio, fecha, hora, telefono, email, comentarios, estado, placa, marca, modelo, cilindraje, metodo_pago, lavador_id, tipo_cliente, taller_id, promocion_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [cliente, servicio, fechaFinal, horaFinal, telefono || "", email || "", comentarios || "", estado || "pendiente", placa || "", marca || "", modelo || "", cilindraje || null, metodo_pago || null, lavador_id || null, tipo_cliente || "cliente", taller_id || null, promocion_id || null]
+        [cliente, servicio, fechaFinal, horaParaDb, telefono || "", email || "", comentarios || "", estado || "pendiente", placa || "", marca || "", modelo || "", cilindraje || null, metodo_pago || null, lavador_id || null, tipo_cliente || "cliente", taller_id || null, promocion_id || null]
       );
       console.log("✅ Cita insertada ID=", result.lastID, promocion_id ? `(Promoción ID: ${promocion_id})` : "");
       return res.status(201).json({ id: result.lastID, message: "Cita creada exitosamente" });

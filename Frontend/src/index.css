@@ -40,7 +40,567 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
 }
+
+/* ========== Landing (selector sucursal / home) ========== */
+.landing-wrap {
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+}
+.landing-card {
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.98) 0%, rgba(10, 10, 10, 0.99) 100%);
+  border: 2px solid #EB0463;
+  border-radius: 24px;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: 0 0 40px rgba(235, 4, 99, 0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+  text-align: center;
+}
+.landing-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 1rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+  border-radius: 999px;
+  border: 1px solid rgba(235, 4, 99, 0.5);
+  background: rgba(235, 4, 99, 0.08);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
+.landing-back:hover {
+  border-color: #EB0463;
+  background: rgba(235, 4, 99, 0.2);
+  transform: translateX(-2px);
+}
+.landing-title {
+  font-family: 'Yeseva One', serif;
+  font-size: clamp(2rem, 8vw, 3rem);
+  color: #ffffff;
+  text-shadow: 0 0 24px rgba(235, 4, 99, 0.6);
+  margin: 0 0 0.35em 0;
+  letter-spacing: 0.02em;
+}
+.landing-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  color: #EB0463;
+  font-weight: 600;
+  margin: 0 0 0.25em 0;
+}
+.landing-tagline {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+  color: #9ca3af;
+  margin: 0 0 1.5rem 0;
+}
+.landing-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+@media (min-width: 400px) {
+  .landing-buttons {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+/* Mismo estilo que admin: píldora neón, fondo transparente/oscuro */
+.landing-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: clamp(0.85rem, 2.5vw, 1.1rem) 1.5rem;
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 999px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  text-align: center;
+  min-height: 48px;
+  letter-spacing: 0.03em;
+}
+.landing-btn:hover {
+  transform: translateY(-2px);
+}
+.landing-btn-primary {
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.2), rgba(0, 0, 0, 0.85));
+  color: #ffffff;
+  border-color: #EB0463;
+  box-shadow: 0 0 16px rgba(235, 4, 99, 0.5);
+}
+.landing-btn-primary:hover {
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.35), rgba(0, 0, 0, 0.9));
+  box-shadow: 0 0 24px rgba(235, 4, 99, 0.7);
+}
+.landing-btn-taller {
+  background: radial-gradient(circle at top left, rgba(251, 191, 36, 0.15), rgba(0, 0, 0, 0.85));
+  color: #fde68a;
+  border-color: #fbbf24;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.4);
+}
+.landing-btn-taller:hover {
+  background: radial-gradient(circle at top left, rgba(251, 191, 36, 0.28), rgba(0, 0, 0, 0.9));
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.55);
+}
+.landing-btn-admin {
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.85));
+  color: #e5e7eb;
+  border-color: rgba(229, 231, 235, 0.5);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+}
+.landing-btn-admin:hover {
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.2), rgba(0, 0, 0, 0.9));
+  border-color: #EB0463;
+  color: #ffffff;
+  box-shadow: 0 0 18px rgba(235, 4, 99, 0.45);
+}
+.landing-btn-supervisor {
+  background: radial-gradient(circle at top left, rgba(167, 139, 250, 0.18), rgba(0, 0, 0, 0.85));
+  color: #c4b5fd;
+  border-color: #a78bfa;
+  box-shadow: 0 0 14px rgba(167, 139, 250, 0.4);
+}
+.landing-btn-supervisor:hover {
+  background: radial-gradient(circle at top left, rgba(167, 139, 250, 0.3), rgba(0, 0, 0, 0.9));
+  box-shadow: 0 0 22px rgba(167, 139, 250, 0.6);
+}
+.landing-footer {
+  margin-top: 1.5rem;
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  color: #6b7280;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ========== Portal Talleres Aliados (form público) ========== */
+.taller-portal-page {
+  min-height: 100vh;
+  background: #050505;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  box-sizing: border-box;
+}
+.taller-portal-card {
+  max-width: 900px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, rgba(15, 15, 20, 0.98) 0%, rgba(10, 10, 14, 0.99) 100%);
+  border: 2px solid #EB0463;
+  border-radius: 20px;
+  padding: clamp(1.25rem, 4vw, 1.75rem);
+  box-shadow: 0 0 40px rgba(235, 4, 99, 0.2), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.taller-portal-sucursal {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  color: #EB0463;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+.taller-portal-header {
+  background: rgba(15, 15, 20, 0.8);
+  border-radius: 14px;
+  padding: clamp(1.25rem, 3vw, 1.5rem);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border: 1px solid rgba(235, 4, 99, 0.35);
+  box-shadow: 0 12px 32px rgba(235, 4, 99, 0.1);
+}
+.taller-portal-header h1 {
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  margin: 0 0 0.35em 0;
+  color: #EB0463;
+  letter-spacing: 0.02em;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+.taller-portal-header p {
+  color: #e5e7eb;
+  margin: 0;
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+}
+.taller-portal-motos-banner {
+  background: rgba(15, 15, 20, 0.9);
+  border: 1px solid rgba(235, 4, 99, 0.35);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  box-shadow: 0 10px 28px rgba(235, 4, 99, 0.12);
+}
+.taller-portal-motos-banner .icon { font-size: 1.5rem; margin-bottom: 0.35rem; }
+.taller-portal-motos-banner .count { font-size: 1.1rem; font-weight: 700; color: #EB0463; margin-bottom: 0.2rem; }
+.taller-portal-motos-banner .text { font-size: 0.9rem; color: #e5e7eb; }
+.taller-portal-motos-banner .eta { font-size: 0.8rem; color: #9ca3af; margin-top: 0.5rem; }
+
+.taller-portal-form {
+  background: rgba(15, 15, 20, 0.7);
+  border-radius: 14px;
+  padding: clamp(1.25rem, 4vw, 1.5rem);
+  border: 1px solid rgba(235, 4, 99, 0.3);
+  box-shadow: 0 12px 32px rgba(235, 4, 99, 0.08);
+}
+.taller-portal-form .form-group {
+  margin-bottom: 1rem;
+}
+.taller-portal-form .form-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 520px) {
+  .taller-portal-form .form-row-2 { grid-template-columns: 1fr 1fr; }
+}
+.taller-portal-form label,
+.taller-portal-form .section-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #e5e7eb;
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  font-family: 'Poppins', sans-serif;
+}
+.taller-portal-form .section-title {
+  margin-top: 1.25rem;
+  margin-bottom: 0.6rem;
+  font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+}
+.taller-portal-input,
+.taller-portal-select,
+.taller-portal-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(235, 4, 99, 0.45);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: #0b0b10;
+  color: #f9fafb;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.taller-portal-input:focus,
+.taller-portal-select:focus,
+.taller-portal-textarea:focus {
+  outline: none;
+  border-color: #EB0463;
+  box-shadow: 0 0 12px rgba(235, 4, 99, 0.25);
+}
+.taller-portal-input::placeholder,
+.taller-portal-textarea::placeholder {
+  color: #6b7280;
+}
+.taller-portal-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+.taller-portal-radio-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.taller-portal-radio-option {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.85rem 1rem;
+  border: 2px solid rgba(235, 4, 99, 0.35);
+  border-radius: 12px;
+  cursor: pointer;
+  background: #0b0b10;
+  color: #f9fafb;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.taller-portal-radio-option:hover {
+  border-color: rgba(235, 4, 99, 0.6);
+  background: rgba(235, 4, 99, 0.08);
+}
+.taller-portal-radio-option.selected {
+  border-color: #EB0463;
+  background: rgba(235, 4, 99, 0.15);
+  box-shadow: 0 0 14px rgba(235, 4, 99, 0.3);
+}
+.taller-portal-radio-option input {
+  margin-right: 0.35rem;
+}
+.taller-portal-servicio-card {
+  padding: 1rem;
+  border: 2px solid rgba(235, 4, 99, 0.35);
+  border-radius: 12px;
+  cursor: pointer;
+  background: #0b0b10;
+  text-align: center;
+  transition: all 0.2s;
+  color: #f9fafb;
+  margin-bottom: 1rem;
+}
+.taller-portal-servicio-card:hover {
+  border-color: rgba(235, 4, 99, 0.6);
+  background: rgba(235, 4, 99, 0.08);
+}
+.taller-portal-servicio-card.selected {
+  border-color: #EB0463;
+  background: rgba(235, 4, 99, 0.15);
+  box-shadow: 0 0 14px rgba(235, 4, 99, 0.25);
+}
+.taller-portal-submit {
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  border: 2px solid #EB0463;
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.2), rgba(0, 0, 0, 0.85));
+  color: #ffffff;
+  font-weight: 700;
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.03em;
+  box-shadow: 0 0 18px rgba(235, 4, 99, 0.45);
+}
+.taller-portal-submit:hover:not(:disabled) {
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.35), rgba(0, 0, 0, 0.9));
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px rgba(235, 4, 99, 0.6);
+}
+.taller-portal-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.taller-portal-notificacion {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+  color: #f9fafb;
+  background: #0b0b10;
+  border: 1px solid rgba(235, 4, 99, 0.35);
+  font-size: 0.9rem;
+}
+.taller-portal-notificacion.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.6);
+}
+.taller-portal-notificacion.error {
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.6);
+}
+
+/* ========== Portal Reserva Cliente (form reserva pública) ========== */
+.reserva-portal {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.reserva-portal-card {
+  background: linear-gradient(180deg, rgba(18, 18, 22, 0.98) 0%, rgba(10, 10, 14, 0.99) 100%);
+  border: 2px solid #EB0463;
+  border-radius: 20px;
+  padding: clamp(1.25rem, 4vw, 1.75rem);
+  box-shadow: 0 0 40px rgba(235, 4, 99, 0.18), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.reserva-portal-sucursal {
+  text-align: center;
+  margin-bottom: 0.75rem;
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  color: #EB0463;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+.reserva-portal-header h1 {
+  font-size: clamp(1.25rem, 4vw, 1.6rem);
+  margin: 0 0 0.5rem 0;
+  color: #EB0463;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+.reserva-portal-banner {
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+.reserva-portal-banner.sin-espera {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+.reserva-portal-banner.sin-espera .banner-title { color: #34d399; font-weight: 700; font-size: 1.1rem; margin: 0 0 0.25rem 0; }
+.reserva-portal-banner.sin-espera .banner-text { color: #a7f3d0; font-size: 0.9rem; margin: 0; }
+.reserva-portal-banner.con-espera {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.12);
+}
+.reserva-portal-banner.con-espera .banner-title { color: #fde68a; font-weight: 700; font-size: 1.1rem; margin: 0 0 0.25rem 0; }
+.reserva-portal-banner.con-espera .banner-text { color: #fef3c7; font-size: 0.9rem; margin: 0; }
+.reserva-portal-form .form-group { margin-bottom: 1rem; }
+.reserva-portal-form .form-row { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 520px) {
+  .reserva-portal-form .form-row-2 { grid-template-columns: 1fr 1fr; }
+}
+.reserva-portal-form label,
+.reserva-portal-form .section-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #e5e7eb;
+  font-size: clamp(0.9rem, 2.2vw, 1rem);
+  font-family: 'Poppins', sans-serif;
+}
+.reserva-portal-form .section-title {
+  margin-top: 1.25rem;
+  margin-bottom: 0.6rem;
+  font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+}
+.reserva-portal-input,
+.reserva-portal-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(235, 4, 99, 0.45);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: #0b0b10;
+  color: #f9fafb;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.reserva-portal-input:focus,
+.reserva-portal-textarea:focus {
+  outline: none;
+  border-color: #EB0463;
+  box-shadow: 0 0 12px rgba(235, 4, 99, 0.25);
+}
+.reserva-portal-input::placeholder,
+.reserva-portal-textarea::placeholder { color: #6b7280; }
+.reserva-portal-textarea { min-height: 80px; resize: vertical; }
+.reserva-portal-radio-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.reserva-portal-radio-option {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(235, 4, 99, 0.35);
+  border-radius: 12px;
+  cursor: pointer;
+  background: #0b0b10;
+  color: #f9fafb;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.reserva-portal-radio-option:hover { border-color: rgba(235, 4, 99, 0.6); background: rgba(235, 4, 99, 0.08); }
+.reserva-portal-radio-option.selected {
+  border-color: #EB0463;
+  background: rgba(235, 4, 99, 0.15);
+  box-shadow: 0 0 14px rgba(235, 4, 99, 0.3);
+}
+.reserva-portal-habeas {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  border: 2px solid rgba(235, 4, 99, 0.5);
+  background: linear-gradient(135deg, rgba(235, 4, 99, 0.1) 0%, rgba(15, 15, 20, 0.98) 100%);
+  box-shadow: 0 4px 20px rgba(235, 4, 99, 0.12);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #e5e7eb;
+  font-family: 'Poppins', sans-serif;
+}
+.reserva-portal-habeas label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  margin: 0;
+  font-weight: 500;
+}
+.reserva-portal-habeas input[type="checkbox"] {
+  margin-top: 0.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #EB0463;
+  flex-shrink: 0;
+}
+.reserva-portal-habeas strong { color: #EB0463; }
+.reserva-portal-submit {
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  border: 2px solid #EB0463;
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.2), rgba(0, 0, 0, 0.85));
+  color: #ffffff;
+  font-weight: 700;
+  font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+  cursor: pointer;
+  transition: all 0.25s;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.03em;
+  box-shadow: 0 0 18px rgba(235, 4, 99, 0.45);
+}
+.reserva-portal-submit:hover:not(:disabled) {
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.35), rgba(0, 0, 0, 0.9));
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px rgba(235, 4, 99, 0.6);
+}
+.reserva-portal-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: rgba(235, 4, 99, 0.4);
+  box-shadow: 0 0 8px rgba(235, 4, 99, 0.2);
+}
+.reserva-portal-notificacion {
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #f9fafb;
+  background: #0b0b10;
+  border: 1px solid rgba(235, 4, 99, 0.35);
+}
+.reserva-portal-notificacion.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.6);
+}
+.reserva-portal-notificacion.error {
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.6);
+}
+.reserva-portal-aviso { font-size: 0.875rem; color: #9ca3af; margin: 0.5rem 0 1rem 0; }
 
 /* 🏢 Layout para admin (sin centrado) */
 .admin-layout {

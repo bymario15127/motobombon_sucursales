@@ -38,23 +38,15 @@ export default function ClientePage() {
   }, [location, sucursalId, navigate]);
 
   return (
-    <div className="centered-page">
-      <div className="container">
-        {/* Indicador de sucursal */}
-        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          <p style={{ 
-            fontSize: '0.9rem', 
-            color: '#EB0463',
-            fontWeight: '600'
-          }}>
-            📍 {sucursalNombre}
-          </p>
+    <div className="centered-page" style={{ background: "#050505" }}>
+      <div className="reserva-portal">
+        <div className="reserva-portal-card">
+          <p className="reserva-portal-sucursal">📍 {sucursalNombre}</p>
+          <div className="reserva-portal-header">
+            <h1>🏍️ MOTOBOMBON — Reserva tu servicio de lavado</h1>
+          </div>
+          <ReservaForm sucursalId={sucursalId} />
         </div>
-        
-        <h1 className="text-3xl font-bold text-center mb-6" style={{ color: '#EB0463' }}>
-          🏍️ MOTOBOMBON — Reserva tu servicio de lavado
-        </h1>
-        <ReservaForm sucursalId={sucursalId} />
       </div>
     </div>
   );

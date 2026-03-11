@@ -263,274 +263,169 @@ export default function TallerPage() {
   }
 
   return (
-    <div className="taller-page" style={{ minHeight: "100vh", background: "#050505", padding: "20px" }}>
-      <div className="taller-card" style={{ maxWidth: "900px", margin: "0 auto", background: "#0b0b0f", border: "1px solid #EB0463", borderRadius: "14px", boxShadow: "0 20px 60px rgba(235,4,99,0.25)", padding: "20px" }}>
-        {/* Indicador de sucursal */}
-        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          <p style={{ 
-            fontSize: '0.9rem', 
-            color: '#EB0463',
-            fontWeight: '600'
-          }}>
-            📍 {sucursalNombre}
-          </p>
-        </div>
-        
+    <div className="taller-portal-page">
+      <div className="taller-portal-card">
+        <p className="taller-portal-sucursal">📍 {sucursalNombre}</p>
+
         {mensaje.texto && (
-          <div className={`notificacion ${mensaje.tipo}`}>
+          <div className={`taller-portal-notificacion ${mensaje.tipo}`}>
             {mensaje.texto}
           </div>
         )}
-        
-        <div style={{
-          background: "#0f0f14",
-          borderRadius: "12px",
-          padding: "20px",
-          marginBottom: "20px",
-          textAlign: "center",
-          border: "1px solid rgba(235,4,99,0.35)",
-          boxShadow: "0 15px 40px rgba(235,4,99,0.15)"
-        }}>
-          <h1 style={{ fontSize: "28px", margin: "0 0 10px 0", color: "#EB0463", letterSpacing: "0.3px" }}>
-            🏢 Portal de Talleres Aliados
-          </h1>
-          <p style={{ color: "#e5e7eb", margin: "0" }}>
-            Ingresa las motos para servicio
-          </p>
+
+        <div className="taller-portal-header">
+          <h1>🏢 Portal de Talleres Aliados</h1>
+          <p>Ingresa las motos para servicio</p>
         </div>
 
         {motosEnEspera > 0 && (
-          <div style={{
-            background: '#0f0f14',
-            border: '1px solid rgba(235,4,99,0.35)',
-            borderRadius: '10px',
-            padding: '16px',
-            marginBottom: '20px',
-            textAlign: 'center',
-            boxShadow: '0 12px 30px rgba(235,4,99,0.15)'
-          }}>
-            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🏍️</div>
-            <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#EB0463', marginBottom: '4px' }}>
-              {motosEnEspera} {motosEnEspera === 1 ? 'moto' : 'motos'} en espera
+          <div className="taller-portal-motos-banner">
+            <div className="icon">🏍️</div>
+            <p className="count">
+              {motosEnEspera} {motosEnEspera === 1 ? "moto" : "motos"} en espera
             </p>
-            <p style={{ fontSize: '14px', color: '#e5e7eb' }}>
-              {motosEnEspera === 1 ? 'Hay 1 moto antes de las nuevas' : `Hay ${motosEnEspera} motos antes de las nuevas`}
+            <p className="text">
+              {motosEnEspera === 1
+                ? "Hay 1 moto antes de las nuevas"
+                : `Hay ${motosEnEspera} motos antes de las nuevas`}
             </p>
-            <p style={{ fontSize: '13px', color: '#9ca3af', marginTop: '8px' }}>
-              Tiempo estimado: {calcularTiempoEspera() || 'sin espera' }
+            <p className="eta">
+              Tiempo estimado: {calcularTiempoEspera() || "sin espera"}
             </p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{
-          background: "#0f0f14",
-          borderRadius: "12px",
-          padding: "20px",
-          boxShadow: "0 15px 40px rgba(235,4,99,0.15)",
-          border: "1px solid rgba(235,4,99,0.35)"
-        }}>
-          <div style={{ marginBottom: "20px" }}>
-            <label style={{ display: "block", fontWeight: "700", marginBottom: "8px", color: "#e5e7eb" }}>
-              🏢 Selecciona tu Taller
-            </label>
+        <form className="taller-portal-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>🏢 Selecciona tu Taller</label>
             <select
               name="taller_id"
               value={form.taller_id}
               onChange={handleChange}
               required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid rgba(235,4,99,0.5)",
-                borderRadius: "8px",
-                fontSize: "14px",
-                fontFamily: "inherit",
-                background: "#0b0b10",
-                color: "#f9fafb",
-                outline: "none",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.35)"
-              }}
+              className="taller-portal-select"
             >
               <option value="">-- Selecciona un taller --</option>
-              {talleres.map(t => (
+              {talleres.map((t) => (
                 <option key={t.id} value={t.id}>
-                  {t.nombre} {t.contacto ? `(${t.contacto})` : ''}
+                  {t.nombre} {t.contacto ? `(${t.contacto})` : ""}
                 </option>
               ))}
             </select>
           </div>
 
-          <h3 style={{ fontSize: "16px", fontWeight: "700", marginTop: "20px", marginBottom: "12px", color: "#e5e7eb" }}>
-            🏍️ Datos de la Moto
-          </h3>
-
-          <div style={{ marginBottom: "12px" }}>
-            <input
-              type="text"
-              name="placa"
-              placeholder="Placa (ej: ABC-123)"
-              value={form.placa}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid rgba(235,4,99,0.5)",
-                borderRadius: "8px",
-                fontSize: "14px",
-                boxSizing: "border-box",
-                background: "#0b0b10",
-                color: "#f9fafb"
-              }}
-            />
+          <h3 className="section-title">🏍️ Datos de la Moto</h3>
+          <div className="form-row form-row-2">
+            <div className="form-group">
+              <input
+                type="text"
+                name="placa"
+                placeholder="Placa (ej: ABC-123)"
+                value={form.placa}
+                onChange={handleChange}
+                required
+                className="taller-portal-input"
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="text"
+                name="marca"
+                placeholder="Marca (ej: Yamaha, Honda)"
+                value={form.marca}
+                onChange={handleChange}
+                required
+                className="taller-portal-input"
+              />
+            </div>
+          </div>
+          <div className="form-row form-row-2">
+            <div className="form-group">
+              <input
+                type="text"
+                name="modelo"
+                placeholder="Modelo (ej: FZ-16, CBR 600)"
+                value={form.modelo}
+                onChange={handleChange}
+                required
+                className="taller-portal-input"
+              />
+            </div>
+            <div className="form-group">
+              <input
+                type="number"
+                name="cilindraje"
+                placeholder="Cilindraje CC (ej: 150, 600)"
+                value={form.cilindraje}
+                onChange={handleChange}
+                min="50"
+                max="2000"
+                required
+                className="taller-portal-input"
+              />
+            </div>
           </div>
 
-          <div style={{ marginBottom: "12px" }}>
-            <input
-              type="text"
-              name="marca"
-              placeholder="Marca (ej: Yamaha, Honda)"
-              value={form.marca}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid rgba(235,4,99,0.5)",
-                borderRadius: "8px",
-                fontSize: "14px",
-                boxSizing: "border-box",
-                background: "#0b0b10",
-                color: "#f9fafb"
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: "12px" }}>
-            <input
-              type="text"
-              name="modelo"
-              placeholder="Modelo (ej: FZ-16, CBR 600)"
-              value={form.modelo}
-              onChange={handleChange}
-              required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid rgba(235,4,99,0.5)",
-                borderRadius: "8px",
-                fontSize: "14px",
-                boxSizing: "border-box",
-                background: "#0b0b10",
-                color: "#f9fafb"
-              }}
-            />
-          </div>
-
-          <div style={{ marginBottom: "20px" }}>
-            <input
-              type="number"
-              name="cilindraje"
-              placeholder="Cilindraje en CC (ej: 150, 600)"
-              value={form.cilindraje}
-              onChange={handleChange}
-              min="50"
-              max="2000"
-              required
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid rgba(235,4,99,0.5)",
-                borderRadius: "8px",
-                fontSize: "14px",
-                boxSizing: "border-box",
-                background: "#0b0b10",
-                color: "#f9fafb"
-              }}
-            />
-          </div>
-
-          <h3 style={{ fontSize: "16px", fontWeight: "700", marginTop: "20px", marginBottom: "12px", color: "#e5e7eb" }}>
-            💰 Método de Pago
-          </h3>
-
-          <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-            {['codigo_qr', 'efectivo'].map(metodo => (
-              <label key={metodo} style={{
-                flex: 1,
-                padding: "12px",
-                border: `1px solid ${form.metodo_pago === metodo ? '#EB0463' : 'rgba(235,4,99,0.35)'}`,
-                borderRadius: "10px",
-                cursor: "pointer",
-                background: form.metodo_pago === metodo ? 'rgba(235,4,99,0.12)' : '#0b0b10',
-                transition: "all 0.3s",
-                color: '#f9fafb',
-                boxShadow: "0 8px 24px rgba(0,0,0,0.35)"
-              }}>
+          <h3 className="section-title">💰 Método de Pago</h3>
+          <div className="taller-portal-radio-group">
+            {["codigo_qr", "efectivo"].map((metodo) => (
+              <label
+                key={metodo}
+                className={`taller-portal-radio-option ${form.metodo_pago === metodo ? "selected" : ""}`}
+              >
                 <input
                   type="radio"
                   name="metodo_pago"
                   value={metodo}
                   checked={form.metodo_pago === metodo}
                   onChange={handleChange}
-                  style={{ marginRight: "6px" }}
                 />
-                <span style={{ fontWeight: "600" }}>
-                  {metodo === 'codigo_qr' ? '📲 Código QR' : '💵 Efectivo'}
-                </span>
+                {metodo === "codigo_qr" ? "📲 Código QR" : "💵 Efectivo"}
               </label>
             ))}
           </div>
 
-          <h3 style={{ fontSize: "16px", fontWeight: "700", marginTop: "20px", marginBottom: "12px", color: "#e5e7eb" }}>
-            🔧 Selecciona Servicio
-          </h3>
-
+          <h3 className="section-title">🔧 Selecciona Servicio</h3>
           {servicios.length === 0 ? (
-            <p style={{ color: "#999" }}>Cargando servicios...</p>
+            <p style={{ color: "#9ca3af", marginBottom: "1rem" }}>
+              Cargando servicios...
+            </p>
           ) : (
             (() => {
               const servicioCard = servicioSeleccionado || servicios[0];
               if (!servicioCard) return null;
               const precio = precioDinamico();
               const { bajo, alto } = preciosTaller();
-
               return (
                 <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => handleServicioSelect(servicioCard.nombre)}
-                  style={{
-                    padding: "14px",
-                    border: `1px solid ${form.servicio === servicioCard.nombre ? '#EB0463' : 'rgba(235,4,99,0.35)'}`,
-                    borderRadius: "12px",
-                    cursor: "pointer",
-                    background: form.servicio === servicioCard.nombre ? 'rgba(235,4,99,0.12)' : '#0b0b10',
-                    textAlign: "center",
-                    transition: "all 0.3s",
-                    color: '#f9fafb',
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
-                    marginBottom: "20px"
-                  }}
+                  onKeyDown={(e) =>
+                    (e.key === "Enter" || e.key === " ") &&
+                    handleServicioSelect(servicioCard.nombre)
+                  }
+                  className={`taller-portal-servicio-card ${form.servicio === servicioCard.nombre ? "selected" : ""}`}
                 >
-                  <p style={{ margin: "0 0 6px 0", fontWeight: "700", fontSize: "15px", letterSpacing: "0.2px" }}>
+                  <p style={{ margin: "0 0 0.35rem 0", fontWeight: "700", fontSize: "1rem" }}>
                     Lavado
                   </p>
-                  <p style={{ margin: "0", fontSize: "12px", color: "#9ca3af" }}>
+                  <p style={{ margin: 0, fontSize: "0.85rem", color: "#9ca3af" }}>
                     {servicioCard.duracion} min
                   </p>
-
                   {tallerSeleccionado ? (
                     precio ? (
-                      <p style={{ margin: "6px 0 0 0", fontSize: "13px", color: "#f472b6", fontWeight: 700 }}>
+                      <p style={{ margin: "0.5rem 0 0 0", fontSize: "0.9rem", color: "#f472b6", fontWeight: 700 }}>
                         Precio: {precio}
                       </p>
                     ) : (
-                      <div style={{ marginTop: "6px", fontSize: "12px", color: "#f472b6", fontWeight: 600, lineHeight: 1.35 }}>
+                      <div style={{ marginTop: "0.5rem", fontSize: "0.85rem", color: "#f472b6", fontWeight: 600 }}>
                         <div>Bajo CC: {bajo || "N/D"}</div>
                         <div>Alto CC: {alto || "N/D"}</div>
                       </div>
                     )
                   ) : (
-                    <p style={{ margin: "6px 0 0 0", fontSize: "12px", color: "#f472b6", fontWeight: 600 }}>
+                    <p style={{ margin: "0.5rem 0 0 0", fontSize: "0.85rem", color: "#f472b6", fontWeight: 600 }}>
                       Selecciona tu taller
                     </p>
                   )}
@@ -539,74 +434,26 @@ export default function TallerPage() {
             })()
           )}
 
-          <div style={{ marginBottom: "20px" }}>
+          <div className="form-group">
             <textarea
               name="comentarios"
               placeholder="Comentarios adicionales (opcional)"
               value={form.comentarios}
               onChange={handleChange}
-              rows="3"
-              style={{
-                width: "100%",
-                padding: "12px",
-                border: "1px solid rgba(235,4,99,0.5)",
-                borderRadius: "8px",
-                fontSize: "14px",
-                fontFamily: "inherit",
-                boxSizing: "border-box",
-                background: "#0b0b10",
-                color: "#f9fafb"
-              }}
+              rows={3}
+              className="taller-portal-textarea"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            style={{
-              width: "100%",
-              padding: "12px",
-              background: loading ? "#ccc" : "linear-gradient(135deg, #EB0463 0%, #a65495 100%)",
-              color: "white",
-              border: "none",
-              borderRadius: "10px",
-              fontWeight: "700",
-              fontSize: "16px",
-              cursor: loading ? "not-allowed" : "pointer",
-              transition: "all 0.3s",
-              boxShadow: "0 14px 35px rgba(235,4,99,0.35)"
-            }}
+            className="taller-portal-submit"
           >
             {loading ? "Ingresando..." : "✅ Ingresar Moto al Sistema"}
           </button>
         </form>
       </div>
-
-      <style>{`
-        .notificacion {
-          padding: 12px 16px;
-          border-radius: 8px;
-          margin-bottom: 20px;
-          font-weight: 600;
-          text-align: center;
-          color: #f9fafb;
-          background: #0b0b10;
-          border: 1px solid rgba(235,4,99,0.35);
-          box-shadow: 0 12px 30px rgba(235,4,99,0.15);
-        }
-
-        .notificacion.success {
-          background: rgba(16, 185, 129, 0.12);
-          color: #34d399;
-          border: 1px solid rgba(16, 185, 129, 0.6);
-        }
-
-        .notificacion.error {
-          background: rgba(248, 113, 113, 0.12);
-          color: #f87171;
-          border: 1px solid rgba(248, 113, 113, 0.6);
-        }
-      `}</style>
     </div>
   );
 }
