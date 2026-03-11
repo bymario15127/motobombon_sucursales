@@ -83,48 +83,15 @@ const LavadoresManager = () => {
 
   return (
     <>
-      <style>{`
-        .lavador-modal-input {
-          width: 100%;
-          padding: 10px;
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          font-size: 14px;
-          background-color: #fff !important;
-          color: #000 !important;
-          -webkit-text-fill-color: #000 !important;
-          box-sizing: border-box;
-        }
-        .lavador-modal-input:-webkit-autofill,
-        .lavador-modal-input:-webkit-autofill:hover,
-        .lavador-modal-input:-webkit-autofill:focus,
-        .lavador-modal-input:-webkit-autofill:active {
-          -webkit-box-shadow: 0 0 0 30px #fff inset !important;
-          -webkit-text-fill-color: #000 !important;
-          box-shadow: 0 0 0 30px #fff inset !important;
-        }
-        .lavador-modal-input::placeholder {
-          color: #999 !important;
-          -webkit-text-fill-color: #999 !important;
-        }
-      `}</style>
       <div style={{ padding: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>👤 Gestión de Lavadores</h2>
-        <button
-          onClick={() => setShowModal(true)}
-          style={{
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white',
-            padding: '10px 20px',
-            borderRadius: '8px',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: 'bold'
-          }}
-        >
-          + Nuevo Lavador
-        </button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '12px' }}>
+          <h2 className="admin-section-title">👤 Gestión de Lavadores</h2>
+          <button
+            onClick={() => setShowModal(true)}
+            className="btn-neon-pill"
+          >
+            + Nuevo Lavador
+          </button>
       </div>
 
       {loading ? (
@@ -171,7 +138,7 @@ const LavadoresManager = () => {
             >
               <div style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <h3 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0, color: '#1f2937' }}>
+                  <h3 className="admin-card-title" style={{ margin: 0 }}>
                     {lavador.nombre}
                   </h3>
                   <span style={{
@@ -189,70 +156,32 @@ const LavadoresManager = () => {
               </div>
 
               {lavador.cedula && (
-                <p style={{ margin: '10px 0', color: '#4b5563', fontSize: '15px', fontWeight: '500' }}>
+                <p className="admin-text-muted" style={{ margin: '10px 0' }}>
                   🆔 {lavador.cedula}
                 </p>
               )}
 
-              <p style={{ margin: '10px 0', color: '#10b981', fontSize: '16px', fontWeight: 'bold' }}>
+              <p className="admin-card-label" style={{ margin: '10px 0', color: '#10b981' }}>
                 💰 Comisión: {lavador.comision_porcentaje || 30}%
               </p>
 
-              <p style={{ margin: '8px 0', fontSize: '13px', color: '#6b7280' }}>
+              <p className="admin-text-muted" style={{ margin: '8px 0', fontSize: '13px' }}>
                 📅 Registro: {new Date(lavador.created_at).toLocaleDateString()}
               </p>
 
               <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
                 <button
                   onClick={() => handleEdit(lavador)}
-                  style={{
-                    flex: 1,
-                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                    color: 'white',
-                    padding: '10px 16px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(59, 130, 246, 0.3)';
-                  }}
+                  className="btn-neon-pill"
+                  style={{ flex: 1, minWidth: '120px' }}
                 >
                   Editar
                 </button>
                 {lavador.activo === 1 && (
                   <button
                     onClick={() => handleDelete(lavador.id)}
-                    style={{
-                      flex: 1,
-                      background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                      color: 'white',
-                      padding: '10px 16px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.05)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.3)';
-                    }}
+                    className="btn-neon-pill"
+                    style={{ flex: 1, minWidth: '120px', boxShadow: '0 0 12px rgba(239, 68, 68, 0.8)' }}
                   >
                     🗑️ Desactivar
                   </button>
@@ -269,123 +198,71 @@ const LavadoresManager = () => {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Modal: misma estructura que Editar Servicio */}
       {showModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            background: 'white',
-            borderRadius: '12px',
-            padding: '24px',
-            width: '90%',
-            maxWidth: '500px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.3)'
-          }}>
-            <h3 style={{ marginBottom: '20px', fontSize: '20px' }}>
-              {editingLavador ? '✏️ Editar Lavador' : '➕ Nuevo Lavador'}
-            </h3>
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>{editingLavador ? "Editar Lavador" : "Nuevo Lavador"}</h2>
+              <button type="button" className="modal-close" onClick={handleCloseModal}>×</button>
+            </div>
 
-            <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#333' }}>
-                  Nombre completo *
-                </label>
+            <form onSubmit={handleSubmit} className="service-form">
+              <div className="form-group">
+                <label>Nombre completo *</label>
                 <input
                   type="text"
                   value={formData.nombre}
                   onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                   required
-                  className="lavador-modal-input"
                 />
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#333' }}>
-                  Cédula
-                </label>
-                <input
-                  type="text"
-                  value={formData.cedula}
-                  onChange={(e) => setFormData({ ...formData, cedula: e.target.value })}
-                  placeholder="1234567890"
-                  className="lavador-modal-input"
-                />
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Cédula</label>
+                  <input
+                    type="text"
+                    value={formData.cedula}
+                    onChange={(e) => setFormData({ ...formData, cedula: e.target.value })}
+                    placeholder="1234567890"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Comisión (%)</label>
+                  <input
+                    type="number"
+                    value={formData.comision_porcentaje}
+                    onChange={(e) => setFormData({ ...formData, comision_porcentaje: parseFloat(e.target.value) || 0 })}
+                    placeholder="30"
+                    min="0"
+                    max="100"
+                    step="0.5"
+                  />
+                </div>
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#333' }}>
-                  💰 Comisión (%)
-                </label>
-                <input
-                  type="number"
-                  value={formData.comision_porcentaje}
-                  onChange={(e) => setFormData({ ...formData, comision_porcentaje: parseFloat(e.target.value) || 0 })}
-                  placeholder="30"
-                  min="0"
-                  max="100"
-                  step="0.5"
-                  className="lavador-modal-input"
-                />
-                <small style={{ color: '#666', fontSize: '12px' }}>
+              <div className="form-group">
+                <small style={{ color: "#9ca3af", fontSize: "12px", display: "block", marginTop: "-8px", marginBottom: "12px" }}>
                   Porcentaje que gana el lavador por cada servicio completado
                 </small>
-              </div>
-
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#333' }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", color: "#ffffff" }}>
                   <input
                     type="checkbox"
                     checked={formData.activo === 1}
                     onChange={(e) => setFormData({ ...formData, activo: e.target.checked ? 1 : 0 })}
-                    style={{ marginRight: '8px', width: '16px', height: '16px' }}
+                    style={{ width: "18px", height: "18px", accentColor: "#EB0463" }}
                   />
                   <span>Lavador activo</span>
                 </label>
               </div>
 
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button
-                  type="button"
-                  onClick={handleCloseModal}
-                  style={{
-                    flex: 1,
-                    padding: '10px',
-                    border: '1px solid #ddd',
-                    borderRadius: '6px',
-                    background: '#f3f4f6',
-                    color: '#374151',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    fontSize: '14px'
-                  }}
-                >
+              <div className="form-actions">
+                <button type="button" onClick={handleCloseModal} className="btn-secondary">
                   Cancelar
                 </button>
-                <button
-                  type="submit"
-                  style={{
-                    flex: 1,
-                    padding: '10px',
-                    border: 'none',
-                    borderRadius: '6px',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    fontSize: '14px'
-                  }}
-                >
-                  {editingLavador ? 'Actualizar' : 'Crear'}
+                <button type="submit" className="btn-primary">
+                  {editingLavador ? "Actualizar" : "Crear"} Lavador
                 </button>
               </div>
             </form>

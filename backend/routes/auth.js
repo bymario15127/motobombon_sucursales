@@ -1,6 +1,7 @@
 // routes/auth.js
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { getDbConnection } from '../database/dbManager.js';
 
 const router = express.Router();
@@ -61,10 +62,12 @@ async function ensureDefaultUsers(db, sucursalId) {
 
   const defaultUsers = DEFAULT_USERS_BY_SUCURSAL[sucursalId] || [];
   for (const user of defaultUsers) {
+    // Guardar contraseñas por defecto usando hash bcrypt
+    const hashedPassword = await bcrypt.hash(user.password, 10);
     await db.run(
       `INSERT INTO usuarios (username, password, role, name, email, activo)
        VALUES (?, ?, ?, ?, ?, 1)`,
-      [user.username, user.password, user.role, user.name, user.email]
+      [user.username, hashedPassword, user.role, user.name, user.email]
     );
   }
 
@@ -100,8 +103,19 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     
-    // Comparar contraseña (en producción debería usar bcrypt)
-    if (user.password !== password) {
+    // Comparar contraseña:
+    // - Si está hasheada con bcrypt, usar bcrypt.compare
+    // - Si no, comparar en texto plano (compatibilidad con BDs antiguas)
+    let passwordOk = false;
+    const stored = user.password || '';
+
+    if (stored.startsWith('$2a$') || stored.startsWith('$2b$') || stored.startsWith('$2y$')) {
+      passwordOk = await bcrypt.compare(password, stored);
+    } else {
+      passwordOk = stored === password;
+    }
+
+    if (!passwordOk) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
     

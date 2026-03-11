@@ -103,7 +103,7 @@ export default function Dashboard({ setActiveView }) {
     <div className="space-y-6">
       {/* Único bloque: Gráfico de torta bonito + chips */}
       <div className="card" style={{ marginTop: 16 }}>
-        <h3 className="card-title" style={{ textAlign: 'left', marginBottom: 16 }}>Distribución por estado</h3>
+        <h3 className="admin-card-title" style={{ textAlign: 'left', marginBottom: 16 }}>Distribución por estado</h3>
         {stats.total === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">📊</div>
@@ -177,7 +177,7 @@ export default function Dashboard({ setActiveView }) {
 
       {/* Acciones rápidas */}
       <div className="card">
-        <h3 className="card-title" style={{ textAlign: 'left', marginBottom: 16 }}>⚡ Acciones Rápidas</h3>
+        <h3 className="admin-card-title" style={{ textAlign: 'left', marginBottom: 16 }}>⚡ Acciones Rápidas</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-[#EB0463] to-[#ff1a75] text-white rounded-lg hover:shadow-lg transition-all"
             onClick={() => setActiveView && setActiveView('appointments')}>

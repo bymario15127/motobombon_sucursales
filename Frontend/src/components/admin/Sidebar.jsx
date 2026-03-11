@@ -14,23 +14,26 @@ export default function Sidebar({ activeView, setActiveView, onLogout }) {
     setUserName(name);
   }, []);
 
-  // Todos los items del menú
-  const allMenuItems = [
+  // Items del menú agrupados por sección
+  const operacionItems = [
     { id: 'dashboard', icon: '📊', label: 'Dashboard', roles: ['admin', 'supervisor'] },
     { id: 'calendar', icon: '📅', label: 'Calendario', roles: ['admin', 'supervisor'] },
     { id: 'appointments', icon: '📋', label: 'Citas', roles: ['admin', 'supervisor'] },
+    { id: 'clientes', icon: '🎁', label: 'Clientes', roles: ['admin', 'supervisor'] },
+  ];
+  const configuracionItems = [
     { id: 'services', icon: '🏍️', label: 'Servicios', roles: ['admin'] },
     { id: 'talleres', icon: '🏢', label: 'Talleres Aliados', roles: ['admin'] },
     { id: 'lavadores', icon: '👤', label: 'Lavadores', roles: ['admin'] },
-    { id: 'clientes', icon: '🎁', label: 'Clientes', roles: ['admin', 'supervisor'] },
     { id: 'nomina', icon: '💰', label: 'Nómina', roles: ['admin'] },
     { id: 'productos', icon: '📦', label: 'Productos', roles: ['admin', 'supervisor'] },
     { id: 'finanzas', icon: '🏦', label: 'Finanzas', roles: ['admin'] },
     { id: 'settings', icon: '⚙️', label: 'Ajustes', roles: ['admin'] },
   ];
 
-  // Filtrar items según el rol del usuario
-  const menuItems = allMenuItems.filter(item => item.roles.includes(userRole));
+  const filterByRole = (items) => items.filter((item) => item.roles.includes(userRole));
+  const menuOperacion = filterByRole(operacionItems);
+  const menuConfiguracion = filterByRole(configuracionItems);
 
   const handleItemClick = (id) => {
     setActiveView(id);
@@ -49,7 +52,13 @@ export default function Sidebar({ activeView, setActiveView, onLogout }) {
         <div className="sb-wrap">
           <div className="sb-header">
             <div className="sb-logo">
-              <img src={logo} alt="MOTOBOMBON" style={{width: '32px', height: '32px', borderRadius: '50%'}} />
+              <img
+                src={logo}
+                alt="MOTOBOMBON"
+                loading="lazy"
+                decoding="async"
+                style={{width: '32px', height: '32px', borderRadius: '50%'}}
+              />
             </div>
             <div className="sb-brand">MOTOBOMBON</div>
             <button className="sidebar-close" onClick={() => setIsOpen(false)}>
@@ -58,19 +67,42 @@ export default function Sidebar({ activeView, setActiveView, onLogout }) {
           </div>
 
           <nav className="sb-nav">
-            <ul className="sb-list">
-              {menuItems.map((item) => (
-                <li key={item.id} className="sb-li">
-                  <button
-                    className={`sb-item ${activeView === item.id ? 'active' : ''}`}
-                    onClick={() => handleItemClick(item.id)}
-                  >
-                    <span className="sb-ic">{item.icon}</span>
-                    <span className="sb-tx">{item.label}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+            {menuOperacion.length > 0 && (
+              <>
+                <div className="sb-section-title">Operación</div>
+                <ul className="sb-list">
+                  {menuOperacion.map((item) => (
+                    <li key={item.id} className="sb-li">
+                      <button
+                        className={`sb-item ${activeView === item.id ? 'active' : ''}`}
+                        onClick={() => handleItemClick(item.id)}
+                      >
+                        <span className="sb-ic">{item.icon}</span>
+                        <span className="sb-tx">{item.label}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {menuConfiguracion.length > 0 && (
+              <>
+                <div className="sb-section-title">Configuración</div>
+                <ul className="sb-list">
+                  {menuConfiguracion.map((item) => (
+                    <li key={item.id} className="sb-li">
+                      <button
+                        className={`sb-item ${activeView === item.id ? 'active' : ''}`}
+                        onClick={() => handleItemClick(item.id)}
+                      >
+                        <span className="sb-ic">{item.icon}</span>
+                        <span className="sb-tx">{item.label}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </nav>
 
           <div className="sb-footer">

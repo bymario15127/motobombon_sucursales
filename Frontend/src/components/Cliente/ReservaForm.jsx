@@ -17,6 +17,7 @@ export default function ReservaForm({ sucursalId }) {
     servicioId: null,
     sucursal_id: sucursalId, // Agregar sucursal_id al formulario
   });
+  const [aceptaDatos, setAceptaDatos] = useState(false);
   
   const [servicios, setServicios] = useState([]);
   const [serviciosDisponibles, setServiciosDisponibles] = useState([]);
@@ -161,14 +162,21 @@ export default function ReservaForm({ sucursalId }) {
       return;
     }
 
-    // Generar solo fecha (hoy) y hora vacía (orden de llegada)
+    if (!aceptaDatos) {
+      mostrarMensaje(
+        "Debes aceptar el tratamiento de datos personales para continuar.",
+        "error"
+      );
+      setLoading(false);
+      return;
+    }
+
+    // Generar solo fecha (hoy). Las citas de cliente se atienden por orden de llegada,
+    // así que NO enviamos hora para evitar conflictos cuando varios reservan al mismo tiempo.
     const hoy = new Date();
     const yyyy = hoy.getFullYear();
     const mm = String(hoy.getMonth() + 1).padStart(2, '0');
     const dd = String(hoy.getDate()).padStart(2, '0');
-    const hh = String(hoy.getHours()).padStart(2, '0');
-    const mi = String(hoy.getMinutes()).padStart(2, '0');
-    const horaActual = `${hh}:${mi}`;
     
     const citaData = {
       cliente: form.cliente,
@@ -182,7 +190,7 @@ export default function ReservaForm({ sucursalId }) {
       metodo_pago: form.metodo_pago,
       comentarios: form.comentarios,
       fecha: `${yyyy}-${mm}-${dd}`,
-      hora: horaActual,
+      // hora: null -> el backend la deja en blanco y no aplica validación de traslapes
     };
     
     // Promociones removidas
@@ -206,8 +214,8 @@ export default function ReservaForm({ sucursalId }) {
         comentarios: "",
         metodo_pago: "",
         servicioId: null,
-        servicioId: null,
       });
+      setAceptaDatos(false);
       
     } catch (error) {
       mostrarMensaje(error.message, "error");
@@ -459,6 +467,49 @@ export default function ReservaForm({ sucursalId }) {
           value={form.comentarios}
           onChange={handleChange}
         />
+
+        <div
+          className="habeas-data-box"
+          style={{
+            marginTop: '16px',
+            marginBottom: '20px',
+            padding: '16px 18px',
+            borderRadius: '14px',
+            border: '2px solid rgba(235, 4, 99, 0.5)',
+            background: 'linear-gradient(135deg, rgba(235, 4, 99, 0.12) 0%, rgba(20, 20, 20, 0.98) 100%)',
+            boxShadow: '0 4px 16px rgba(235, 4, 99, 0.15)',
+            fontSize: '14px',
+            lineHeight: 1.5,
+            color: '#e5e7eb',
+          }}
+        >
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '12px',
+              cursor: 'pointer',
+              margin: 0,
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={aceptaDatos}
+              onChange={(e) => setAceptaDatos(e.target.checked)}
+              required
+              style={{
+                marginTop: '4px',
+                width: '20px',
+                height: '20px',
+                accentColor: '#EB0463',
+                flexShrink: 0,
+              }}
+            />
+            <span style={{ flex: 1 }}>
+              Autorizo el tratamiento de mis datos personales de acuerdo con la política de privacidad del sistema, conforme a la <strong style={{ color: '#EB0463' }}>Ley 1581 de 2012</strong>.
+            </span>
+          </label>
+        </div>
 
         <button type="submit" disabled={loading}>
           {loading ? "Reservando..." : "Reservar cita"}

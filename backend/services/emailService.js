@@ -208,8 +208,11 @@ export async function verificarConfiguracionEmail() {
     if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
       return { configured: false, message: 'Credenciales SMTP no configuradas' };
     }
-    
+
+    // Crear transporter local para esta verificación
+    const transporter = crearTransporter();
     await transporter.verify();
+
     return { configured: true, message: 'Configuración de email válida' };
   } catch (error) {
     return { configured: false, message: error.message };

@@ -10,6 +10,7 @@ export default function PanelAdmin() {
   const [busqueda, setBusqueda] = useState('');
   const [editingPayment, setEditingPayment] = useState(null);
   const [newPaymentMethod, setNewPaymentMethod] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('todos');
 
   useEffect(() => {
     const role = localStorage.getItem('motobombon_user_role') || 'admin';
@@ -104,18 +105,59 @@ export default function PanelAdmin() {
 
   const citasFiltradas = citas.filter(cita => {
     const busquedaLower = busqueda.toLowerCase();
-    return (
+
+    const coincideBusqueda =
+      !busquedaLower ||
       (cita.cliente && cita.cliente.toLowerCase().includes(busquedaLower)) ||
-      (cita.placa && cita.placa.toLowerCase().includes(busquedaLower))
-    );
+      (cita.placa && cita.placa.toLowerCase().includes(busquedaLower));
+
+    const estado = (cita.estado || 'pendiente').toLowerCase();
+
+    const coincideEstado =
+      filtroEstado === 'todos' ||
+      estado === filtroEstado;
+
+    return coincideBusqueda && coincideEstado;
   });
 
   return (
     <div className="container">
-      <div className="admin-header">
+      <div className="admin-header" style={{ justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', flexWrap: 'wrap' }}>
         <div>
-          <h2 className="text-2xl font-bold" style={{ color: '#EB0463' }}>Panel Admin — MOTOBOMBON</h2>
-          <p className="text-gray-600">Total citas: <span className="font-semibold" style={{ color: '#EB0463' }}>{citasFiltradas.length}</span></p>
+          <h2 className="admin-section-title">Panel Admin — MOTOBOMBON</h2>
+          <p className="admin-text-muted" style={{ marginTop: 4 }}>
+            Total citas: <span className="admin-card-label" style={{ color: '#EB0463' }}>{citasFiltradas.length}</span>
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          {[
+            { id: 'todos', label: 'Todas' },
+            { id: 'pendiente', label: 'Pendiente' },
+            { id: 'confirmada', label: 'Confirmar' },
+            { id: 'en curso', label: 'En curso' },
+            { id: 'finalizada', label: 'Finalizada' },
+          ].map((filtro) => (
+            <button
+              key={filtro.id}
+              onClick={() => setFiltroEstado(filtro.id)}
+              style={{
+                padding: '8px 14px',
+                borderRadius: '999px',
+                border: filtroEstado === filtro.id ? '2px solid #EB0463' : '1px solid rgba(255,255,255,0.2)',
+                background: filtroEstado === filtro.id ? 'rgba(235,4,99,0.15)' : 'transparent',
+                color: '#fff',
+                fontSize: '0.8rem',
+                fontWeight: filtroEstado === filtro.id ? '700' : '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em'
+              }}
+            >
+              {filtro.label}
+            </button>
+          ))}
         </div>
       </div>
 

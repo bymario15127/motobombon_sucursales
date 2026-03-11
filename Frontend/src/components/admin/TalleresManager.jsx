@@ -107,9 +107,9 @@ export default function TalleresManager() {
   return (
     <div className="talleres-manager">
       <div className="talleres-header">
-        <h1>🏢 Talleres Aliados</h1>
+        <h1 className="admin-section-title">🏢 Talleres Aliados</h1>
         <button 
-          className="btn-primary"
+          className="btn-neon-pill"
           onClick={() => setShowForm(true)}
         >
           + Nuevo Taller
@@ -120,17 +120,17 @@ export default function TalleresManager() {
         <div className="modal-overlay" onClick={resetForm}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>{editingTaller ? 'Editar Taller' : 'Nuevo Taller'}</h2>
+              <h2>{editingTaller ? "Editar Taller" : "Nuevo Taller"}</h2>
               <button className="modal-close" onClick={resetForm}>×</button>
             </div>
-            
-            <form onSubmit={handleSubmit} className="taller-form">
+
+            <form onSubmit={handleSubmit} className="service-form">
               <div className="form-group">
                 <label>Nombre del Taller</label>
                 <input
                   type="text"
                   value={formData.nombre}
-                  onChange={(e) => setFormData({...formData, nombre: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                   required
                 />
               </div>
@@ -140,7 +140,7 @@ export default function TalleresManager() {
                 <input
                   type="text"
                   value={formData.contacto}
-                  onChange={(e) => setFormData({...formData, contacto: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, contacto: e.target.value })}
                   placeholder="Nombre del encargado"
                 />
               </div>
@@ -151,16 +151,15 @@ export default function TalleresManager() {
                   <input
                     type="text"
                     value={formData.telefono}
-                    onChange={(e) => setFormData({...formData, telefono: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
                   />
                 </div>
-
                 <div className="form-group">
                   <label>Email</label>
                   <input
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
                 </div>
               </div>
@@ -171,19 +170,18 @@ export default function TalleresManager() {
                   <input
                     type="number"
                     value={formData.precio_bajo_cc}
-                    onChange={(e) => setFormData({...formData, precio_bajo_cc: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, precio_bajo_cc: e.target.value })}
                     min="0"
                     step="1000"
                     placeholder="Precio especial"
                   />
                 </div>
-
                 <div className="form-group">
                   <label>Precio Alto CC (405-1200cc)</label>
                   <input
                     type="number"
                     value={formData.precio_alto_cc}
-                    onChange={(e) => setFormData({...formData, precio_alto_cc: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, precio_alto_cc: e.target.value })}
                     min="0"
                     step="1000"
                     placeholder="Precio especial"
@@ -196,7 +194,7 @@ export default function TalleresManager() {
                   Cancelar
                 </button>
                 <button type="submit" className="btn-primary">
-                  {editingTaller ? 'Actualizar' : 'Crear'} Taller
+                  {editingTaller ? "Actualizar" : "Crear"} Taller
                 </button>
               </div>
             </form>
@@ -229,14 +227,15 @@ export default function TalleresManager() {
             
             <div className="taller-actions">
               <button 
-                className="btn-edit"
+                className="btn-neon-pill"
                 onClick={() => handleEdit(taller)}
               >
                 Editar
               </button>
               <button 
-                className="btn-delete"
+                className="btn-neon-pill"
                 onClick={() => handleDelete(taller.id)}
+                style={{ boxShadow: '0 0 12px rgba(239, 68, 68, 0.7)' }}
               >
                 Eliminar
               </button>
@@ -300,8 +299,9 @@ export default function TalleresManager() {
         .taller-header-card h3 {
           margin: 0;
           font-size: 18px;
-          color: #1f2937;
+          color: #ffffff;
           font-weight: 700;
+          font-family: 'Poppins', sans-serif;
         }
 
         .badge-inactivo {
@@ -316,7 +316,7 @@ export default function TalleresManager() {
         .taller-info {
           margin-bottom: 15px;
           font-size: 14px;
-          color: #374151;
+          color: #cccccc;
         }
 
         .taller-info p {
@@ -335,7 +335,7 @@ export default function TalleresManager() {
         }
 
         .taller-precios p {
-          color: #1f2937;
+          color: #ffffff;
           font-weight: 500;
         }
 
@@ -385,167 +385,6 @@ export default function TalleresManager() {
         .empty-icon {
           font-size: 48px;
           margin-bottom: 10px;
-        }
-
-        .modal-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(0,0,0,0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-        }
-
-        .modal-content {
-          background: white;
-          border-radius: 12px;
-          width: 90%;
-          max-width: 500px;
-          max-height: 90vh;
-          overflow-y: auto;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 20px;
-          border-bottom: 1px solid #eee;
-        }
-
-        .modal-header h2 {
-          margin: 0;
-        }
-
-        .modal-close {
-          background: none;
-          border: none;
-          font-size: 28px;
-          cursor: pointer;
-          color: #999;
-        }
-
-        .taller-form {
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-        }
-
-        .taller-form input,
-        .taller-form select {
-          background: white !important;
-          color: #0f172a !important; /* texto oscuro visible */
-          caret-color: #EB0463;
-          font-weight: 600;
-          -webkit-text-fill-color: #0f172a !important;
-        }
-
-        .taller-form input::placeholder,
-        .taller-form select::placeholder {
-          color: #6b7280 !important; /* gris medio visible */
-          opacity: 1;
-          -webkit-text-fill-color: #6b7280 !important;
-        }
-
-        .taller-form input:focus,
-        .taller-form select:focus {
-          background: white !important;
-          color: #000 !important;
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-        }
-
-        .form-group label {
-          font-weight: 600;
-          font-size: 14px;
-          color: #333 !important;
-          display: block;
-          margin-bottom: 6px;
-        }
-
-        .form-group input {
-          padding: 10px;
-          border: 2px solid #ddd;
-          border-radius: 6px;
-          font-size: 14px;
-          background: white !important;
-          color: #0f172a !important;
-          caret-color: #EB0463;
-          font-weight: 600;
-          -webkit-text-fill-color: #0f172a !important;
-        }
-
-        .form-group input:focus {
-          outline: none;
-          border-color: #EB0463;
-          background: white !important;
-        }
-
-        .form-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-
-        .form-row input {
-          padding: 10px;
-          border: 2px solid #ddd;
-          border-radius: 6px;
-          font-size: 14px;
-          background: white !important;
-          color: #0f172a !important;
-          caret-color: #EB0463;
-          font-weight: 600;
-          -webkit-text-fill-color: #0f172a !important;
-        }
-
-        .form-row input:focus {
-          outline: none;
-          border-color: #EB0463;
-          background: white !important;
-        }
-
-        .form-actions {
-          display: flex;
-          gap: 10px;
-          margin-top: 10px;
-        }
-
-        .btn-primary,
-        .btn-secondary {
-          padding: 10px 16px;
-          border: none;
-          border-radius: 6px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s;
-          flex: 1;
-        }
-
-        .btn-primary {
-          background: linear-gradient(135deg, #EB0463 0%, #a65495 100%);
-          color: white;
-        }
-
-        .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(235,4,99,0.3);
-        }
-
-        .btn-secondary {
-          background: #f0f0f0;
-          color: #333;
-        }
-
-        .btn-secondary:hover {
-          background: #e0e0e0;
         }
       `}</style>
     </div>

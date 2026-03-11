@@ -1,6 +1,6 @@
 // src/components/admin/CalendarAdmin.jsx
 import { useState, useEffect } from 'react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths } from 'date-fns';
+import { format, eachDayOfInterval, isSameDay, addMonths, subMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { getCitasAll, updateCita, deleteCita } from '../../services/citasService';
 
@@ -87,11 +87,18 @@ const CalendarAdmin = () => {
   // Helper para obtener la llave de fecha en formato YYYY-MM-DD
   const getDateKey = (date) => format(date, 'yyyy-MM-dd');
 
-  // Generar días del mes actual
-  const getDaysInMonth = () => {
-    const start = startOfMonth(currentMonth);
-    const end = endOfMonth(currentMonth);
-    return eachDayOfInterval({ start, end });
+  // Generar días del mes con celdas vacías al inicio para alinear con el día de la semana.
+  // Usamos año/mes explícitos para evitar desfases por zona horaria (1º del mes a medianoche local).
+  const getCalendarSlots = () => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    const days = eachDayOfInterval({ start: first, end: last });
+    // getDay(): 0 = Domingo, 1 = Lunes, ... 6 = Sábado (igual que header Dom, Lun, Mar, Mié, Jue, Vie, Sáb)
+    const firstDayOfWeek = first.getDay();
+    const emptySlots = Array(firstDayOfWeek).fill(null);
+    return [...emptySlots, ...days];
   };
 
   const hasAppointments = (date) => {
@@ -140,9 +147,12 @@ const CalendarAdmin = () => {
               <div>Sáb</div>
             </div>
 
-            {/* Grid de días */}
+            {/* Grid de días (con celdas vacías para alinear día 1 con su día de la semana) */}
             <div className="calendar-days">
-              {getDaysInMonth().map((day, idx) => {
+              {getCalendarSlots().map((day, idx) => {
+                if (day === null) {
+                  return <div key={`empty-${idx}`} className="calendar-day calendar-day-empty" aria-hidden />;
+                }
                 const isSelected = isSameDay(day, selectedDate);
                 const hasCitas = hasAppointments(day);
                 return (
@@ -236,7 +246,8 @@ const CalendarAdmin = () => {
                     {cita.estado === 'pendiente' && (
                       <button 
                         onClick={() => updateCitaStatus(cita.id, 'confirmada')}
-                        style={{flex: '1', minWidth: '120px', padding: '8px 12px', background: '#10b981', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '500'}}
+                        className="btn-neon-pill"
+                        style={{flex: '1', minWidth: '140px'}}
                       >
                         ✓ Confirmar
                       </button>
@@ -244,7 +255,8 @@ const CalendarAdmin = () => {
                     {cita.estado === 'confirmada' && (
                       <button 
                         onClick={() => updateCitaStatus(cita.id, 'en curso')}
-                        style={{flex: '1', minWidth: '120px', padding: '8px 12px', background: '#f59e0b', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '500'}}
+                        className="btn-neon-pill"
+                        style={{flex: '1', minWidth: '140px'}}
                       >
                         ⚡ En curso
                       </button>
@@ -252,7 +264,8 @@ const CalendarAdmin = () => {
                     {cita.estado === 'en curso' && (
                       <button 
                         onClick={() => updateCitaStatus(cita.id, 'finalizada')}
-                        style={{flex: '1', minWidth: '120px', padding: '8px 12px', background: '#8b5cf6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '500'}}
+                        className="btn-neon-pill"
+                        style={{flex: '1', minWidth: '140px'}}
                       >
                         ✔️ Finalizar
                       </button>
@@ -260,14 +273,16 @@ const CalendarAdmin = () => {
                     {cita.estado !== 'cancelada' && (
                       <button 
                         onClick={() => updateCitaStatus(cita.id, 'cancelada')}
-                        style={{flex: '1', minWidth: '120px', padding: '8px 12px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '500'}}
+                        className="btn-neon-pill"
+                        style={{flex: '1', minWidth: '140px', boxShadow: '0 0 12px rgba(239, 68, 68, 0.6)'}}
                       >
                         ✕ Cancelar
                       </button>
                     )}
                     <button 
                       onClick={() => handleDeleteCita(cita.id, cita.cliente)}
-                      style={{flex: '1', minWidth: '120px', padding: '8px 12px', background: '#dc2626', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: '500'}}
+                      className="btn-neon-pill"
+                      style={{flex: '1', minWidth: '140px', boxShadow: '0 0 12px rgba(220, 38, 38, 0.8)'}}
                     >
                       🗑️ Eliminar
                     </button>

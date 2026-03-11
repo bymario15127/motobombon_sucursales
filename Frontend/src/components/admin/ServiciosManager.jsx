@@ -132,8 +132,8 @@ export default function ServiciosManager() {
   return (
     <div className="servicios-manager">
       <div className="servicios-header">
-        <h1>🏍️ Gestión de Servicios</h1>
-        <button className="btn-primary" onClick={() => setShowForm(true)}>
+        <h1 className="admin-section-title">🏍️ Gestión de Servicios</h1>
+        <button className="btn-neon-pill" onClick={() => setShowForm(true)}>
           + Nuevo Servicio
         </button>
       </div>
@@ -222,6 +222,8 @@ export default function ServiciosManager() {
                       <img
                         src={formData.imagen_bajo_cc}
                         alt="preview bajo cc"
+                        loading="lazy"
+                        decoding="async"
                         style={{
                           width: 60,
                           height: 60,
@@ -247,6 +249,8 @@ export default function ServiciosManager() {
                       <img
                         src={formData.imagen_alto_cc}
                         alt="preview alto cc"
+                        loading="lazy"
+                        decoding="async"
                         style={{
                           width: 60,
                           height: 60,
@@ -324,9 +328,11 @@ export default function ServiciosManager() {
                   </div>
                 </div>
               ) : (
-                <img
+                    <img
                   src={servicio.imagen || "/img/default.jpg"}
                   alt={servicio.nombre}
+                  loading="lazy"
+                  decoding="async"
                   style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                 />
               )}
@@ -363,10 +369,10 @@ export default function ServiciosManager() {
             </div>
 
             <div className="service-actions">
-              <button className="btn-edit" onClick={() => handleEdit(servicio)}>
+              <button className="btn-neon-pill" onClick={() => handleEdit(servicio)}>
                 Editar
               </button>
-              <button className="btn-delete" onClick={() => handleDelete(servicio.id)}>
+              <button className="btn-neon-pill" onClick={() => handleDelete(servicio.id)}>
                 Eliminar
               </button>
             </div>

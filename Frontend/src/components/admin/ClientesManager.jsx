@@ -128,20 +128,10 @@ export default function ClientesManager() {
   }
 
   return (
-    <div style={{
-      padding: "1rem",
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)"
-    }}>
-      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
-        <h1 style={{
-          marginBottom: "2rem",
-          color: "#00d4ff",
-          fontSize: "clamp(1.5rem, 5vw, 2.5rem)",
-          textShadow: "0 0 10px rgba(0,212,255,0.3)"
-        }}>
-          🎁 Gestión de Clientes y Fidelización
-        </h1>
+    <div style={{ padding: "1rem", maxWidth: "1400px", margin: "0 auto" }}>
+      <h1 className="admin-section-title" style={{ marginBottom: "2rem" }}>
+        🎁 Gestión de Clientes y Fidelización
+      </h1>
 
         {/* Estadísticas */}
         <div style={{
@@ -201,8 +191,8 @@ export default function ClientesManager() {
 
           <ActionButton label="🔗 Fusionar" color="#ff6b6b" onClick={() => setMostrarFusionar(!mostrarFusionar)} />
           <ActionButton label="🎫 Cupón" color="#667eea" onClick={() => setMostrarCupon(!mostrarCupon)} />
-          <ActionButton label="� Exportar Excel" color="#ffa500" onClick={() => exportarClientesExcel(clientes).catch(err => alert(err.message))} />
-          <ActionButton label="�🔄 Actualizar" color="#43e97b" onClick={cargarClientes} />
+          <ActionButton label="📊 Exportar Excel" color="#ffa500" onClick={() => exportarClientesExcel(clientes).catch(err => alert(err.message))} />
+          <ActionButton label="🔄 Actualizar" color="#43e97b" onClick={cargarClientes} />
         </div>
 
         {/* Panel Fusionar */}
@@ -357,7 +347,7 @@ export default function ClientesManager() {
 
                 <div style={{ margin: "1rem 0", padding: "1rem", background: "rgba(0,212,255,0.1)", borderRadius: "8px", border: "1px solid rgba(0,212,255,0.3)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem", color: "#00d4ff" }}>
-                    <span>Ciclo Actual: {cliente.lavadas_completadas}/10</span>
+                    <span>Ciclo Actual: {`${cliente.lavadas_completadas}/10`}</span>
                     <span>{10 - cliente.lavadas_completadas} para próximo</span>
                   </div>
                   <div style={{
@@ -372,7 +362,7 @@ export default function ClientesManager() {
                       height: "100%",
                       background: "linear-gradient(90deg, #00d4ff 0%, #667eea 100%)",
                       transition: "width 0.3s ease"
-                    }} />
+                    }}></div>
                   </div>
                 </div>
 
@@ -440,30 +430,31 @@ export default function ClientesManager() {
             ❌ No se encontraron clientes
           </div>
         )}
-      </div>
     </div>
   );
 }
 
 function StatCard({ titulo, valor, gradiente, icono }) {
   return (
-    <div style={{
-      background: gradiente,
-      color: "white",
-      padding: "clamp(1rem, 3vw, 2rem)",
-      borderRadius: "15px",
-      textAlign: "center",
-      boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-      transition: "transform 0.3s ease",
-      cursor: "pointer",
-      border: "1px solid rgba(255,255,255,0.1)"
-    }}
-    onMouseOver={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-    onMouseOut={(e) => e.currentTarget.style.transform = "translateY(0)"}
+    <div
+      className="admin-stat-card"
+      style={{
+        background: gradiente,
+        color: "white",
+        padding: "clamp(1rem, 3vw, 2rem)",
+        borderRadius: "15px",
+        textAlign: "center",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+        transition: "transform 0.3s ease",
+        cursor: "pointer",
+        border: "1px solid rgba(255,255,255,0.1)"
+      }}
+      onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-5px)"; }}
+      onMouseOut={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
     >
       <div style={{ fontSize: "clamp(2rem, 5vw, 3rem)" }}>{icono}</div>
-      <div style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)", fontWeight: "bold", margin: "0.5rem 0" }}>{valor}</div>
-      <div style={{ fontSize: "clamp(0.9rem, 2vw, 1.1rem)", opacity: 0.9 }}>{titulo}</div>
+      <div className="admin-stat-value" style={{ margin: "0.5rem 0" }}>{valor}</div>
+      <div className="admin-stat-label" style={{ opacity: 0.95 }}>{titulo}</div>
     </div>
   );
 }

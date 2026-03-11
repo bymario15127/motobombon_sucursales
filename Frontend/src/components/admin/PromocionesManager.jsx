@@ -359,7 +359,13 @@ export default function PromocionesManager() {
                   />
                   {formData.imagen_bajo_cc && (
                     <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 10 }}>
-                      <img src={formData.imagen_bajo_cc} alt="preview bajo cc" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid #EB0463' }} />
+                      <img
+                        src={formData.imagen_bajo_cc}
+                        alt="preview bajo cc"
+                        loading="lazy"
+                        decoding="async"
+                        style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid #EB0463' }}
+                      />
                       <span style={{ fontSize: 12, color: '#6b7280' }}>✓ Imagen cargada</span>
                     </div>
                   )}
@@ -389,7 +395,13 @@ export default function PromocionesManager() {
                   />
                   {formData.imagen_alto_cc && (
                     <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginTop: 10 }}>
-                      <img src={formData.imagen_alto_cc} alt="preview alto cc" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid #10b981' }} />
+                      <img
+                        src={formData.imagen_alto_cc}
+                        alt="preview alto cc"
+                        loading="lazy"
+                        decoding="async"
+                        style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 8, border: '1px solid #10b981' }}
+                      />
                       <span style={{ fontSize: 12, color: '#6b7280' }}>✓ Imagen cargada</span>
                     </div>
                   )}

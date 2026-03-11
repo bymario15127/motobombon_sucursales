@@ -79,8 +79,36 @@ app.use("/api/finanzas", sucursalMiddleware, finanzasRouter);
 app.use("/api/debug", debugRouter);
 // Rutas de promociones/reportes deshabilitadas
 
+// Rate limit muy simple para evitar abuso de /api/upload-image
+const uploadRateLimitWindowMs = 60 * 1000; // 1 minuto
+const uploadRateLimitMax = 30; // máx 30 solicitudes por IP en la ventana
+const uploadRequestsByIp = new Map();
+
+function uploadRateLimiter(req, res, next) {
+  const now = Date.now();
+  const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+
+  const entry = uploadRequestsByIp.get(ip) || { count: 0, windowStart: now };
+
+  // Reset ventana si ya pasó el período
+  if (now - entry.windowStart > uploadRateLimitWindowMs) {
+    entry.count = 0;
+    entry.windowStart = now;
+  }
+
+  entry.count += 1;
+  uploadRequestsByIp.set(ip, entry);
+
+  if (entry.count > uploadRateLimitMax) {
+    console.warn(`⚠️ Rate limit excedido para /api/upload-image desde IP ${ip}`);
+    return res.status(429).json({ error: 'Demasiadas solicitudes de subida de imagen. Intenta de nuevo en un momento.' });
+  }
+
+  next();
+}
+
 // Subida de imagen vía base64 (evita dependencias externas)
-app.post('/api/upload-image', async (req, res) => {
+app.post('/api/upload-image', uploadRateLimiter, async (req, res) => {
   try {
     console.log("📸 Recibido upload-image");
     
@@ -125,7 +153,8 @@ app.post('/api/upload-image', async (req, res) => {
     
     console.log("💾 Guardando en:", filePath);
     
-    fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
+    // Guardar archivo de forma asíncrona para no bloquear el event loop
+    await fs.promises.writeFile(filePath, Buffer.from(base64Data, 'base64'));
     
     // Verificar que el archivo se creó
     if (!fs.existsSync(filePath)) {
@@ -133,7 +162,7 @@ app.post('/api/upload-image', async (req, res) => {
       return res.status(500).json({ error: 'No se pudo guardar la imagen' });
     }
     
-    const fileStats = fs.statSync(filePath);
+    const fileStats = await fs.promises.stat(filePath);
     console.log("✅ Archivo guardado exitosamente:", filename, "Tamaño:", fileStats.size, "bytes");
     
     const urlResponse = `/uploads/services/${filename}`;

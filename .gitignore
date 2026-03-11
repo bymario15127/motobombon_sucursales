@@ -4,6 +4,8 @@ package-lock.json
 
 # Database
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
 *.db
 
 # Uploads (contenido de clientes)

@@ -275,7 +275,7 @@ export default function ProductosManagement() {
 
   return (
     <div className="productos-management">
-      <h2>📦 Gestión de Productos y Ventas</h2>
+      <h2 className="admin-section-title">📦 Gestión de Productos y Ventas</h2>
 
       {message && (
         <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
@@ -310,7 +310,7 @@ export default function ProductosManagement() {
       {activeTab === 'productos' && (
         <div className="tab-content">
           <div className="form-section">
-            <h3>{editingId ? '✏️ Editar Producto' : '➕ Nuevo Producto'}</h3>
+            <h3 className="admin-card-title">{editingId ? '✏️ Editar Producto' : '➕ Nuevo Producto'}</h3>
             <form onSubmit={handleSubmitProducto}>
               <input
                 type="text"
@@ -362,7 +362,7 @@ export default function ProductosManagement() {
           </div>
 
           <div className="products-list">
-            <h3>Productos registrados</h3>
+            <h3 className="admin-card-title">Productos registrados</h3>
             {productos.length === 0 ? (
               <p>No hay productos registrados</p>
             ) : (
@@ -424,7 +424,7 @@ export default function ProductosManagement() {
       {activeTab === 'ventas' && (
         <div className="tab-content">
           <div className="form-section">
-            <h3>💳 Registrar Nueva Venta</h3>
+            <h3 className="admin-card-title">💳 Registrar Nueva Venta</h3>
             <form onSubmit={handleRegistrarVenta}>
               <select
                 value={formVenta.producto_id}
@@ -461,7 +461,7 @@ export default function ProductosManagement() {
           </div>
 
           <div className="sales-list">
-            <h3>Ventas del día {formatearFechaLegible(filtroFecha)}</h3>
+            <h3 className="admin-card-title">Ventas del día {formatearFechaLegible(filtroFecha)}</h3>
             <input 
               type="date" 
               value={filtroFecha}
@@ -532,7 +532,7 @@ export default function ProductosManagement() {
       {/* TAB: REPORTES */}
       {activeTab === 'reportes' && (
         <div className="tab-content">
-          <h3>📊 Reportes de Ventas</h3>
+          <h3 className="admin-card-title">📊 Reportes de Ventas</h3>
           <p className="info-text">
             Usa el rango para ver totales que cuadran con Finanzas.
           </p>

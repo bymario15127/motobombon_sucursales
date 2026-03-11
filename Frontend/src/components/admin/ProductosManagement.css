@@ -7,15 +7,16 @@
   background: transparent;
 }
 
-.productos-management h2 {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  font-size: 32px;
+.productos-management h2.admin-section-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 30px;
-  text-align: center;
+  color: #EB0463;
+  margin-bottom: 24px;
+  text-align: left;
+  background: none;
+  -webkit-text-fill-color: #EB0463;
+  background-clip: unset;
 }
 
 .message {

@@ -128,8 +128,59 @@ body {
 
 /* Encabezado de página del admin */
 .admin-page-header { margin-bottom: 24px; }
-.admin-page-title { font-size: 28px; font-weight: 700; color: #ffffff; margin: 0; }
-.admin-page-subtitle { margin-top: 6px; color: #cccccc; font-size: 14px; }
+.admin-page-title { font-size: 28px; font-weight: 700; color: #ffffff; margin: 0; font-family: 'Poppins', sans-serif; }
+.admin-page-subtitle { margin-top: 6px; color: #cccccc; font-size: 14px; font-family: 'Poppins', sans-serif; }
+
+/* Títulos y colores unificados en todo el admin */
+.admin-section-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #EB0463;
+  margin: 0 0 16px 0;
+  text-align: left;
+}
+.admin-card-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+.admin-card-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Texto secundario / descripción en admin */
+.admin-text-muted {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* Cards de métricas (Dashboard, Clientes, Nómina): título pequeño sobre el número */
+.admin-stat-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 8px;
+}
+.admin-stat-value {
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.admin-stat-small {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 8px;
+}
 
 /* ========== Sidebar styles ========== */
 .sb-wrap { height: 100%; display: flex; flex-direction: column; }
@@ -139,12 +190,46 @@ body {
 
 .sb-nav { padding: 14px; flex: 1; overflow-y: auto; }
 .sb-list { list-style: none; padding: 0; margin: 0; }
-.sb-li { margin-bottom: 6px; }
-.sb-item { width: 100%; display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; background: transparent; border: 0; cursor: pointer; color:#cccccc; transition: background .2s, color .2s, transform .2s; text-align:left; }
-.sb-item:hover { background:#1a1a1a; color:#EB0463; }
-.sb-item.active { background:#1a1a1a; color:#EB0463; font-weight:600; border-left: 3px solid #EB0463; }
+.sb-li { margin-bottom: 4px; }
+.sb-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: #cccccc;
+  transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+  text-align: left;
+}
+.sb-item:hover {
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.25), rgba(10, 10, 10, 0.95));
+  color: #ffffff;
+  transform: translateX(2px);
+}
+.sb-item.active {
+  background: linear-gradient(135deg, #EB0463 0%, #a65495 100%);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 0 18px rgba(235, 4, 99, 0.55);
+  border-left: none;
+}
 .sb-ic { font-size: 18px; line-height: 1; }
-.sb-tx { font-size: 14px; }
+.sb-tx { font-size: 15px; }
+
+.sb-section-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 14px 14px 6px;
+  margin: 0;
+}
+.sb-section-title:first-child { padding-top: 4px; }
 
 .sb-footer { padding: 12px 14px; border-top:1px solid #EB0463; }
 .sb-user { display:flex; align-items:center; gap:10px; padding:8px 10px; }
@@ -263,6 +348,51 @@ button {
   margin-top: 1rem;
   box-shadow: 0 4px 15px rgba(235, 4, 99, 0.4);
 }
+
+/* Variante de botón tipo píldora neón para acciones principales del admin */
+.btn-neon-pill {
+  width: auto;
+  margin: 0;
+  padding: 0.7rem 1.8rem;
+  border-radius: 999px;
+  border: 2px solid #EB0463;
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.2), rgba(0, 0, 0, 0.9));
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 0 16px rgba(235, 4, 99, 0.6);
+}
+
+.btn-neon-pill:hover {
+  background: radial-gradient(circle at top left, rgba(235, 4, 99, 0.35), rgba(0, 0, 0, 0.9));
+  transform: translateY(-1px);
+  box-shadow: 0 0 24px rgba(235, 4, 99, 0.9);
+}
+
+/* Aplicar el mismo estilo de píldora neón a la mayoría de botones del panel admin */
+.btn-primary,
+.btn-secondary,
+.btn-edit,
+.btn-delete,
+.btn-action,
+.btn-actualizar,
+.btn-exportar {
+  border-radius: 999px;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 0 12px rgba(235, 4, 99, 0.55);
+}
+
+.btn-delete,
+.btn-action.delete {
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+}
+
 
 button:hover {
   background: linear-gradient(135deg, #ff1a75, #EB0463);
@@ -780,10 +910,12 @@ button:disabled:hover {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
+  width: 100%;
 }
 
 .calendar-day {
   aspect-ratio: 1;
+  min-width: 0;
   background: transparent;
   border: 1px solid #333;
   border-radius: 8px;
@@ -812,6 +944,15 @@ button:disabled:hover {
 
 .calendar-day.has-citas {
   font-weight: 700;
+}
+
+.calendar-day-empty {
+  aspect-ratio: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  cursor: default;
+  pointer-events: none;
 }
 
 .cita-dot {
@@ -985,9 +1126,9 @@ button:disabled:hover {
 }
 
 .servicios-header h1 {
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 700;
-  color: #111827;
+  color: #EB0463;
   margin: 0;
   font-family: 'Poppins', sans-serif;
   text-align: left;
@@ -1067,9 +1208,9 @@ button:disabled:hover {
 .service-content h3 {
   font-size: 18px;
   font-weight: 700;
-  color: #EB0463;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
   margin: 0 0 12px 0;
-  font-family: 'Yeseva One', serif;
   text-align: left;
 }
 

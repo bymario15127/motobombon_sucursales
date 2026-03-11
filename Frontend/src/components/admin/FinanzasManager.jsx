@@ -157,7 +157,7 @@ export default function FinanzasManager() {
 
   return (
     <div className="finanzas-container">
-      <h1>💰 Finanzas</h1>
+      <h1 className="admin-section-title">💰 Finanzas</h1>
 
       {/* Selector de periodo */}
       <div className="periodo-selector">
@@ -173,8 +173,8 @@ export default function FinanzasManager() {
         </select>
         <input type="date" value={desde} onChange={(e) => setDesde(e.target.value)} />
         <input type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} />
-        <button className="btn-actualizar" onClick={cargarDatos}>Actualizar</button>
-        <button className="btn-exportar" onClick={exportarExcel}>📊 Exportar</button>
+        <button className="btn-neon-pill" onClick={cargarDatos}>Actualizar</button>
+        <button className="btn-neon-pill" onClick={exportarExcel}>📊 Exportar</button>
       </div>
 
       {/* Tabs */}
@@ -195,29 +195,29 @@ export default function FinanzasManager() {
         <div>
           <div className="dashboard-grid">
             <div className="dashboard-card card-ingresos">
-              <h3>Total Ingresos</h3>
-              <p>{formatMoney(dashboard.ingresos.total)}</p>
-              <small>Servicios: {formatMoney(dashboard.ingresos.servicios)}</small>
-              <small>Productos: {formatMoney(dashboard.ingresos.productos)}</small>
+              <h3 className="admin-stat-label">Total Ingresos</h3>
+              <p className="admin-stat-value" style={{ margin: '0.5rem 0 0 0', fontSize: '1.8rem' }}>{formatMoney(dashboard.ingresos.total)}</p>
+              <small className="admin-stat-small">Servicios: {formatMoney(dashboard.ingresos.servicios)}</small>
+              <small className="admin-stat-small">Productos: {formatMoney(dashboard.ingresos.productos)}</small>
             </div>
             <div className="dashboard-card card-gastos">
-              <h3>Total Gastos</h3>
-              <p>{formatMoney(dashboard.gastos.total)}</p>
-              <small>Manuales: {formatMoney(dashboard.gastos.manuales)}</small>
-              <small>Comisiones: {formatMoney(dashboard.gastos.comisiones)}</small>
+              <h3 className="admin-stat-label">Total Gastos</h3>
+              <p className="admin-stat-value" style={{ margin: '0.5rem 0 0 0', fontSize: '1.8rem' }}>{formatMoney(dashboard.gastos.total)}</p>
+              <small className="admin-stat-small">Manuales: {formatMoney(dashboard.gastos.manuales)}</small>
+              <small className="admin-stat-small">Comisiones: {formatMoney(dashboard.gastos.comisiones)}</small>
             </div>
             <div className={`dashboard-card ${dashboard.utilidadNeta >= 0 ? "card-utilidad" : "card-utilidad negative"}`}>
-              <h3>Utilidad Neta (Acumulada)</h3>
-              <p>{formatMoney(dashboard.utilidadNeta)}</p>
-              <small>Mes actual: {formatMoney(dashboard.utilidadMesActual || 0)}</small>
-              <small>Meses anteriores: {formatMoney(dashboard.utilidadMesAnterior || 0)}</small>
+              <h3 className="admin-stat-label">Utilidad Neta (Acumulada)</h3>
+              <p className="admin-stat-value" style={{ margin: '0.5rem 0 0 0', fontSize: '1.8rem' }}>{formatMoney(dashboard.utilidadNeta)}</p>
+              <small className="admin-stat-small">Mes actual: {formatMoney(dashboard.utilidadMesActual || 0)}</small>
+              <small className="admin-stat-small">Meses anteriores: {formatMoney(dashboard.utilidadMesAnterior || 0)}</small>
             </div>
           </div>
 
           {/* Gastos por categoría */}
           {dashboard.gastos.porCategoria.length > 0 && (
             <div className="gastos-categoria">
-              <h3>Gastos por Categoría</h3>
+              <h3 className="admin-card-title">Gastos por Categoría</h3>
               {dashboard.gastos.porCategoria.map(cat => (
                 <div key={cat.categoria} className="gastos-categoria-item">
                   <span>{cat.categoria}</span>
@@ -232,7 +232,11 @@ export default function FinanzasManager() {
       {/* TAB GASTOS */}
       {tabActiva === "gastos" && (
         <div>
-          <button onClick={() => { setMostrarForm(!mostrarForm); setEditandoId(null); resetForm(); }} style={{padding: "0.75rem 1.5rem", background: "#43e97b", color: "#000", border: "none", borderRadius: "4px", cursor: "pointer", marginBottom: "1rem", fontWeight: "bold"}}>
+          <button
+            onClick={() => { setMostrarForm(!mostrarForm); setEditandoId(null); resetForm(); }}
+            className="btn-neon-pill"
+            style={{ marginBottom: "1rem" }}
+          >
             {mostrarForm ? "Cancelar" : "+ Nuevo Gasto"}
           </button>
 

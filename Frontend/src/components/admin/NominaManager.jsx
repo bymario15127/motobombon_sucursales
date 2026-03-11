@@ -94,10 +94,10 @@ const NominaManager = () => {
         marginBottom: '24px',
         border: '2px solid #EB0463'
       }}>
-        <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', color: '#1f2937' }}>📅 Seleccionar Rango de Fechas</h3>
+        <h3 className="admin-section-title" style={{ margin: '0 0 16px 0', fontSize: '18px' }}>📅 Seleccionar Rango de Fechas</h3>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontWeight: '600', color: '#1f2937' }}>Desde:</label>
+            <label className="admin-card-label" style={{ fontWeight: '600' }}>Desde:</label>
             <input
               type="date"
               value={fechaInicio}
@@ -118,7 +118,7 @@ const NominaManager = () => {
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label style={{ fontWeight: '600', color: '#1f2937' }}>Hasta:</label>
+            <label className="admin-card-label" style={{ fontWeight: '600' }}>Hasta:</label>
             <input
               type="date"
               value={fechaFin}
@@ -140,27 +140,8 @@ const NominaManager = () => {
 
           <button
             onClick={exportarExcel}
-            style={{
-              marginLeft: 'auto',
-              padding: '12px 24px',
-              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '10px',
-              fontSize: '15px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-              transition: 'all 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-            }}
+            className="btn-neon-pill"
+            style={{ marginLeft: 'auto', whiteSpace: 'nowrap' }}
           >
             📊 Exportar Excel
           </button>
@@ -182,12 +163,12 @@ const NominaManager = () => {
           borderRadius: '16px',
           boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
         }}>
-          <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>💰 Ingreso real del cliente</div>
-          <div style={{ fontSize: '32px', fontWeight: 'bold' }}>{formatearMoneda(totalIngresosCliente)}</div>
-          <div style={{ fontSize: '12px', marginTop: '8px', opacity: 0.8 }}>
+          <div className="admin-stat-label">💰 Ingreso real del cliente</div>
+          <div className="admin-stat-value">{formatearMoneda(totalIngresosCliente)}</div>
+          <div className="admin-stat-small">
             {resumen.total_servicios} servicios completados
           </div>
-          <div style={{ fontSize: '12px', marginTop: '6px', opacity: 0.85 }}>
+          <div className="admin-stat-small" style={{ marginTop: 6 }}>
             Base comisión: {formatearMoneda(totalIngresosComisionBase)}
           </div>
         </div>
@@ -200,9 +181,9 @@ const NominaManager = () => {
           borderRadius: '16px',
           boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
         }}>
-          <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>👥 Total Nómina</div>
-          <div style={{ fontSize: '32px', fontWeight: 'bold' }}>{formatearMoneda(resumen.total_nomina)}</div>
-          <div style={{ fontSize: '12px', marginTop: '8px', opacity: 0.8 }}>
+          <div className="admin-stat-label">👥 Total Nómina</div>
+          <div className="admin-stat-value">{formatearMoneda(resumen.total_nomina)}</div>
+          <div className="admin-stat-small">
             A pagar a lavadores
           </div>
         </div>
@@ -215,9 +196,9 @@ const NominaManager = () => {
           borderRadius: '16px',
           boxShadow: '0 4px 12px rgba(235, 4, 99, 0.3)'
         }}>
-          <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>✨ Ganancia Neta</div>
-          <div style={{ fontSize: '32px', fontWeight: 'bold' }}>{formatearMoneda(resumen.ganancia_neta)}</div>
-          <div style={{ fontSize: '12px', marginTop: '8px', opacity: 0.8 }}>
+          <div className="admin-stat-label">✨ Ganancia Neta</div>
+          <div className="admin-stat-value">{formatearMoneda(resumen.ganancia_neta)}</div>
+          <div className="admin-stat-small">
             Margen: {resumen.margen_porcentaje}%
           </div>
         </div>
@@ -231,7 +212,7 @@ const NominaManager = () => {
         marginBottom: '32px',
         border: '2px solid #EB0463'
       }}>
-        <h2 style={{ margin: '0 0 20px 0', fontSize: '24px', color: '#1f2937' }}>
+        <h2 className="admin-section-title" style={{ margin: '0 0 20px 0', fontSize: '20px' }}>
           💳 Métodos de Pago - {fechaInicio} a {fechaFin}
         </h2>
 
