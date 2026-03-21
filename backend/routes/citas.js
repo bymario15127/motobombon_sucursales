@@ -142,14 +142,13 @@ router.post("/", async (req, res) => {
     // Si no se envía hora (orden de llegada), guardamos cadena vacía para cumplir NOT NULL
     const horaParaDb = horaFinal != null && horaFinal !== "" ? horaFinal : "";
 
-    // Si no se envía hora, no aplicamos verificación de traslapes
-    if (horaFinal) {
-      // Regla simplificada: solo bloqueamos misma hora exacta en la fecha (evita falsos positivos por duración)
+    // Solo verificar traslapes para citas con slot fijo (taller aliado). Para orden de llegada
+    // (taller_id null) la hora es de registro y varios pueden tener la misma (se atienden por id).
+    if (horaFinal && (taller_id != null || tipo_cliente === 'taller')) {
       const yaTomada = await db.get(
         "SELECT id FROM citas WHERE fecha = ? AND hora = ? AND (estado IS NULL OR estado != 'cancelada') LIMIT 1",
         [fechaFinal, horaFinal]
       );
-
       if (yaTomada) {
         return res.status(409).json({
           error: "El horario seleccionado se traslapa con otra cita. Elige otra hora."

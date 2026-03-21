@@ -103,6 +103,20 @@ export default function PanelAdmin() {
     setNewPaymentMethod('');
   };
 
+  // Orden de llegada por fecha (1º, 2º, 3º...) según id de registro
+  const ordenByCitaId = {};
+  const porFecha = {};
+  citas.forEach(c => {
+    const f = c.fecha || "";
+    if (!porFecha[f]) porFecha[f] = [];
+    porFecha[f].push(c);
+  });
+  Object.values(porFecha).forEach(lista => {
+    [...lista].sort((a, b) => (a.id || 0) - (b.id || 0)).forEach((c, i) => {
+      ordenByCitaId[c.id] = i + 1;
+    });
+  });
+
   const citasFiltradas = citas.filter(cita => {
     const busquedaLower = busqueda.toLowerCase();
 
@@ -239,7 +253,7 @@ export default function PanelAdmin() {
               <div className="cita-details">
                 <div>
                   <p className="detail-item">📅 <strong>Fecha:</strong> {capitalizar(formatearFecha(c.fecha))}</p>
-                  <p className="detail-item">🕐 <strong>Hora:</strong> {c.hora || '— (orden de llegada)'}</p>
+                  <p className="detail-item" style={{ color: '#e5e7eb' }}>🕐 <strong>Hora:</strong> {c.hora ? c.hora : `Orden #${ordenByCitaId[c.id] || '?'} (llegada)`}</p>
                 </div>
                 <div>
                   <p className="detail-item">📞 <strong>Teléfono:</strong> {c.telefono || 'No proporcionado'}</p>

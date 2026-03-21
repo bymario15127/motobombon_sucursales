@@ -189,14 +189,14 @@ const CalendarAdmin = () => {
             </div>
           ) : (
             <div className="apt-list max-h-96 overflow-y-auto">
-              {dayAppointments.map((cita) => (
+              {[...dayAppointments].sort((a, b) => (a.id || 0) - (b.id || 0)).map((cita, idx) => (
                 <div key={cita.id} className="apt-card">
                   <div className="apt-header">
                     <div>
                       <h4 className="apt-title">{cita.cliente}</h4>
                       <p className="apt-line">📞 {cita.telefono}</p>
                       {cita.email && <p className="apt-line">📧 {cita.email}</p>}
-                      <p className="apt-line">🕐 {cita.hora ? formatTime(cita.hora) : '— (orden de llegada)'}</p>
+                      <p className="apt-line">🕐 {cita.hora ? formatTime(cita.hora) : `Orden #${idx + 1} (llegada)`}</p>
                       <p className="apt-line">🏍️ {cita.servicio}</p>
                     </div>
                     <span className={`badge ${getStatusColor(cita.estado)}`}>

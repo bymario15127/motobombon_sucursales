@@ -168,12 +168,13 @@ export default function ReservaForm({ sucursalId }) {
       return;
     }
 
-    // Generar solo fecha (hoy). Las citas de cliente se atienden por orden de llegada,
-    // así que NO enviamos hora para evitar conflictos cuando varios reservan al mismo tiempo.
-    const hoy = new Date();
-    const yyyy = hoy.getFullYear();
-    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dd = String(hoy.getDate()).padStart(2, '0');
+    // Fecha y hora de registro (orden de llegada: la hora marca cuándo entró al sistema)
+    const ahora = new Date();
+    const yyyy = ahora.getFullYear();
+    const mm = String(ahora.getMonth() + 1).padStart(2, '0');
+    const dd = String(ahora.getDate()).padStart(2, '0');
+    const hh = String(ahora.getHours()).padStart(2, '0');
+    const mi = String(ahora.getMinutes()).padStart(2, '0');
     
     const citaData = {
       cliente: form.cliente,
@@ -187,7 +188,7 @@ export default function ReservaForm({ sucursalId }) {
       metodo_pago: form.metodo_pago,
       comentarios: form.comentarios,
       fecha: `${yyyy}-${mm}-${dd}`,
-      // hora: null -> el backend la deja en blanco y no aplica validación de traslapes
+      hora: `${hh}:${mi}`,
     };
     
     // Promociones removidas
