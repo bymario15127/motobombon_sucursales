@@ -16,12 +16,12 @@ const dbConnections = {};
 const sucursalesConfig = {
   sucursal1: {
     id: 'sucursal1',
-    nombre: 'Sucursal Centro',
+    nombre: 'Sede 7 de agosto',
     dbFile: 'database_centro.sqlite'
   },
   sucursal2: {
     id: 'sucursal2',
-    nombre: 'Sucursal Sur',
+    nombre: 'Sede Americas',
     dbFile: 'database_sur.sqlite'
   }
 };

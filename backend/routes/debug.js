@@ -1,8 +1,25 @@
 // backend/routes/debug.js - Endpoint temporal para debug de diferencias
 import express from "express";
 import { getDbFromRequest } from "../database/dbManager.js";
+import { verificarConfiguracionEmail } from "../services/emailService.js";
 
 const router = express.Router();
+
+// GET /api/debug/email-status - Verifica si SMTP está configurado (sin sucursal)
+router.get("/email-status", async (_req, res) => {
+  try {
+    const resultado = await verificarConfiguracionEmail();
+    res.json({
+      smtp_configurado: resultado.configured,
+      mensaje: resultado.message,
+      hint: !resultado.configured
+        ? "Configura SMTP_USER y SMTP_PASS en backend/.env (ver .env.example)"
+        : undefined
+    });
+  } catch (error) {
+    res.status(500).json({ configured: false, error: error.message });
+  }
+});
 
 const ccIsBajo = (cc) => {
   const n = Number(cc || 0);

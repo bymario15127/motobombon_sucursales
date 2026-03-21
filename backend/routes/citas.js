@@ -268,11 +268,17 @@ router.put("/:id", async (req, res) => {
         const resultado = await procesarLavadaCliente(db, email, cliente, telefono);
         
         if (resultado.success && resultado.cuponGenerado) {
-          console.log(`🎉 ¡Cupón generado para ${email}!`);
+          if (!resultado.emailEnviado) {
+            console.warn(`⚠️ Cupón ${resultado.codigoCupon} generado para ${email} pero el EMAIL NO SE ENVIÓ.`);
+            console.warn('   Razón:', resultado.error || resultado.reason || 'desconocida');
+          } else {
+            console.log(`🎉 ¡Cupón generado y enviado a ${email}!`);
+          }
           return res.json({ 
             message: "Cita actualizada exitosamente", 
             cuponGenerado: true,
             codigoCupon: resultado.codigoCupon,
+            emailEnviado: resultado.emailEnviado,
             lavadas: resultado.lavadas,
             mensajeFidelizacion: resultado.mensaje
           });

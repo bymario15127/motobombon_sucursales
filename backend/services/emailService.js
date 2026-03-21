@@ -30,8 +30,9 @@ export async function enviarCuponLavadaGratis(destinatario, nombreCliente, codig
   try {
     // Verificar que las credenciales de email estén configuradas
     if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.warn('⚠️ SMTP no configurado. Email no enviado.');
-      console.log(`📧 Se habría enviado cupón ${codigoCupon} a ${destinatario}`);
+      console.warn('⚠️ SMTP NO CONFIGURADO: falta SMTP_USER o SMTP_PASS en .env');
+      console.warn(`   Cupón ${codigoCupon} no enviado a ${destinatario}`);
+      console.warn('   Configura SMTP en backend/.env (ver .env.example)');
       return { success: false, reason: 'smtp_not_configured' };
     }
 
@@ -197,8 +198,10 @@ Presenta este código en tu próxima visita para redimir tu lavada gratis.
     console.log(`✅ Email enviado a ${destinatario}: ${info.messageId}`);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('❌ Error enviando email:', error);
-    return { success: false, error: error.message };
+    console.error('❌ Error enviando email cupón:', error.message);
+    if (error.code) console.error('   Código:', error.code);
+    if (error.response) console.error('   Respuesta SMTP:', error.response);
+    return { success: false, error: error.message, code: error.code };
   }
 }
 

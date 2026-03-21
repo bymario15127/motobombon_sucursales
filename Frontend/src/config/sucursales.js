@@ -4,16 +4,16 @@
 export const sucursales = [
   {
     id: 'sucursal1',
-    nombre: 'Sucursal Centro',
+    nombre: 'Sede 7 de agosto',
     direccion: 'Calle Principal #123',
-    ciudad: 'Ciudad Central',
+    ciudad: 'Zona centro',
     telefono: '123-456-7890',
     email: 'centro@motobombon.com',
     horario: 'Lun-Sab: 8:00 AM - 6:00 PM'
   },
   {
     id: 'sucursal2',
-    nombre: 'Sucursal Sur',
+    nombre: 'Sede Americas',
     direccion: 'Calle Sur #789',
     ciudad: 'Zona Sur',
     telefono: '123-456-7892',

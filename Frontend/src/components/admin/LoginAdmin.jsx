@@ -178,24 +178,6 @@ export default function LoginAdmin() {
           )}
         </form>
         
-        <div style={{ 
-          textAlign: 'center', 
-          marginTop: '2rem',
-          padding: '1rem',
-          background: 'rgba(235,4,99,0.1)',
-          borderRadius: '8px',
-          border: '1px solid rgba(235,4,99,0.3)'
-        }}>
-          <p style={{ color: '#ccc', fontSize: '0.85rem', margin: '0.3rem 0' }}>
-            <strong style={{ color: '#EB0463' }}>Sucursal Centro:</strong><br/>
-            admin_centro / centro123
-          </p>
-          <p style={{ color: '#ccc', fontSize: '0.85rem', margin: '0.3rem 0' }}>
-            <strong style={{ color: '#EB0463' }}>Sucursal Sur:</strong><br/>
-            admin_sur / sur123
-          </p>
-        </div>
-        
         <button
           onClick={() => nav('/')}
           style={{
