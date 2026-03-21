@@ -30,12 +30,16 @@ export default function PanelAdmin() {
 
   const capitalizar = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-  // Hora de registro: usa c.hora si existe, sino extrae HH:MM de created_at
+  // Hora de registro: usa c.hora si existe (hora local del cliente).
+  // Si no, extrae de created_at: la BD guarda en UTC, convertimos a Colombia (UTC-5).
   const getHoraRegistro = (c) => {
     if (c.hora && c.hora.trim()) return c.hora.trim();
     if (c.created_at) {
-      const m = String(c.created_at).match(/(\d{1,2}):(\d{2})/);
-      if (m) return `${m[1].padStart(2, '0')}:${m[2]}`;
+      const str = String(c.created_at);
+      const d = new Date(str.includes('T') ? str : str.replace(' ', 'T') + 'Z');
+      if (!isNaN(d.getTime())) {
+        return d.toLocaleTimeString('es-CO', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', hour12: false });
+      }
     }
     return null;
   };

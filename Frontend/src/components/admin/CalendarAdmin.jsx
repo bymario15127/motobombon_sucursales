@@ -86,8 +86,11 @@ const CalendarAdmin = () => {
   const getHoraRegistro = (cita) => {
     if (cita.hora && cita.hora.trim()) return cita.hora.trim();
     if (cita.created_at) {
-      const m = String(cita.created_at).match(/(\d{1,2}):(\d{2})/);
-      if (m) return `${m[1].padStart(2, '0')}:${m[2]}`;
+      const str = String(cita.created_at);
+      const d = new Date(str.includes('T') ? str : str.replace(' ', 'T') + 'Z');
+      if (!isNaN(d.getTime())) {
+        return d.toLocaleTimeString('es-CO', { timeZone: 'America/Bogota', hour: '2-digit', minute: '2-digit', hour12: false });
+      }
     }
     return null;
   };
