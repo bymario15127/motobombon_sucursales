@@ -30,6 +30,16 @@ export default function PanelAdmin() {
 
   const capitalizar = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
+  // Hora de registro: usa c.hora si existe, sino extrae HH:MM de created_at
+  const getHoraRegistro = (c) => {
+    if (c.hora && c.hora.trim()) return c.hora.trim();
+    if (c.created_at) {
+      const m = String(c.created_at).match(/(\d{1,2}):(\d{2})/);
+      if (m) return `${m[1].padStart(2, '0')}:${m[2]}`;
+    }
+    return null;
+  };
+
   const load = async () => {
     const data = await getCitas();
     setCitas(data);
@@ -253,7 +263,7 @@ export default function PanelAdmin() {
               <div className="cita-details">
                 <div>
                   <p className="detail-item">📅 <strong>Fecha:</strong> {capitalizar(formatearFecha(c.fecha))}</p>
-                  <p className="detail-item" style={{ color: '#e5e7eb' }}>🕐 <strong>Hora:</strong> {c.hora ? c.hora : `Orden #${ordenByCitaId[c.id] || '?'} (llegada)`}</p>
+                  <p className="detail-item" style={{ color: '#e5e7eb' }}>🕐 <strong>Hora:</strong> {getHoraRegistro(c) || `— (Orden #${ordenByCitaId[c.id] || '?'})`}</p>
                 </div>
                 <div>
                   <p className="detail-item">📞 <strong>Teléfono:</strong> {c.telefono || 'No proporcionado'}</p>

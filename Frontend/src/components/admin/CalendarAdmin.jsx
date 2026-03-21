@@ -83,6 +83,14 @@ const CalendarAdmin = () => {
   };
 
   const formatTime = (hora) => hora;
+  const getHoraRegistro = (cita) => {
+    if (cita.hora && cita.hora.trim()) return cita.hora.trim();
+    if (cita.created_at) {
+      const m = String(cita.created_at).match(/(\d{1,2}):(\d{2})/);
+      if (m) return `${m[1].padStart(2, '0')}:${m[2]}`;
+    }
+    return null;
+  };
 
   // Helper para obtener la llave de fecha en formato YYYY-MM-DD
   const getDateKey = (date) => format(date, 'yyyy-MM-dd');
@@ -196,7 +204,7 @@ const CalendarAdmin = () => {
                       <h4 className="apt-title">{cita.cliente}</h4>
                       <p className="apt-line">📞 {cita.telefono}</p>
                       {cita.email && <p className="apt-line">📧 {cita.email}</p>}
-                      <p className="apt-line">🕐 {cita.hora ? formatTime(cita.hora) : `Orden #${idx + 1} (llegada)`}</p>
+                      <p className="apt-line">🕐 {getHoraRegistro(cita) ? formatTime(getHoraRegistro(cita)) : `— (Orden #${idx + 1})`}</p>
                       <p className="apt-line">🏍️ {cita.servicio}</p>
                     </div>
                     <span className={`badge ${getStatusColor(cita.estado)}`}>
