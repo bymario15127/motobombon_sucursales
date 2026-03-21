@@ -688,6 +688,8 @@ body {
 .admin-shell {
   display: flex;
   min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
 }
 
 .admin-sidebar {
@@ -907,9 +909,10 @@ body {
   /* Admin main ocupa todo el ancho en móvil */
   .admin-main {
     margin-left: 0;
-    padding: 72px 16px 16px 16px; /* espacio arriba para hamburguesa */
+    padding: 72px 16px max(80px, env(safe-area-inset-bottom)) 16px;
     width: 100%;
     max-width: 100%;
+    overflow-x: hidden;
   }
 
   /* Ajustar header del sidebar */
@@ -1307,7 +1310,7 @@ button:hover {
 
 .detail-item {
   margin: 0.25rem 0;
-  color: #4b5563;
+  color: #9ca3af;
 }
 
 .cita-actions {
@@ -1613,14 +1616,50 @@ button:disabled:hover {
   .calendar-grid { grid-template-columns: minmax(320px, 420px) 1fr; }
 }
 
-/* Mobile: calendario ocupa ancho completo, citas debajo */
+/* Mobile: calendario y citas responsive */
 @media (max-width: 640px) {
-  .calendar-container { width: 100%; }
+  .calendar-container { width: 100%; max-width: 100%; }
   .calendar-container .react-datepicker { width: 100%; }
-  .card { padding: 16px; }
-  .apt-card { padding: 12px; }
+  .custom-calendar { max-width: 100%; padding: 12px; }
+  .card { padding: 16px; max-width: 100%; }
+  .apt-list { overflow-x: hidden; min-width: 0; }
+  .apt-card { padding: 12px; min-width: 0; overflow-wrap: break-word; word-break: break-word; }
   .apt-actions { flex-direction: column; }
-  .apt-actions .btn { width: 100%; }
+  .apt-actions .btn,
+  .apt-actions .btn-neon-pill { width: 100%; flex: none; min-width: 0 !important; }
+  .calendar-grid { gap: 16px; padding-bottom: env(safe-area-inset-bottom); }
+  .calendar-page { padding: 12px; padding-bottom: max(24px, env(safe-area-inset-bottom)); }
+}
+
+/* Citas y panel admin en móvil */
+@media (max-width: 640px) {
+  .container {
+    max-width: 100%;
+    width: 100%;
+    padding: 12px;
+    margin: 0.5rem 0;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+  }
+  .citas-grid { grid-template-columns: 1fr; gap: 12px; min-width: 0; }
+  .cita-card-admin {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    padding: 12px;
+  }
+  .cita-details { grid-template-columns: 1fr; gap: 8px; }
+  .cita-header { flex-wrap: wrap; gap: 8px; }
+  .cita-actions { flex-direction: column; gap: 8px; }
+  .cita-actions .btn-action { width: 100%; margin-left: 0 !important; }
+  .admin-header { flex-direction: column; align-items: stretch; gap: 12px; }
+  .admin-page-header { margin-bottom: 16px; }
+  .admin-page-title { font-size: 1.25rem; }
+}
+
+/* Hamburguesa: safe area para notch */
+@media (max-width: 768px) {
+  .hamburger-btn { top: max(16px, env(safe-area-inset-top)); }
 }
 
 .card {

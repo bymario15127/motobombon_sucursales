@@ -253,7 +253,7 @@ const CalendarAdmin = () => {
                   )}
 
                   {/* Botones de acción */}
-                  <div style={{display: 'flex', gap: '8px', marginTop: '12px', borderTop: '1px solid #e5e7eb', paddingTop: '12px', flexWrap: 'wrap'}}>
+                  <div className="apt-actions" style={{display: 'flex', gap: '8px', marginTop: '12px', borderTop: '1px solid #e5e7eb', paddingTop: '12px', flexWrap: 'wrap'}}>
                     {cita.estado === 'pendiente' && (
                       <button 
                         onClick={() => updateCitaStatus(cita.id, 'confirmada')}
