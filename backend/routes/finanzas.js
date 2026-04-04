@@ -186,23 +186,22 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
     const totalGastosCompleto = gastosManualesTotales + totalComisiones;
     const utilidadDelMes = totalIngresos - totalGastosCompleto;
 
-    // Calcular utilidad acumulada de TODOS los meses anteriores desde datos reales
-    // (no depender de cache para evitar valores incorrectos por cadena rota)
+    // Calcular utilidad acumulada de meses anteriores del mismo año desde datos reales
     let utilidadMesAnteriorValue = 0;
     try {
+      const fechaInicio = `${anioActual}-01-01`;
       const fechaLimite = `${anioActual}-${String(parseInt(mesActual)).padStart(2, '0')}-01`;
 
       const citasAnteriores = await db.all(
         `SELECT c.* FROM citas c 
          LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
          WHERE c.lavador_id IS NOT NULL 
-           AND c.fecha < ?
+           AND c.fecha >= ? AND c.fecha < ?
            AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada')
            AND cup.id IS NULL`,
-        [fechaLimite]
+        [fechaInicio, fechaLimite]
       );
 
-      // Agrupar citas por mes para aplicar tope de comisiones por mes
       const citasPorMes = {};
       for (const cita of citasAnteriores) {
         const mesKey = cita.fecha.substring(0, 7);
@@ -228,42 +227,20 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
       }
 
       const ingresosProdAnt = await db.get(
-        `SELECT COALESCE(SUM(total), 0) as total FROM ventas WHERE DATE(created_at) < ?`,
-        [fechaLimite]
+        `SELECT COALESCE(SUM(total), 0) as total FROM ventas WHERE DATE(created_at) >= ? AND DATE(created_at) < ?`,
+        [fechaInicio, fechaLimite]
       );
 
       const gastosAnt = await db.get(
-        `SELECT COALESCE(SUM(monto), 0) as total FROM gastos WHERE fecha < ?`,
-        [fechaLimite]
+        `SELECT COALESCE(SUM(monto), 0) as total FROM gastos WHERE fecha >= ? AND fecha < ?`,
+        [fechaInicio, fechaLimite]
       );
 
       const totalIngresosAnt = ingresosServTotalAnt + (ingresosProdAnt?.total || 0);
       const totalGastosAnt = (gastosAnt?.total || 0) + comisionesTotalAnt;
       utilidadMesAnteriorValue = totalIngresosAnt - totalGastosAnt;
 
-      // Guardar valor acumulado en cache para el endpoint de exportar
-      let mesAnterior = parseInt(mesActual) - 1;
-      let anioAnterior = parseInt(anioActual);
-      if (mesAnterior < 1) {
-        mesAnterior = 12;
-        anioAnterior = anioAnterior - 1;
-      }
-      await db.run(
-        `INSERT INTO utilidades_mensuales (mes, anio, utilidad_neta, ingresos_totales, gastos_totales)
-         VALUES (?, ?, ?, ?, ?)
-         ON CONFLICT(mes, anio) DO UPDATE SET
-         utilidad_neta = ?,
-         ingresos_totales = ?,
-         gastos_totales = ?,
-         updated_at = CURRENT_TIMESTAMP`,
-        [
-          mesAnterior, anioAnterior,
-          utilidadMesAnteriorValue, totalIngresosAnt, totalGastosAnt,
-          utilidadMesAnteriorValue, totalIngresosAnt, totalGastosAnt
-        ]
-      );
-
-      console.log(`✅ Utilidad acumulada hasta ${mesAnterior}/${anioAnterior}: ${utilidadMesAnteriorValue}`);
+      console.log(`✅ Utilidad acumulada ${anioActual} hasta mes ${mesActual}: ${utilidadMesAnteriorValue} (citas: ${citasAnteriores.length})`);
     } catch (error) {
       console.warn("⚠️ Error calculando utilidad de meses anteriores:", error.message);
       utilidadMesAnteriorValue = 0;
@@ -733,19 +710,20 @@ router.get("/exportar-excel", verifyToken, requireAdminOrSupervisor, async (req,
     const totalGastosCompleto = gastosManualesTotales + totalComisiones;
     const utilidadDelMes = totalIngresos - totalGastosCompleto;
 
-    // Calcular utilidad acumulada de TODOS los meses anteriores desde datos reales
+    // Calcular utilidad acumulada de meses anteriores del mismo año desde datos reales
     let utilidadMesAnteriorValue = 0;
     try {
+      const fechaInicio = `${anioActual}-01-01`;
       const fechaLimite = `${anioActual}-${String(parseInt(mesActual)).padStart(2, '0')}-01`;
 
       const citasAnterioresExp = await db.all(
         `SELECT c.* FROM citas c 
          LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
          WHERE c.lavador_id IS NOT NULL 
-           AND c.fecha < ?
+           AND c.fecha >= ? AND c.fecha < ?
            AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada')
            AND cup.id IS NULL`,
-        [fechaLimite]
+        [fechaInicio, fechaLimite]
       );
 
       const citasPorMesExp = {};
@@ -773,13 +751,13 @@ router.get("/exportar-excel", verifyToken, requireAdminOrSupervisor, async (req,
       }
 
       const ingresosProdAntExp = await db.get(
-        `SELECT COALESCE(SUM(total), 0) as total FROM ventas WHERE DATE(created_at) < ?`,
-        [fechaLimite]
+        `SELECT COALESCE(SUM(total), 0) as total FROM ventas WHERE DATE(created_at) >= ? AND DATE(created_at) < ?`,
+        [fechaInicio, fechaLimite]
       );
 
       const gastosAntExp = await db.get(
-        `SELECT COALESCE(SUM(monto), 0) as total FROM gastos WHERE fecha < ?`,
-        [fechaLimite]
+        `SELECT COALESCE(SUM(monto), 0) as total FROM gastos WHERE fecha >= ? AND fecha < ?`,
+        [fechaInicio, fechaLimite]
       );
 
       const totalIngresosAnt = ingresosServTotalAnt + (ingresosProdAntExp?.total || 0);
