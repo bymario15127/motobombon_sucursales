@@ -186,78 +186,68 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
     const totalGastosCompleto = gastosManualesTotales + totalComisiones;
     const utilidadDelMes = totalIngresos - totalGastosCompleto;
 
-    // Siempre recalcular la utilidad del mes anterior desde datos reales
-    // (no usar cache, ya que los gastos pueden haberse agregado/editado después del cierre)
+    // Calcular utilidad acumulada de TODOS los meses anteriores desde datos reales
+    // (no depender de cache para evitar valores incorrectos por cadena rota)
     let utilidadMesAnteriorValue = 0;
     try {
+      const fechaLimite = `${anioActual}-${String(parseInt(mesActual)).padStart(2, '0')}-01`;
+
+      const citasAnteriores = await db.all(
+        `SELECT c.* FROM citas c 
+         LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
+         WHERE c.lavador_id IS NOT NULL 
+           AND c.fecha < ?
+           AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada')
+           AND cup.id IS NULL`,
+        [fechaLimite]
+      );
+
+      // Agrupar citas por mes para aplicar tope de comisiones por mes
+      const citasPorMes = {};
+      for (const cita of citasAnteriores) {
+        const mesKey = cita.fecha.substring(0, 7);
+        if (!citasPorMes[mesKey]) citasPorMes[mesKey] = [];
+        citasPorMes[mesKey].push(cita);
+      }
+
+      let ingresosServTotalAnt = 0;
+      let comisionesTotalAnt = 0;
+      for (const [, citasMes] of Object.entries(citasPorMes)) {
+        const ingresoServMes = citasMes.reduce((sum, c) => sum + calcularPrecioCliente(c), 0);
+        let comisionesMes = 0;
+        for (const cita of citasMes) {
+          const lavador = lavadores.find(l => l.id === cita.lavador_id);
+          if (lavador) {
+            const base = calcularBaseComision(cita);
+            comisionesMes += base * ((Number(lavador.comision_porcentaje) || 0) / 100);
+          }
+        }
+        comisionesMes = Math.min(comisionesMes, ingresoServMes);
+        ingresosServTotalAnt += ingresoServMes;
+        comisionesTotalAnt += comisionesMes;
+      }
+
+      const ingresosProdAnt = await db.get(
+        `SELECT COALESCE(SUM(total), 0) as total FROM ventas WHERE DATE(created_at) < ?`,
+        [fechaLimite]
+      );
+
+      const gastosAnt = await db.get(
+        `SELECT COALESCE(SUM(monto), 0) as total FROM gastos WHERE fecha < ?`,
+        [fechaLimite]
+      );
+
+      const totalIngresosAnt = ingresosServTotalAnt + (ingresosProdAnt?.total || 0);
+      const totalGastosAnt = (gastosAnt?.total || 0) + comisionesTotalAnt;
+      utilidadMesAnteriorValue = totalIngresosAnt - totalGastosAnt;
+
+      // Guardar valor acumulado en cache para el endpoint de exportar
       let mesAnterior = parseInt(mesActual) - 1;
       let anioAnterior = parseInt(anioActual);
       if (mesAnterior < 1) {
         mesAnterior = 12;
         anioAnterior = anioAnterior - 1;
       }
-
-      const ingresosProdAnt = await db.get(
-        `SELECT COALESCE(SUM(total), 0) as total FROM ventas WHERE strftime('%Y-%m', created_at) = ?`,
-        [`${anioAnterior}-${mesAnterior.toString().padStart(2, '0')}`]
-      );
-
-      const gastosAnt = await db.get(
-        `SELECT COALESCE(SUM(monto), 0) as total FROM gastos WHERE strftime('%Y-%m', fecha) = ?`,
-        [`${anioAnterior}-${mesAnterior.toString().padStart(2, '0')}`]
-      );
-
-      const citasAnt = await db.all(
-        `SELECT c.* FROM citas c 
-         LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
-         WHERE c.lavador_id IS NOT NULL 
-           AND strftime('%Y-%m', c.fecha) = ? 
-           AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada')
-           AND cup.id IS NULL
-         ORDER BY c.fecha, c.hora`,
-        [`${anioAnterior}-${mesAnterior.toString().padStart(2, '0')}`]
-      );
-
-      let totalComisionesAnt = 0;
-      for (const cita of citasAnt) {
-        const lavador = lavadores.find(l => l.id === cita.lavador_id);
-        if (lavador) {
-          const baseComision = calcularBaseComision(cita);
-          const comision = baseComision * ((Number(lavador.comision_porcentaje) || 0) / 100);
-          totalComisionesAnt += comision;
-        }
-      }
-
-      const ingresosServAnt = citasAnt.reduce((sum, c) => sum + calcularPrecioCliente(c), 0);
-      totalComisionesAnt = Math.min(totalComisionesAnt, ingresosServAnt);
-
-      const ingresosAnt = ingresosServAnt + (ingresosProdAnt?.total || 0);
-      const gastosAnt_total = (gastosAnt?.total || 0) + totalComisionesAnt;
-      const utilidadDelMesAnt = ingresosAnt - gastosAnt_total;
-
-      let utilidadMesesAnteriores = 0;
-      try {
-        let mesAntAnterior = mesAnterior - 1;
-        let anioAntAnterior = anioAnterior;
-        if (mesAntAnterior < 1) {
-          mesAntAnterior = 12;
-          anioAntAnterior = anioAntAnterior - 1;
-        }
-        
-        const utilidadAntAnt = await db.get(
-          `SELECT COALESCE(utilidad_neta, 0) as utilidad_acumulada FROM utilidades_mensuales 
-           WHERE mes = ? AND anio = ?`,
-          [mesAntAnterior, anioAntAnterior]
-        );
-        
-        utilidadMesesAnteriores = utilidadAntAnt?.utilidad_acumulada || 0;
-      } catch (e) {
-        utilidadMesesAnteriores = 0;
-      }
-
-      utilidadMesAnteriorValue = utilidadDelMesAnt + utilidadMesesAnteriores;
-
-      // Guardar/actualizar el valor recalculado en cache
       await db.run(
         `INSERT INTO utilidades_mensuales (mes, anio, utilidad_neta, ingresos_totales, gastos_totales)
          VALUES (?, ?, ?, ?, ?)
@@ -268,14 +258,14 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
          updated_at = CURRENT_TIMESTAMP`,
         [
           mesAnterior, anioAnterior,
-          utilidadMesAnteriorValue, ingresosAnt, gastosAnt_total,
-          utilidadMesAnteriorValue, ingresosAnt, gastosAnt_total
+          utilidadMesAnteriorValue, totalIngresosAnt, totalGastosAnt,
+          utilidadMesAnteriorValue, totalIngresosAnt, totalGastosAnt
         ]
       );
 
-      console.log(`✅ Utilidad mes ${mesAnterior}/${anioAnterior} recalculada: ${utilidadMesAnteriorValue}`);
+      console.log(`✅ Utilidad acumulada hasta ${mesAnterior}/${anioAnterior}: ${utilidadMesAnteriorValue}`);
     } catch (error) {
-      console.warn("⚠️ Error recalculando utilidad del mes anterior:", error.message);
+      console.warn("⚠️ Error calculando utilidad de meses anteriores:", error.message);
       utilidadMesAnteriorValue = 0;
     }
 
@@ -743,27 +733,60 @@ router.get("/exportar-excel", verifyToken, requireAdminOrSupervisor, async (req,
     const totalGastosCompleto = gastosManualesTotales + totalComisiones;
     const utilidadDelMes = totalIngresos - totalGastosCompleto;
 
-    // Obtener utilidad del mes anterior para acumular (tolerante a errores si tabla no existe)
+    // Calcular utilidad acumulada de TODOS los meses anteriores desde datos reales
     let utilidadMesAnteriorValue = 0;
     try {
-      let mesAnterior = parseInt(mesActual) - 1;
-      let anioAnterior = parseInt(anioActual);
-      if (mesAnterior < 1) {
-        mesAnterior = 12;
-        anioAnterior = anioAnterior - 1;
-      }
-      
-      const utilidadMesAnteriorData = await db.get(
-        `SELECT COALESCE(utilidad_neta, 0) as utilidad_acumulada FROM utilidades_mensuales 
-         WHERE mes = ? AND anio = ? 
-         ORDER BY updated_at DESC LIMIT 1`,
-        [mesAnterior, anioAnterior]
+      const fechaLimite = `${anioActual}-${String(parseInt(mesActual)).padStart(2, '0')}-01`;
+
+      const citasAnterioresExp = await db.all(
+        `SELECT c.* FROM citas c 
+         LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
+         WHERE c.lavador_id IS NOT NULL 
+           AND c.fecha < ?
+           AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada')
+           AND cup.id IS NULL`,
+        [fechaLimite]
       );
-      
-      utilidadMesAnteriorValue = utilidadMesAnteriorData?.utilidad_acumulada || 0;
+
+      const citasPorMesExp = {};
+      for (const cita of citasAnterioresExp) {
+        const mesKey = cita.fecha.substring(0, 7);
+        if (!citasPorMesExp[mesKey]) citasPorMesExp[mesKey] = [];
+        citasPorMesExp[mesKey].push(cita);
+      }
+
+      let ingresosServTotalAnt = 0;
+      let comisionesTotalAnt = 0;
+      for (const [, citasMes] of Object.entries(citasPorMesExp)) {
+        const ingresoServMes = citasMes.reduce((sum, c) => sum + calcularPrecioCliente(c), 0);
+        let comisionesMes = 0;
+        for (const cita of citasMes) {
+          const lavador = lavadores.find(l => l.id === cita.lavador_id);
+          if (lavador) {
+            const base = calcularBaseComision(cita);
+            comisionesMes += base * ((Number(lavador.comision_porcentaje) || 0) / 100);
+          }
+        }
+        comisionesMes = Math.min(comisionesMes, ingresoServMes);
+        ingresosServTotalAnt += ingresoServMes;
+        comisionesTotalAnt += comisionesMes;
+      }
+
+      const ingresosProdAntExp = await db.get(
+        `SELECT COALESCE(SUM(total), 0) as total FROM ventas WHERE DATE(created_at) < ?`,
+        [fechaLimite]
+      );
+
+      const gastosAntExp = await db.get(
+        `SELECT COALESCE(SUM(monto), 0) as total FROM gastos WHERE fecha < ?`,
+        [fechaLimite]
+      );
+
+      const totalIngresosAnt = ingresosServTotalAnt + (ingresosProdAntExp?.total || 0);
+      const totalGastosAnt = (gastosAntExp?.total || 0) + comisionesTotalAnt;
+      utilidadMesAnteriorValue = totalIngresosAnt - totalGastosAnt;
     } catch (error) {
-      // La tabla utilidades_mensuales podría no existir aún
-      console.warn("⚠️ Tabla utilidades_mensuales no existe o error consultándola:", error.message);
+      console.warn("⚠️ Error calculando utilidad de meses anteriores (export):", error.message);
       utilidadMesAnteriorValue = 0;
     }
 
