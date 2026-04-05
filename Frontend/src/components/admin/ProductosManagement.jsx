@@ -41,7 +41,6 @@ export default function ProductosManagement() {
     const hoy = new Date();
     const opciones = { timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit' };
     const fechaFormateada = hoy.toLocaleDateString('en-CA', opciones); // en-CA da formato YYYY-MM-DD
-    console.log('📅 Fecha Colombia:', fechaFormateada, 'Hora local:', hoy.toLocaleString('es-CO', opciones));
     return fechaFormateada;
   };
 
@@ -55,12 +54,8 @@ export default function ProductosManagement() {
   const [hasta, setHasta] = useState(todayStr);
   const [reporteGanancias, setReporteGanancias] = useState([]);
 
-  // Debug: mostrar token en consola
   useEffect(() => {
     const token = localStorage.getItem("motobombon_token");
-    const isAdmin = localStorage.getItem("motobombon_is_admin");
-    console.log("🔐 Token:", token ? "✅ Existe" : "❌ NO EXISTE");
-    console.log("👤 Is Admin:", isAdmin);
     if (!token) {
       setMessage("⚠️ No hay sesión activa. Por favor, vuelve a hacer login.");
     } else {

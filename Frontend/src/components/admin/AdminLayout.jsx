@@ -24,22 +24,24 @@ export default function AdminLayout() {
   };
 
   const renderContent = () => {
-      const getPageTitle = () => {
-        switch (activeView) {
-          case 'dashboard': return 'Dashboard';
-          case 'calendar': return 'Calendario';
-          case 'appointments': return 'Citas';
-          case 'services': return 'Servicios';
-          case 'talleres': return 'Talleres Aliados';
-          case 'lavadores': return 'Lavadores';
-          case 'clientes': return 'Clientes y Fidelización';
-          case 'nomina': return 'Nómina y CRM';
-          case 'productos': return 'Productos y Ventas';
-          case 'finanzas': return 'Finanzas';
-          case 'settings': return 'Ajustes';
-          default: return 'Dashboard';
-        }
-      };    return (
+    const getPageTitle = () => {
+      switch (activeView) {
+        case 'dashboard': return 'Dashboard';
+        case 'calendar': return 'Calendario';
+        case 'appointments': return 'Citas';
+        case 'services': return 'Servicios';
+        case 'talleres': return 'Talleres Aliados';
+        case 'lavadores': return 'Lavadores';
+        case 'clientes': return 'Clientes y Fidelización';
+        case 'nomina': return 'Nómina y CRM';
+        case 'productos': return 'Productos y Ventas';
+        case 'finanzas': return 'Finanzas';
+        case 'settings': return 'Ajustes';
+        default: return 'Dashboard';
+      }
+    };
+
+    return (
       <div>
         {/* Header de la página */}
         <div className="admin-page-header">
@@ -84,11 +86,13 @@ export default function AdminLayout() {
               case 'finanzas':
                 return <FinanzasManager />;
               case 'settings':
-                return <div className="bg-white rounded-lg shadow-md p-8 text-center">
-                  <div className="text-6xl mb-4">🚧</div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">Configuración</h2>
-                  <p className="text-gray-600">Esta sección estará disponible próximamente</p>
-                </div>;
+                return (
+                  <div className="admin-card-placeholder">
+                    <div className="admin-card-placeholder-icon" aria-hidden>🚧</div>
+                    <h2>Configuración</h2>
+                    <p>Esta sección estará disponible próximamente</p>
+                  </div>
+                );
               default:
                 return <Dashboard />;
             }

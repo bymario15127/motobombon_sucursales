@@ -93,29 +93,22 @@ export async function deleteServicio(id) {
 // Sube una imagen en formato dataURL (base64) y devuelve { url }
 export async function uploadImagen(dataUrl) {
   try {
-    console.log("📤 Iniciando upload de imagen, tamaño:", dataUrl.length);
-    
     const res = await fetch(UPLOAD_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ image: dataUrl }),
     });
-    
-    console.log("📊 Respuesta del servidor:", res.status, res.statusText);
-    
+
     const result = await res.json();
-    
-    console.log("📋 Resultado del JSON:", result);
-    
+
     if (!res.ok) {
-      console.error("❌ Error en upload:", result.error);
+      console.error("Error en upload:", result.error);
       throw new Error(result.error || "Error al subir la imagen");
     }
-    
-    console.log("✅ Imagen subida exitosamente:", result.url);
-    return result; // { url }
+
+    return result;
   } catch (error) {
-    console.error("🔴 Error en uploadImagen:", error);
+    console.error("uploadImagen:", error);
     throw error;
   }
 }

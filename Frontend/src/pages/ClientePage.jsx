@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import ReservaForm from "../components/Cliente/ReservaForm";
-import "../index.css";
 
 export default function ClientePage() {
   const location = useLocation();
@@ -38,7 +37,7 @@ export default function ClientePage() {
   }, [location, sucursalId, navigate]);
 
   return (
-    <div className="centered-page" style={{ background: "#050505" }}>
+    <div className="centered-page centered-page--portal">
       <div className="reserva-portal">
         <div className="reserva-portal-card">
           <p className="reserva-portal-sucursal">📍 {sucursalNombre}</p>

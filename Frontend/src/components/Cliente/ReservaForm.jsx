@@ -27,14 +27,11 @@ export default function ReservaForm({ sucursalId }) {
 
   const loadServicios = async () => {
     try {
-      console.log('🔍 Intentando cargar servicios desde API...');
       const data = await serviciosService.getServicios();
-      console.log('✅ Servicios cargados:', data);
-      
+
       if (Array.isArray(data) && data.length > 0) {
         setServicios(data);
       } else {
-        console.warn('⚠️ No se obtuvieron servicios de la API, usando fallback');
         // Fallback a servicios por defecto si no hay datos
         const fallbackServicios = [
           { id: 1, nombre: "Lavado Básico", precio: 15000, duracion: 30, descripcion: "Lavado exterior completo", img: "/img/lavado-basico.jpg" },
@@ -191,10 +188,6 @@ export default function ReservaForm({ sucursalId }) {
       hora: `${hh}:${mi}`,
     };
     
-    // Promociones removidas
-
-    console.log('📤 Enviando datos:', citaData);
-
     try {
       await addCita(citaData);
       

@@ -12,7 +12,7 @@ export default function SucursalSelector() {
   };
 
   return (
-    <div className="centered-page" style={{ background: "#000000" }}>
+    <div className="centered-page">
       <div className="sucursal-selector-page">
         <div className="sucursal-selector-header">
           <h1 className="sucursal-selector-title">MOTOBOMBON</h1>

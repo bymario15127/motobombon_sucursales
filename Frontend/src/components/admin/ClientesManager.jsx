@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { getClientes, verificarCupon, usarCupon, exportarClientesExcel } from "../../services/clientesService";
 import { fetchWithSucursal, getHeaders } from "../../services/apiHelper.js";
-import "../../App.css";
 
 export default function ClientesManager() {
   const [clientes, setClientes] = useState([]);
@@ -16,6 +15,8 @@ export default function ClientesManager() {
   const [mostrarFusionar, setMostrarFusionar] = useState(false);
   const [emailPrincipal, setEmailPrincipal] = useState("");
   const [emailDuplicado, setEmailDuplicado] = useState("");
+  const [paginaActual, setPaginaActual] = useState(1);
+  const CLIENTES_POR_PAGINA = 30;
 
   useEffect(() => {
     cargarClientes();
@@ -109,6 +110,16 @@ export default function ClientesManager() {
         return a.nombre.localeCompare(b.nombre);
       }
     });
+
+  const totalPaginas = Math.ceil(clientesFiltrados.length / CLIENTES_POR_PAGINA);
+  const clientesPagina = clientesFiltrados.slice(
+    (paginaActual - 1) * CLIENTES_POR_PAGINA,
+    paginaActual * CLIENTES_POR_PAGINA
+  );
+
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [busqueda, ordenarPor]);
 
   if (loading) {
     return (
@@ -328,12 +339,16 @@ export default function ClientesManager() {
 
         {/* Lista Clientes */}
         {clientesFiltrados.length > 0 ? (
+          <>
+          <p style={{ color: "#9ca3af", fontSize: "0.85rem", marginBottom: "0.75rem" }}>
+            Mostrando {(paginaActual - 1) * CLIENTES_POR_PAGINA + 1}–{Math.min(paginaActual * CLIENTES_POR_PAGINA, clientesFiltrados.length)} de {clientesFiltrados.length}
+          </p>
           <div style={{
             display: "grid",
             gap: "1rem",
             gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))"
           }}>
-            {clientesFiltrados.map((cliente) => (
+            {clientesPagina.map((cliente) => (
               <div key={cliente.email} style={{
                 background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
                 borderRadius: "12px",
@@ -420,6 +435,46 @@ export default function ClientesManager() {
               </div>
             ))}
           </div>
+
+          {totalPaginas > 1 && (
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "0.5rem",
+              marginTop: "1.5rem",
+              flexWrap: "wrap"
+            }}>
+              <button
+                disabled={paginaActual <= 1}
+                onClick={() => setPaginaActual(p => p - 1)}
+                style={{
+                  padding: "0.5rem 1rem",
+                  borderRadius: "6px",
+                  border: "1px solid #333",
+                  background: paginaActual <= 1 ? "#1a1a1a" : "#0f1419",
+                  color: paginaActual <= 1 ? "#555" : "#fff",
+                  cursor: paginaActual <= 1 ? "default" : "pointer",
+                }}
+              >← Anterior</button>
+              <span style={{ color: "#9ca3af", fontSize: "0.9rem" }}>
+                Página {paginaActual} / {totalPaginas}
+              </span>
+              <button
+                disabled={paginaActual >= totalPaginas}
+                onClick={() => setPaginaActual(p => p + 1)}
+                style={{
+                  padding: "0.5rem 1rem",
+                  borderRadius: "6px",
+                  border: "1px solid #333",
+                  background: paginaActual >= totalPaginas ? "#1a1a1a" : "#0f1419",
+                  color: paginaActual >= totalPaginas ? "#555" : "#fff",
+                  cursor: paginaActual >= totalPaginas ? "default" : "pointer",
+                }}
+              >Siguiente →</button>
+            </div>
+          )}
+          </>
         ) : (
           <div style={{
             textAlign: "center",

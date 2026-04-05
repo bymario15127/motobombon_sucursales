@@ -44,7 +44,6 @@ export default function TallerPage() {
   const loadTalleres = async () => {
     try {
       const data = await talleresService.getTalleres();
-      console.log("Talleres cargados:", data);
       if (data && data.length > 0) {
         setTalleres(data);
       } else {
@@ -223,37 +222,20 @@ export default function TallerPage() {
 
   if (talleres.length === 0) {
     return (
-      <div style={{ minHeight: "100vh", background: "#050505", padding: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{
-          background: "#0f0f14",
-          borderRadius: "16px",
-          padding: "40px",
-          maxWidth: "520px",
-          width: "100%",
-          boxShadow: "0 20px 60px rgba(235,4,99,0.25)",
-          border: "1px solid rgba(235,4,99,0.35)",
-          textAlign: "center"
-        }}>
-          <div style={{ fontSize: "48px", marginBottom: "20px" }}>🏢</div>
-          <h2 style={{ fontSize: "24px", color: "#EB0463", marginBottom: "10px" }}>Portal de Talleres</h2>
-          <p style={{ fontSize: "16px", color: "#e5e7eb", marginBottom: "20px", lineHeight: "1.6" }}>
-            ⚠️ No hay talleres registrados aún en el sistema.
+      <div className="centered-page centered-page--portal" style={{ padding: "1.25rem" }}>
+        <div className="mb-surface-card">
+          <div className="mb-surface-card__icon" aria-hidden>🏢</div>
+          <h2 className="mb-surface-card__title">Portal de Talleres</h2>
+          <p className="mb-surface-card__text">
+            No hay talleres registrados aún en el sistema.
           </p>
-          <p style={{ fontSize: "14px", color: "#9ca3af", marginBottom: "20px" }}>
+          <p className="mb-surface-card__hint">
             Contacta con la administración de MOTOBOMBON para registrar tu taller.
           </p>
           <button
-            onClick={() => window.location.href = "/"}
-            style={{
-              padding: "12px 24px",
-              background: "linear-gradient(135deg, #EB0463 0%, #a65495 100%)",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              fontWeight: "700",
-              cursor: "pointer",
-              boxShadow: "0 12px 30px rgba(235,4,99,0.35)"
-            }}
+            type="button"
+            className="mb-surface-card__btn"
+            onClick={() => { window.location.href = "/"; }}
           >
             ← Volver al inicio
           </button>

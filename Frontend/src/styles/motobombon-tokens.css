@@ -1,0 +1,45 @@
+/**
+ * Motobombon — tokens globales (admin, clientes, talleres, login, landing)
+ * interface-design: una sola familia de color/tipo/espacio en todo el producto.
+ */
+:root {
+  --mb-font-display: "Yeseva One", Georgia, serif;
+  --mb-font-ui: "Poppins", system-ui, -apple-system, sans-serif;
+
+  --mb-bg-deep: #000000;
+  --mb-bg-canvas: #0a0a0a;
+  --mb-bg-elevated: #111111;
+  --mb-bg-inset: #0d0d0d;
+  --mb-bg-card: linear-gradient(180deg, rgba(20, 20, 20, 0.98) 0%, rgba(10, 10, 10, 0.99) 100%);
+
+  --mb-border-subtle: rgba(255, 255, 255, 0.06);
+  --mb-border-default: rgba(255, 255, 255, 0.1);
+  --mb-border-accent: rgba(235, 4, 99, 0.32);
+
+  --mb-text-primary: #ffffff;
+  --mb-text-secondary: rgba(255, 255, 255, 0.78);
+  --mb-text-tertiary: #9ca3af;
+  --mb-text-muted: rgba(156, 163, 175, 0.95);
+
+  --mb-accent: #eb0463;
+  --mb-accent-hover: #ff1a75;
+  --mb-accent-soft: rgba(235, 4, 99, 0.12);
+  --mb-danger: #f87171;
+  --mb-danger-bg: rgba(248, 113, 113, 0.12);
+  --mb-success: #34d399;
+
+  --mb-radius-sm: 6px;
+  --mb-radius-md: 10px;
+  --mb-radius-lg: 14px;
+  --mb-radius-xl: 20px;
+  --mb-radius-pill: 999px;
+
+  --mb-space-1: 4px;
+  --mb-space-2: 8px;
+  --mb-space-3: 12px;
+  --mb-space-4: 16px;
+  --mb-space-5: 24px;
+  --mb-space-6: 32px;
+
+  --mb-shadow-inset: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}

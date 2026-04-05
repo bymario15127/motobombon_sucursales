@@ -1,0 +1,212 @@
+/**
+ * Patrones de página: login, portales (misma “firma” visual que landing/sucursal)
+ */
+
+.centered-page {
+  background: var(--mb-bg-deep);
+}
+
+/* Portales cliente/reserva: mismo sistema, canvas ligeramente más claro */
+.centered-page--portal {
+  background: var(--mb-bg-canvas);
+}
+
+/* ——— Login / auth (admin y futuros logins) ——— */
+.mb-auth {
+  width: 100%;
+  max-width: 35rem; /* ~560px, como el container anterior */
+  margin: 0 auto;
+  padding: 0 var(--mb-space-4);
+}
+
+/* Marco / tarjeta (como el container antiguo con borde neón) */
+.mb-auth__card {
+  background: var(--mb-bg-card);
+  border: 2px solid var(--mb-accent);
+  border-radius: var(--mb-radius-xl);
+  padding: var(--mb-space-5) var(--mb-space-5) var(--mb-space-6);
+  box-shadow:
+    0 8px 32px rgba(235, 4, 99, 0.22),
+    var(--mb-shadow-inset);
+}
+
+.mb-auth__header {
+  text-align: center;
+  margin-bottom: var(--mb-space-5);
+}
+
+.mb-auth__brand {
+  font-family: var(--mb-font-display);
+  font-size: clamp(1.75rem, 6vw, 2.5rem);
+  color: var(--mb-text-primary);
+  text-shadow: 0 0 20px rgba(235, 4, 99, 0.45);
+  margin: 0 0 var(--mb-space-2) 0;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+
+.mb-auth__subtitle {
+  font-family: var(--mb-font-ui);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--mb-accent);
+  margin: 0;
+}
+
+.mb-auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mb-space-4);
+}
+
+.mb-auth__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mb-space-2);
+  text-align: left;
+}
+
+.mb-auth__label {
+  font-family: var(--mb-font-ui);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--mb-text-secondary);
+}
+
+.mb-auth__form input:not([type="checkbox"]),
+.mb-auth__form select,
+.mb-auth__control {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  font-family: var(--mb-font-ui);
+  font-size: 1rem;
+  color: var(--mb-text-primary);
+  background: var(--mb-bg-elevated);
+  border: 1px solid var(--mb-border-accent);
+  border-radius: var(--mb-radius-md);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  margin-bottom: 0 !important;
+  box-sizing: border-box;
+}
+
+.mb-auth__control:focus,
+.mb-auth__form input:focus,
+.mb-auth__form select:focus {
+  border-color: rgba(235, 4, 99, 0.55);
+  box-shadow: 0 0 0 2px rgba(235, 4, 99, 0.2);
+}
+
+.mb-auth__submit {
+  width: 100%;
+  margin-top: var(--mb-space-2);
+  padding: 0.85rem 1rem;
+  font-family: var(--mb-font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--mb-text-primary);
+  background: linear-gradient(135deg, var(--mb-accent) 0%, var(--mb-accent-hover) 100%);
+  border: none;
+  border-radius: var(--mb-radius-md);
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.mb-auth__submit:hover {
+  filter: brightness(1.06);
+}
+
+.mb-auth__submit:active {
+  transform: scale(0.99);
+}
+
+.mb-auth__error {
+  font-family: var(--mb-font-ui);
+  font-size: 0.875rem;
+  color: var(--mb-danger);
+  background: var(--mb-danger-bg);
+  padding: 0.75rem;
+  border-radius: var(--mb-radius-sm);
+  text-align: center;
+  margin: 0;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+.mb-auth__back {
+  width: 100%;
+  margin-top: var(--mb-space-4);
+  padding: 0.65rem 1rem;
+  font-family: var(--mb-font-ui);
+  font-size: 0.875rem;
+  color: var(--mb-text-tertiary);
+  background: transparent;
+  border: 1px solid var(--mb-border-default);
+  border-radius: var(--mb-radius-sm);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.mb-auth__back:hover {
+  color: var(--mb-text-primary);
+  border-color: var(--mb-border-accent);
+  background: var(--mb-accent-soft);
+}
+
+/* Tarjeta vacío / error (taller sin datos, etc.) */
+.mb-surface-card {
+  max-width: 32rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--mb-space-6);
+  text-align: center;
+  background: var(--mb-bg-elevated);
+  border: 1px solid var(--mb-border-accent);
+  border-radius: var(--mb-radius-lg);
+  box-shadow: var(--mb-shadow-inset), 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.mb-surface-card__icon {
+  font-size: 3rem;
+  line-height: 1;
+  margin-bottom: var(--mb-space-4);
+}
+
+.mb-surface-card__title {
+  font-family: var(--mb-font-ui);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--mb-accent);
+  margin: 0 0 var(--mb-space-2) 0;
+}
+
+.mb-surface-card__text {
+  font-family: var(--mb-font-ui);
+  font-size: 0.95rem;
+  color: var(--mb-text-secondary);
+  line-height: 1.55;
+  margin: 0 0 var(--mb-space-3) 0;
+}
+
+.mb-surface-card__hint {
+  font-family: var(--mb-font-ui);
+  font-size: 0.875rem;
+  color: var(--mb-text-tertiary);
+  margin: 0 0 var(--mb-space-5) 0;
+}
+
+.mb-surface-card__btn {
+  padding: 0.65rem 1.25rem;
+  font-family: var(--mb-font-ui);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--mb-text-primary);
+  background: linear-gradient(135deg, var(--mb-accent) 0%, #a65495 100%);
+  border: none;
+  border-radius: var(--mb-radius-md);
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.mb-surface-card__btn:hover {
+  filter: brightness(1.05);
+}

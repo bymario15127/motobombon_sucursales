@@ -240,7 +240,6 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
       const totalGastosAnt = (gastosAnt?.total || 0) + comisionesTotalAnt;
       utilidadMesAnteriorValue = totalIngresosAnt - totalGastosAnt;
 
-      console.log(`✅ Utilidad acumulada ${anioActual} hasta mes ${mesActual}: ${utilidadMesAnteriorValue} (citas: ${citasAnteriores.length})`);
     } catch (error) {
       console.warn("⚠️ Error calculando utilidad de meses anteriores:", error.message);
       utilidadMesAnteriorValue = 0;

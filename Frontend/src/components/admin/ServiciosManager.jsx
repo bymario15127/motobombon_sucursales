@@ -288,6 +288,8 @@ export default function ServiciosManager() {
                     <img
                       src={servicio.imagen_bajo_cc}
                       alt={`${servicio.nombre} bajo CC`}
+                      loading="lazy"
+                      decoding="async"
                       style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                     />
                     <span
@@ -309,6 +311,8 @@ export default function ServiciosManager() {
                     <img
                       src={servicio.imagen_alto_cc}
                       alt={`${servicio.nombre} alto CC`}
+                      loading="lazy"
+                      decoding="async"
                       style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                     />
                     <span
@@ -328,7 +332,7 @@ export default function ServiciosManager() {
                   </div>
                 </div>
               ) : (
-                    <img
+                <img
                   src={servicio.imagen || "/img/default.jpg"}
                   alt={servicio.nombre}
                   loading="lazy"

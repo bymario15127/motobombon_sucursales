@@ -1,0 +1,29 @@
+/**
+ * Admin: alias sobre tokens globales (:root en motobombon-tokens.css)
+ */
+.admin-shell {
+  --admin-bg-canvas: var(--mb-bg-canvas);
+  --admin-bg-elevated: var(--mb-bg-elevated);
+  --admin-bg-inset: var(--mb-bg-inset);
+  --admin-border-subtle: var(--mb-border-subtle);
+  --admin-border-default: var(--mb-border-default);
+  --admin-border-accent: var(--mb-border-accent);
+  --admin-text-primary: var(--mb-text-primary);
+  --admin-text-secondary: var(--mb-text-secondary);
+  --admin-text-tertiary: var(--mb-text-tertiary);
+  --admin-text-muted: var(--mb-text-muted);
+  --admin-accent: var(--mb-accent);
+  --admin-accent-hover: var(--mb-accent-hover);
+  --admin-accent-soft: var(--mb-accent-soft);
+  --admin-radius-sm: var(--mb-radius-sm);
+  --admin-radius-md: var(--mb-radius-md);
+  --admin-radius-lg: var(--mb-radius-lg);
+  --admin-radius-pill: var(--mb-radius-pill);
+  --admin-space-1: var(--mb-space-1);
+  --admin-space-2: var(--mb-space-2);
+  --admin-space-3: var(--mb-space-3);
+  --admin-space-4: var(--mb-space-4);
+  --admin-space-5: var(--mb-space-5);
+  --admin-space-6: var(--mb-space-6);
+  --admin-font-ui: var(--mb-font-ui);
+}

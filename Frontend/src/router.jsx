@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import SucursalSelector from "./pages/SucursalSelector";
 import LandingPage from "./pages/LandingPage";
-import HomePage from "./pages/HomePage";
 import ClientePage from "./pages/ClientePage";
 import AdminPage from "./pages/AdminPage";
 import TallerPage from "./pages/TallerPage";

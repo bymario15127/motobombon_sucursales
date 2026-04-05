@@ -15,7 +15,7 @@ export default function LandingPage() {
   }, [sucursalId, navigate]);
 
   return (
-    <div className="centered-page" style={{ background: "#000000" }}>
+    <div className="centered-page">
       <div className="landing-wrap">
         <div className="landing-card">
           <button

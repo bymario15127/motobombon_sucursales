@@ -131,35 +131,41 @@ router.get("/email/:email", async (req, res) => {
 });
 
 // GET - Obtener todos los clientes con sus cupones y placa más reciente
-// NOTA: Las estadísticas solo incluyen citas normales (taller_id IS NULL)
+// Optimizado: 3 queries en batch en vez de 2N queries individuales
 router.get("/", async (req, res) => {
   try {
     const db = getDbFromRequest(req);
-    const clientes = await db.all('SELECT * FROM clientes ORDER BY lavadas_completadas DESC');
-    
-    // Agregar cupones y placa a cada cliente
-    const clientesConCupones = await Promise.all(
-      clientes.map(async (cliente) => {
-        const cupones = await db.all(
-          'SELECT codigo, usado, created_at, fecha_uso FROM cupones WHERE email_cliente = ? ORDER BY created_at DESC',
-          [cliente.email]
-        );
-        
-        // Obtener placa más reciente del cliente
-        const citaConPlaca = await db.get(
-          'SELECT placa FROM citas WHERE email = ? AND placa IS NOT NULL ORDER BY fecha DESC, id DESC LIMIT 1',
-          [cliente.email]
-        );
-        
-        return { 
-          ...cliente, 
-          cupones,
-          placa: citaConPlaca?.placa || null
-        };
-      })
-    );
-    
-    res.json(clientesConCupones);
+
+    const [clientes, allCupones, allPlacas] = await Promise.all([
+      db.all('SELECT * FROM clientes ORDER BY lavadas_completadas DESC'),
+      db.all('SELECT email_cliente, codigo, usado, created_at, fecha_uso FROM cupones ORDER BY created_at DESC'),
+      db.all(
+        `SELECT email, placa FROM citas
+         WHERE placa IS NOT NULL AND id IN (
+           SELECT MAX(id) FROM citas WHERE placa IS NOT NULL GROUP BY email
+         )`
+      ),
+    ]);
+
+    const cuponesPorEmail = {};
+    for (const c of allCupones) {
+      const key = c.email_cliente;
+      if (!cuponesPorEmail[key]) cuponesPorEmail[key] = [];
+      cuponesPorEmail[key].push({ codigo: c.codigo, usado: c.usado, created_at: c.created_at, fecha_uso: c.fecha_uso });
+    }
+
+    const placaPorEmail = {};
+    for (const p of allPlacas) {
+      placaPorEmail[p.email] = p.placa;
+    }
+
+    const result = clientes.map((cliente) => ({
+      ...cliente,
+      cupones: cuponesPorEmail[cliente.email] || [],
+      placa: placaPorEmail[cliente.email] || null,
+    }));
+
+    res.json(result);
   } catch (error) {
     console.error('Error obteniendo clientes:', error);
     res.status(500).json({ error: "Error interno del servidor" });
