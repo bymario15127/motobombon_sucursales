@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { addCita, getCitas } from "../services/citasService";
 import talleresService from "../services/talleresService";
 import serviciosService from "../services/serviciosService";
+import { getSucursalById } from "../config/sucursales";
 
 export default function TallerPage() {
   const { sucursalId } = useParams();
@@ -14,8 +15,7 @@ export default function TallerPage() {
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [motosEnEspera, setMotosEnEspera] = useState(0);
   
-  // Obtener el nombre de la sucursal del localStorage
-  const sucursalNombre = localStorage.getItem('motobombon_sucursal_nombre') || 'Sucursal';
+  const sucursalNombre = getSucursalById(sucursalId)?.nombre || 'Sucursal';
   
   const [form, setForm] = useState({
     taller_id: "",

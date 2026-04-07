@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import ReservaForm from "../components/Cliente/ReservaForm";
+import { getSucursalById } from "../config/sucursales";
 
 export default function ClientePage() {
   const location = useLocation();
   const { sucursalId } = useParams();
   const navigate = useNavigate();
 
-  // Obtener el nombre de la sucursal del localStorage
-  const sucursalNombre = localStorage.getItem('motobombon_sucursal_nombre') || 'Sucursal';
+  const sucursalNombre = getSucursalById(sucursalId)?.nombre || 'Sucursal';
 
   useEffect(() => {
     // Si no hay sucursal en la URL, redirigir al selector

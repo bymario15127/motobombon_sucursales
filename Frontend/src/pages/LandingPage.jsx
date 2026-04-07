@@ -1,12 +1,13 @@
 // src/pages/LandingPage.jsx
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { getSucursalById } from "../config/sucursales";
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const { sucursalId } = useParams();
 
-  const sucursalNombre = localStorage.getItem("motobombon_sucursal_nombre") || "Sucursal";
+  const sucursalNombre = getSucursalById(sucursalId)?.nombre || "Sucursal";
 
   useEffect(() => {
     if (!sucursalId) {
