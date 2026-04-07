@@ -15,7 +15,14 @@ export default function TallerPage() {
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [motosEnEspera, setMotosEnEspera] = useState(0);
   
-  const sucursalNombre = getSucursalById(sucursalId)?.nombre || 'Sucursal';
+  const sucursal = getSucursalById(sucursalId);
+  const sucursalNombre = sucursal?.nombre || 'Sucursal';
+
+  // Sincronizar localStorage con la URL para que las llamadas API usen la sucursal correcta
+  if (sucursalId) {
+    localStorage.setItem('motobombon_sucursal', sucursalId);
+    if (sucursal) localStorage.setItem('motobombon_sucursal_nombre', sucursal.nombre);
+  }
   
   const [form, setForm] = useState({
     taller_id: "",

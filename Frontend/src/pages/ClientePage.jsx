@@ -8,7 +8,14 @@ export default function ClientePage() {
   const { sucursalId } = useParams();
   const navigate = useNavigate();
 
-  const sucursalNombre = getSucursalById(sucursalId)?.nombre || 'Sucursal';
+  const sucursal = getSucursalById(sucursalId);
+  const sucursalNombre = sucursal?.nombre || 'Sucursal';
+
+  // Sincronizar localStorage con la URL para que las llamadas API usen la sucursal correcta
+  if (sucursalId) {
+    localStorage.setItem('motobombon_sucursal', sucursalId);
+    if (sucursal) localStorage.setItem('motobombon_sucursal_nombre', sucursal.nombre);
+  }
 
   useEffect(() => {
     // Si no hay sucursal en la URL, redirigir al selector
