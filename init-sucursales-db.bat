@@ -35,7 +35,7 @@ echo   Admin: admin_centro / centro123
 echo   Supervisor: supervisor_centro / supervisor_centro
 echo.
 echo SUCURSAL SUR:
-echo   Admin: admin_sur / sur123
+echo   Admin: admin_sur / Bombonsur2026*
 echo   Supervisor: supervisor_sur / supervisor_sur
 echo.
 echo ========================================

@@ -28,7 +28,7 @@ const DEFAULT_USERS_BY_SUCURSAL = {
   sucursal2: [
     {
       username: 'admin_sur',
-      password: 'sur123',
+      password: 'Bombonsur2026*',
       role: 'admin',
       name: 'Admin Sur',
       email: 'admin_sur@motobombon.com'

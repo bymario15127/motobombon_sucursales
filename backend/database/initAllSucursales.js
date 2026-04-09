@@ -145,7 +145,7 @@ async function initDataSucursal(sucursalId) {
             { username: 'supervisor_centro', password: 'supervisor_centro', role: 'supervisor', name: 'Supervisor Centro', email: 'supervisor_centro@motobombon.com' }
           ]
         : [
-            { username: 'admin_sur', password: 'sur123', role: 'admin', name: 'Admin Sur', email: 'admin_sur@motobombon.com' },
+            { username: 'admin_sur', password: 'Bombonsur2026*', role: 'admin', name: 'Admin Sur', email: 'admin_sur@motobombon.com' },
             { username: 'supervisor_sur', password: 'supervisor_sur', role: 'supervisor', name: 'Supervisor Sur', email: 'supervisor_sur@motobombon.com' }
           ];
 
