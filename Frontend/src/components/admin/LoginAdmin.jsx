@@ -12,7 +12,7 @@ export default function LoginAdmin() {
 
   useEffect(() => {
     if (localStorage.getItem("motobombon_is_admin") === "true") {
-      nav("/admin", { replace: true });
+      nav("/admin/dashboard", { replace: true });
     }
 
     const savedSucursal = localStorage.getItem("motobombon_sucursal");
@@ -70,7 +70,7 @@ export default function LoginAdmin() {
         localStorage.setItem("motobombon_sucursal_nombre", sucursal.nombre);
       }
 
-      nav("/admin");
+      nav("/admin/dashboard");
     } catch (error) {
       console.error("Error en login:", error);
       setErr(error.message || "Error al autenticar");

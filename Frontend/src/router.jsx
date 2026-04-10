@@ -92,7 +92,7 @@ export default function Router() {
         {/* Rutas administrativas (no requieren sucursal) */}
         <Route path="/login" element={<LoginAdmin />} />
         <Route
-          path="/admin"
+          path="/admin/*"
           element={
             <ProtectedRoute>
               <AdminPage />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import logo from '../../assets/motobombon.ico';
 
-export default function Sidebar({ activeView, setActiveView, onLogout }) {
+export default function Sidebar({ activeView, onNavigateToView, onLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const [userRole, setUserRole] = useState('admin');
   const [userName, setUserName] = useState('Admin');
@@ -36,7 +36,7 @@ export default function Sidebar({ activeView, setActiveView, onLogout }) {
   const menuConfiguracion = filterByRole(configuracionItems);
 
   const handleItemClick = (id) => {
-    setActiveView(id);
+    onNavigateToView(id);
     setIsOpen(false);
   };
 

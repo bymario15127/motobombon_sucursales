@@ -1,6 +1,8 @@
 // src/components/admin/AdminLayout.jsx
-import { useState } from "react";
+import { useEffect, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import { segmentToViewId, viewIdToPath } from "../../config/adminNav.js";
 import Dashboard from "./Dashboard";
 import CalendarAdmin from "./CalendarAdmin";
 import PanelAdmin from "./PanelAdmin";
@@ -13,7 +15,24 @@ import ProductosManagement from "./ProductosManagement";
 import FinanzasManager from "./FinanzasManager";
 
 export default function AdminLayout() {
-  const [activeView, setActiveView] = useState('dashboard');
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/admin" || location.pathname === "/admin/") {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
+  const activeView = useMemo(() => {
+    const segments = location.pathname.replace(/^\/admin\/?/, "").split("/").filter(Boolean);
+    const segment = segments[0] || "dashboard";
+    return segmentToViewId(segment);
+  }, [location.pathname]);
+
+  const navigateToView = (viewId) => {
+    navigate(viewIdToPath(viewId));
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("motobombon_token");
@@ -66,7 +85,7 @@ export default function AdminLayout() {
           {(() => {
             switch (activeView) {
               case 'dashboard':
-                return <Dashboard setActiveView={setActiveView} />;
+                return <Dashboard onNavigateToView={navigateToView} />;
               case 'calendar':
                 return <CalendarAdmin />;
               case 'appointments':
@@ -107,7 +126,7 @@ export default function AdminLayout() {
       {/* Sidebar con menú hamburguesa integrado */}
       <Sidebar
         activeView={activeView}
-        setActiveView={setActiveView}
+        onNavigateToView={navigateToView}
         onLogout={handleLogout}
       />
 

@@ -5,7 +5,7 @@ import { getCitas } from "../../services/citasService";
 import serviciosService from "../../services/serviciosService";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, Label } from 'recharts';
 
-export default function Dashboard({ setActiveView }) {
+export default function Dashboard({ onNavigateToView }) {
   const [citas, setCitas] = useState([]);
   const [serviciosCount, setServiciosCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -180,19 +180,19 @@ export default function Dashboard({ setActiveView }) {
         <h3 className="admin-card-title" style={{ textAlign: 'left', marginBottom: 16 }}>⚡ Acciones Rápidas</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-[#EB0463] to-[#ff1a75] text-white rounded-lg hover:shadow-lg transition-all"
-            onClick={() => setActiveView && setActiveView('appointments')}>
+            onClick={() => onNavigateToView && onNavigateToView('appointments')}>
             <span className="text-2xl">➕</span>
             <span className="font-medium">Nueva Cita</span>
           </button>
           
           <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-[#EB0463] to-[#ff1a75] text-white rounded-lg hover:shadow-lg transition-all"
-            onClick={() => setActiveView && setActiveView('calendar')}>
+            onClick={() => onNavigateToView && onNavigateToView('calendar')}>
             <span className="text-2xl">📅</span>
             <span className="font-medium">Ver Calendario</span>
           </button>
           
           <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-[#EB0463] to-[#ff1a75] text-white rounded-lg hover:shadow-lg transition-all"
-            onClick={() => setActiveView && setActiveView('services')}>
+            onClick={() => onNavigateToView && onNavigateToView('services')}>
             <span className="text-2xl">🏍️</span>
             <span className="font-medium">Gestionar Servicios</span>
           </button>
