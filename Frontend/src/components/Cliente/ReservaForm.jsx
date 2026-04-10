@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { addCita, getCitas } from "../../services/citasService";
 import serviciosService from "../../services/serviciosService";
+import { normalizeMediaUrl } from "../../utils/mediaUrl.js";
 
 export default function ReservaForm({ sucursalId }) {
   const [form, setForm] = useState({
@@ -388,9 +389,10 @@ export default function ReservaForm({ sucursalId }) {
                   if (esBajoCC) precioMostrar = s.precio_bajo_cc;
                   else if (esAltoCC) precioMostrar = s.precio_alto_cc;
                 }
-                let imagenMostrar = s.imagen || s.img || "/img/default.jpg";
-                if (esBajoCC && s.imagen_bajo_cc) imagenMostrar = s.imagen_bajo_cc;
-                else if (esAltoCC && s.imagen_alto_cc) imagenMostrar = s.imagen_alto_cc;
+                let rawImagen = s.imagen || s.img || "/img/default.jpg";
+                if (esBajoCC && s.imagen_bajo_cc) rawImagen = s.imagen_bajo_cc;
+                else if (esAltoCC && s.imagen_alto_cc) rawImagen = s.imagen_alto_cc;
+                const imagenMostrar = normalizeMediaUrl(rawImagen) || "/img/default.jpg";
                 return (
                   <div
                     key={`${s.tipo}-${s.id || s.nombre}`}

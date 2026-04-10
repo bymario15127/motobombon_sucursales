@@ -4,6 +4,7 @@ import serviciosService, {
   uploadImagen,
   invalidateServiciosCache,
 } from "../../services/serviciosService";
+import { normalizeMediaUrl } from "../../utils/mediaUrl.js";
 
 const DEFAULT_FORM = {
   nombre: "",
@@ -220,7 +221,7 @@ export default function ServiciosManager() {
                   {formData.imagen_bajo_cc && (
                     <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 10 }}>
                       <img
-                        src={formData.imagen_bajo_cc}
+                        src={normalizeMediaUrl(formData.imagen_bajo_cc) || ""}
                         alt="preview bajo cc"
                         loading="lazy"
                         decoding="async"
@@ -247,7 +248,7 @@ export default function ServiciosManager() {
                   {formData.imagen_alto_cc && (
                     <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 10 }}>
                       <img
-                        src={formData.imagen_alto_cc}
+                        src={normalizeMediaUrl(formData.imagen_alto_cc) || ""}
                         alt="preview alto cc"
                         loading="lazy"
                         decoding="async"
@@ -279,20 +280,16 @@ export default function ServiciosManager() {
       )}
 
       <div className="servicios-grid">
-        {servicios.map((servicio, idx) => (
+        {servicios.map((servicio) => (
           <div key={servicio.id} className="service-card">
             <div className="service-images">
               {servicio.imagen_bajo_cc && servicio.imagen_alto_cc ? (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <div className="service-images__grid">
                   <div style={{ position: "relative" }}>
                     <img
-                      src={servicio.imagen_bajo_cc}
+                      src={normalizeMediaUrl(servicio.imagen_bajo_cc) || ""}
                       alt={`${servicio.nombre} bajo CC`}
-                      width={400}
-                      height={120}
-                      sizes="(max-width: 640px) 45vw, 200px"
-                      loading={idx < 2 ? "eager" : "lazy"}
-                      fetchPriority={idx < 2 ? "high" : "low"}
+                      loading="lazy"
                       decoding="async"
                       style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                     />
@@ -313,13 +310,9 @@ export default function ServiciosManager() {
                   </div>
                   <div style={{ position: "relative" }}>
                     <img
-                      src={servicio.imagen_alto_cc}
+                      src={normalizeMediaUrl(servicio.imagen_alto_cc) || ""}
                       alt={`${servicio.nombre} alto CC`}
-                      width={400}
-                      height={120}
-                      sizes="(max-width: 640px) 45vw, 200px"
-                      loading={idx < 2 ? "eager" : "lazy"}
-                      fetchPriority={idx < 2 ? "high" : "low"}
+                      loading="lazy"
                       decoding="async"
                       style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                     />
@@ -341,13 +334,9 @@ export default function ServiciosManager() {
                 </div>
               ) : (
                 <img
-                  src={servicio.imagen || "/img/default.jpg"}
+                  src={normalizeMediaUrl(servicio.imagen) || "/img/default.jpg"}
                   alt={servicio.nombre}
-                  width={800}
-                  height={120}
-                  sizes="(max-width: 640px) 90vw, 400px"
-                  loading={idx < 2 ? "eager" : "lazy"}
-                  fetchPriority={idx < 2 ? "high" : "low"}
+                  loading="lazy"
                   decoding="async"
                   style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                 />

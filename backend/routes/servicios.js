@@ -7,6 +7,17 @@ const router = express.Router();
 // Orden preferido para mostrar servicios clave primero
 const PREFERRED_ORDER = ["BASIC", "DELUXE", "GOLD"];
 
+/** Evita rutas relativas sin "/" (desde /admin el browser resolvía mal uploads/...) */
+function normalizeMediaUrl(url) {
+  if (url == null || url === "") return null;
+  const s = String(url).trim();
+  if (!s) return null;
+  if (s.startsWith("http://") || s.startsWith("https://")) return s;
+  if (s.startsWith("//")) return s;
+  if (s.startsWith("/")) return s;
+  return `/${s.replace(/^\.\//, "")}`;
+}
+
 // GET solo servicios
 router.get("/", async (req, res) => {
   try {
@@ -16,7 +27,13 @@ router.get("/", async (req, res) => {
       `SELECT * FROM servicios
        ORDER BY CASE UPPER(nombre) ${orderCase} ELSE 99 END, created_at, id`
     );
-    const serviciosConTipo = servicios.map(s => ({...s, tipo: 'servicio'}));
+    const serviciosConTipo = servicios.map((s) => ({
+      ...s,
+      tipo: "servicio",
+      imagen: normalizeMediaUrl(s.imagen) || "/img/default.jpg",
+      imagen_bajo_cc: normalizeMediaUrl(s.imagen_bajo_cc),
+      imagen_alto_cc: normalizeMediaUrl(s.imagen_alto_cc),
+    }));
     res.json(serviciosConTipo);
   } catch (error) {
     console.error("Error en GET /api/servicios:", error);
@@ -68,11 +85,11 @@ router.post("/", async (req, res) => {
           duracionNum,
           Number.isNaN(precioNum) ? null : precioNum,
           descripcion || "",
-          imagen || "/img/default.jpg",
+          normalizeMediaUrl(imagen) || "/img/default.jpg",
           Number.isNaN(precioBajoNum) ? null : precioBajoNum,
           Number.isNaN(precioAltoNum) ? null : precioAltoNum,
-          imagen_bajo_cc || null,
-          imagen_alto_cc || null,
+          normalizeMediaUrl(imagen_bajo_cc),
+          normalizeMediaUrl(imagen_alto_cc),
           Number.isNaN(precioBaseBajoNum) ? null : precioBaseBajoNum,
           Number.isNaN(precioBaseAltoNum) ? null : precioBaseAltoNum,
         ]
@@ -144,11 +161,11 @@ router.put("/:id", async (req, res) => {
         Number.isNaN(duracionNum) ? null : duracionNum,
         Number.isNaN(precioNum) ? null : precioNum,
         descripcion || "",
-        imagen || "/img/default.jpg",
+        normalizeMediaUrl(imagen) || "/img/default.jpg",
         Number.isNaN(precioBajoNum) ? null : precioBajoNum,
         Number.isNaN(precioAltoNum) ? null : precioAltoNum,
-        imagen_bajo_cc || null,
-        imagen_alto_cc || null,
+        normalizeMediaUrl(imagen_bajo_cc),
+        normalizeMediaUrl(imagen_alto_cc),
         Number.isNaN(precioBaseBajoNum) ? null : precioBaseBajoNum,
         Number.isNaN(precioBaseAltoNum) ? null : precioBaseAltoNum,
         id,

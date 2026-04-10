@@ -1909,6 +1909,29 @@ button:disabled:hover {
   flex-direction: column;
 }
 
+/* Bloque de imágenes en admin (evita colapso / rutas mal resueltas) */
+.service-images {
+  width: 100%;
+  min-height: 120px;
+  flex-shrink: 0;
+  background: #1a1a1a;
+}
+
+.service-images__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  min-height: 120px;
+  width: 100%;
+}
+
+.service-images img {
+  display: block;
+  min-height: 120px;
+  width: 100%;
+  object-fit: cover;
+}
+
 .service-card:hover {
   box-shadow: 0 8px 24px rgba(230, 57, 70, 0.2);
   transform: translateY(-4px);
