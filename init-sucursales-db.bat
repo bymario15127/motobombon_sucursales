@@ -32,11 +32,11 @@ echo ========================================
 echo.
 echo SUCURSAL CENTRO:
 echo   Admin: admin_centro / centro123
-echo   Supervisor: supervisor_centro / supervisor_centro
+echo   Supervisor: supervisor_centro / supercentro2026*
 echo.
 echo SUCURSAL SUR:
 echo   Admin: admin_sur / Bombonsur2026*
-echo   Supervisor: supervisor_sur / supervisor_sur
+echo   Supervisor: supervisor_sur / supersur2026*
 echo.
 echo ========================================
 pause

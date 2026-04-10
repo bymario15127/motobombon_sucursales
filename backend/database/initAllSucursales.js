@@ -142,11 +142,11 @@ async function initDataSucursal(sucursalId) {
       const usuarios = sucursalId === 'sucursal1' 
         ? [
             { username: 'admin_centro', password: 'centro123', role: 'admin', name: 'Admin Centro', email: 'admin_centro@motobombon.com' },
-            { username: 'supervisor_centro', password: 'supervisor_centro', role: 'supervisor', name: 'Supervisor Centro', email: 'supervisor_centro@motobombon.com' }
+            { username: 'supervisor_centro', password: 'supercentro2026*', role: 'supervisor', name: 'Supervisor Centro', email: 'supervisor_centro@motobombon.com' }
           ]
         : [
             { username: 'admin_sur', password: 'Bombonsur2026*', role: 'admin', name: 'Admin Sur', email: 'admin_sur@motobombon.com' },
-            { username: 'supervisor_sur', password: 'supervisor_sur', role: 'supervisor', name: 'Supervisor Sur', email: 'supervisor_sur@motobombon.com' }
+            { username: 'supervisor_sur', password: 'supersur2026*', role: 'supervisor', name: 'Supervisor Sur', email: 'supervisor_sur@motobombon.com' }
           ];
 
       for (const usuario of usuarios) {

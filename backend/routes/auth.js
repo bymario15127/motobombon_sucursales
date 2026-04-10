@@ -19,7 +19,7 @@ const DEFAULT_USERS_BY_SUCURSAL = {
     },
     {
       username: 'supervisor_centro',
-      password: 'supervisor_centro',
+      password: 'supercentro2026*',
       role: 'supervisor',
       name: 'Supervisor Centro',
       email: 'supervisor_centro@motobombon.com'
@@ -35,7 +35,7 @@ const DEFAULT_USERS_BY_SUCURSAL = {
     },
     {
       username: 'supervisor_sur',
-      password: 'supervisor_sur',
+      password: 'supersur2026*',
       role: 'supervisor',
       name: 'Supervisor Sur',
       email: 'supervisor_sur@motobombon.com'
