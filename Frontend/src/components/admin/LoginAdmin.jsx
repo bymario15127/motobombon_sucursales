@@ -43,12 +43,21 @@ export default function LoginAdmin() {
         }),
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Error al autenticar");
+      const raw = await response.text();
+      let data;
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        const hint =
+          raw.trim().startsWith("<") || response.status >= 502
+            ? " Suele ser backend caído o Nginx con 502. VPS: pm2 status; pm2 logs; curl http://127.0.0.1:3000/api/health"
+            : "";
+        throw new Error(`El servidor no devolvió JSON.${hint}`);
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Error al autenticar");
+      }
 
       localStorage.setItem("motobombon_token", data.token);
       localStorage.setItem("motobombon_is_admin", "true");

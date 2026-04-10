@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
-import sharp from "sharp";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import sucursalMiddleware from "./middleware/sucursal.js";
@@ -159,6 +158,7 @@ app.post('/api/upload-image', uploadRateLimiter, async (req, res) => {
     let outExt = mime.split("/")[1].replace("jpeg", "jpg");
 
     try {
+      const { default: sharp } = await import("sharp");
       outBuffer = await sharp(inputBuffer)
         .rotate()
         .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
