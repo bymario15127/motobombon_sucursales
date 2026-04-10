@@ -1,8 +1,8 @@
 // src/components/admin/CalendarAdmin.jsx
 import { useState, useEffect } from 'react';
-import { format, eachDayOfInterval, isSameDay, addMonths, subMonths } from 'date-fns';
+import { format, eachDayOfInterval, isSameDay, addMonths, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { getCitasAll, updateCita, deleteCita } from '../../services/citasService';
+import { getCitasRango, updateCita, deleteCita } from '../../services/citasService';
 
 const CalendarAdmin = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -11,10 +11,10 @@ const CalendarAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [dayAppointments, setDayAppointments] = useState([]);
 
-  // Cargar todas las citas
+  // Solo citas del mes visible (evita descargar todo el historial)
   useEffect(() => {
     loadCitas();
-  }, []);
+  }, [currentMonth]);
 
   // Filtrar citas del día seleccionado (comparación por string para evitar problemas de zona horaria)
   useEffect(() => {
@@ -30,8 +30,10 @@ const CalendarAdmin = () => {
   const loadCitas = async () => {
     try {
       setLoading(true);
-      const data = await getCitasAll(); // Cargar TODAS las citas para el calendario
-      setCitas(data);
+      const desde = format(startOfMonth(currentMonth), 'yyyy-MM-dd');
+      const hasta = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
+      const data = await getCitasRango(desde, hasta);
+      setCitas(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error al cargar citas:', error);
     } finally {
@@ -118,11 +120,19 @@ const CalendarAdmin = () => {
   };
 
   const handlePreviousMonth = () => {
-    setCurrentMonth(prev => subMonths(prev, 1));
+    setCurrentMonth((prev) => {
+      const next = subMonths(prev, 1);
+      setSelectedDate(startOfMonth(next));
+      return next;
+    });
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(prev => addMonths(prev, 1));
+    setCurrentMonth((prev) => {
+      const next = addMonths(prev, 1);
+      setSelectedDate(startOfMonth(next));
+      return next;
+    });
   };
 
   const handleDayClick = (day) => {

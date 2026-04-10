@@ -138,7 +138,10 @@ router.get("/", async (req, res) => {
 
     const [clientes, allCupones, allPlacas] = await Promise.all([
       db.all('SELECT * FROM clientes ORDER BY lavadas_completadas DESC'),
-      db.all('SELECT email_cliente, codigo, usado, created_at, fecha_uso FROM cupones ORDER BY created_at DESC'),
+      // Solo cupones pendientes: la UI solo muestra no usados; reduce mucho el JSON
+      db.all(
+        'SELECT email_cliente, codigo, usado, created_at, fecha_uso FROM cupones WHERE usado = 0 ORDER BY created_at DESC'
+      ),
       db.all(
         `SELECT email, placa FROM citas
          WHERE placa IS NOT NULL AND id IN (

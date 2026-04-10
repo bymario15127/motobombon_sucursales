@@ -15,10 +15,21 @@ export async function getCitas() {
 }
 
 export async function getCitasAll() {
-  // Obtiene todas las citas de todos los días
+  // Obtiene todas las citas (pesado; preferir getCitasRango en calendario)
   const res = await fetchWithSucursal(`${API_URL}?all=true`);
   if (!res.ok) {
     console.error("Error fetching citas:", res.status);
+    return [];
+  }
+  return res.json();
+}
+
+/** Citas entre dos fechas YYYY-MM-DD (inclusive). Ideal para el calendario por mes. */
+export async function getCitasRango(desde, hasta) {
+  const q = new URLSearchParams({ desde, hasta });
+  const res = await fetchWithSucursal(`${API_URL}?${q.toString()}`);
+  if (!res.ok) {
+    console.error("Error fetching citas rango:", res.status);
     return [];
   }
   return res.json();

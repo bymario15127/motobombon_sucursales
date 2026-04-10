@@ -279,7 +279,7 @@ export default function ServiciosManager() {
       )}
 
       <div className="servicios-grid">
-        {servicios.map((servicio) => (
+        {servicios.map((servicio, idx) => (
           <div key={servicio.id} className="service-card">
             <div className="service-images">
               {servicio.imagen_bajo_cc && servicio.imagen_alto_cc ? (
@@ -288,7 +288,11 @@ export default function ServiciosManager() {
                     <img
                       src={servicio.imagen_bajo_cc}
                       alt={`${servicio.nombre} bajo CC`}
-                      loading="lazy"
+                      width={400}
+                      height={120}
+                      sizes="(max-width: 640px) 45vw, 200px"
+                      loading={idx < 2 ? "eager" : "lazy"}
+                      fetchPriority={idx < 2 ? "high" : "low"}
                       decoding="async"
                       style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                     />
@@ -311,7 +315,11 @@ export default function ServiciosManager() {
                     <img
                       src={servicio.imagen_alto_cc}
                       alt={`${servicio.nombre} alto CC`}
-                      loading="lazy"
+                      width={400}
+                      height={120}
+                      sizes="(max-width: 640px) 45vw, 200px"
+                      loading={idx < 2 ? "eager" : "lazy"}
+                      fetchPriority={idx < 2 ? "high" : "low"}
                       decoding="async"
                       style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                     />
@@ -335,7 +343,11 @@ export default function ServiciosManager() {
                 <img
                   src={servicio.imagen || "/img/default.jpg"}
                   alt={servicio.nombre}
-                  loading="lazy"
+                  width={800}
+                  height={120}
+                  sizes="(max-width: 640px) 90vw, 400px"
+                  loading={idx < 2 ? "eager" : "lazy"}
+                  fetchPriority={idx < 2 ? "high" : "low"}
                   decoding="async"
                   style={{ width: "100%", height: 120, objectFit: "cover", borderRadius: 6 }}
                 />

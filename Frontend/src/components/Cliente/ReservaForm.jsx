@@ -397,7 +397,14 @@ export default function ReservaForm({ sucursalId }) {
                     className={`servicio-card ${form.servicio === s.nombre ? "selected" : ""}`}
                     onClick={() => handleServicioSelect(s)}
                   >
-                    <img src={imagenMostrar} alt={s.nombre} loading="lazy" />
+                    <img
+                      src={imagenMostrar}
+                      alt={s.nombre}
+                      width={400}
+                      height={240}
+                      loading="lazy"
+                      decoding="async"
+                    />
                     <div className="servicio-info">
                       <p className="servicio-nombre">{s.nombre}</p>
                       {precioMostrar && (

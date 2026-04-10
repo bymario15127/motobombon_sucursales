@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import fs from "fs";
+import sharp from "sharp";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import sucursalMiddleware from "./middleware/sucursal.js";
@@ -62,7 +63,13 @@ const servicesDir = path.join(uploadsDir, 'services');
 if (!fs.existsSync(servicesDir)) {
   fs.mkdirSync(servicesDir, { recursive: true });
 }
-app.use('/uploads', express.static(uploadsDir));
+app.use(
+  "/uploads",
+  express.static(uploadsDir, {
+    maxAge: process.env.NODE_ENV === "production" ? "7d" : 0,
+    immutable: process.env.NODE_ENV === "production",
+  })
+);
 
 // Rutas sin middleware de sucursal
 app.use("/api/auth", authRouter);
@@ -147,14 +154,34 @@ app.post('/api/upload-image', uploadRateLimiter, async (req, res) => {
       return res.status(413).json({ error: 'Imagen demasiado grande (máx 10 MB)' });
     }
     
-    const ext = mime.split('/')[1].replace('jpeg', 'jpg');
-    const filename = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const inputBuffer = Buffer.from(base64Data, "base64");
+    let outBuffer = inputBuffer;
+    let outExt = mime.split("/")[1].replace("jpeg", "jpg");
+
+    try {
+      outBuffer = await sharp(inputBuffer)
+        .rotate()
+        .resize(1200, 1200, { fit: "inside", withoutEnlargement: true })
+        .jpeg({ quality: 82, mozjpeg: true })
+        .toBuffer();
+      outExt = "jpg";
+      console.log(
+        "🗜️ Imagen optimizada:",
+        Math.round(inputBuffer.length / 1024),
+        "KB →",
+        Math.round(outBuffer.length / 1024),
+        "KB"
+      );
+    } catch (optErr) {
+      console.warn("⚠️ No se pudo optimizar con sharp, guardando original:", optErr.message);
+    }
+
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${outExt}`;
     const filePath = path.join(servicesDir, filename);
-    
+
     console.log("💾 Guardando en:", filePath);
-    
-    // Guardar archivo de forma asíncrona para no bloquear el event loop
-    await fs.promises.writeFile(filePath, Buffer.from(base64Data, 'base64'));
+
+    await fs.promises.writeFile(filePath, outBuffer);
     
     // Verificar que el archivo se creó
     if (!fs.existsSync(filePath)) {

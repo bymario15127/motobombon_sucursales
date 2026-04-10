@@ -22,8 +22,18 @@ router.get("/", async (req, res) => {
     
     const todayStr = today();
     
-    // Si se pasa ?all=true, devuelve todas las citas
+    // Si se pasa ?all=true, devuelve todas las citas (evitar en admin; usar desde/hasta)
     const incluirTodas = req.query.all === 'true';
+    // Rango inclusive YYYY-MM-DD: mucho más liviano que all=true para calendario
+    const desde = req.query.desde;
+    const hasta = req.query.hasta;
+    const dateRe = /^\d{4}-\d{2}-\d{2}$/;
+    const rangoValido =
+      desde &&
+      hasta &&
+      dateRe.test(String(desde)) &&
+      dateRe.test(String(hasta)) &&
+      String(desde) <= String(hasta);
     
     // Construir query evitando fallar si no existe tabla lavadores
     let joinLavadores = '';
@@ -44,18 +54,22 @@ router.get("/", async (req, res) => {
     } catch (_) { /* ignore */ }
 
     let query = `SELECT c.*${joinLavadores ? ', l.nombre as lavador_nombre' : ''} FROM citas c${joinLavadores}`;
-    
-    if (!incluirTodas) {
+    let queryParams = [];
+
+    if (rangoValido) {
+      query += ` WHERE c.fecha >= ? AND c.fecha <= ?${filtroEliminadas}`;
+      queryParams = [desde, hasta];
+    } else if (!incluirTodas) {
       query += ` WHERE c.fecha = ?${filtroEliminadas}`;
+      queryParams = [todayStr];
     } else {
       query += filtroEliminadas ? ` WHERE c.deleted_at IS NULL` : '';
     }
-    
+
     query += ` ORDER BY c.fecha ASC, c.hora ASC`;
-    
-    const citas = incluirTodas 
-      ? await db.all(query)
-      : await db.all(query, [todayStr]);
+
+    const citas =
+      queryParams.length > 0 ? await db.all(query, queryParams) : await db.all(query);
     
     res.json(citas);
   } catch (error) {
