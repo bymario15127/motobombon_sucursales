@@ -7,7 +7,25 @@
  * Obtiene la sucursal actual del localStorage
  */
 export function getSucursalActual() {
-  return localStorage.getItem('motobombon_sucursal') || 'sucursal1';
+  // 1. Intentar obtener la sucursal directamente de la URL (ruta web)
+  // Ej: /sucursal2/reserva -> ['', 'sucursal2', 'reserva']
+  if (typeof window !== 'undefined') {
+    const pathParts = window.location.pathname.split('/');
+    if (pathParts.length > 1 && pathParts[1].startsWith('sucursal')) {
+      return pathParts[1];
+    }
+  }
+
+  // 2. Fallback a localStorage de forma segura
+  try {
+    const fromStorage = localStorage.getItem('motobombon_sucursal');
+    if (fromStorage) return fromStorage;
+  } catch (error) {
+    console.warn("localStorage no está disponible", error);
+  }
+
+  // 3. Defaults
+  return 'sucursal1';
 }
 
 /**
