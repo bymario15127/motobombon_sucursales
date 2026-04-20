@@ -72,7 +72,7 @@ export default function ProductosManagement() {
     if (activeTab === 'reportes') {
       cargarReporteGanancias();
     }
-  }, [activeTab, filtroFecha]);
+  }, [activeTab, filtroFecha, desde, hasta]);
 
   const cargarProductos = async () => {
     try {
