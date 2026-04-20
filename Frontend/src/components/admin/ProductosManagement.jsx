@@ -53,6 +53,8 @@ export default function ProductosManagement() {
   const [desde, setDesde] = useState(firstOfMonthStr);
   const [hasta, setHasta] = useState(todayStr);
   const [reporteGanancias, setReporteGanancias] = useState([]);
+  const [metodosPago, setMetodosPago] = useState({ qr: 0, efectivo: 0, tarjeta: 0 });
+  const [ingresosMetodos, setIngresosMetodos] = useState({ qr: 0, efectivo: 0, tarjeta: 0 });
 
   useEffect(() => {
     const token = localStorage.getItem("motobombon_token");
@@ -218,7 +220,13 @@ export default function ProductosManagement() {
     try {
       setLoadingReporte(true);
       const data = await obtenerReporteGanancias(desde, hasta);
-      setReporteGanancias(Array.isArray(data) ? data : []);
+      if (data && data.reportes) {
+        setReporteGanancias(data.reportes);
+        setMetodosPago(data.metodos_pago || { qr: 0, efectivo: 0, tarjeta: 0 });
+        setIngresosMetodos(data.ingresos_metodos || { qr: 0, efectivo: 0, tarjeta: 0 });
+      } else {
+        setReporteGanancias(Array.isArray(data) ? data : []);
+      }
     } catch (error) {
       setMessage(`❌ Error: ${error.response?.data?.error || error.message}`);
     } finally {
@@ -526,71 +534,217 @@ export default function ProductosManagement() {
 
       {/* TAB: REPORTES */}
       {activeTab === 'reportes' && (
-        <div className="tab-content">
-          <h3 className="admin-card-title">📊 Reportes de Ventas</h3>
-          <p className="info-text">
-            Usa el rango para ver totales que cuadran con Finanzas.
-          </p>
+        <div className="tab-content" style={{ padding: '0px' }}>
+          {/* Filtros de Fecha estilo Nómina */}
+          <div style={{ 
+            background: 'linear-gradient(135deg, rgba(235, 4, 99, 0.1) 0%, rgba(166, 84, 149, 0.1) 100%)',
+            padding: '20px',
+            borderRadius: '12px',
+            marginBottom: '24px',
+            border: '2px solid #EB0463',
+            marginTop: '20px'
+          }}>
+            <h3 className="admin-section-title" style={{ margin: '0 0 16px 0', fontSize: '18px' }}>📅 Seleccionar Rango de Fechas para Reportes</h3>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <label className="admin-card-label" style={{ fontWeight: '600' }}>Desde:</label>
+                <input
+                  type="date"
+                  value={desde}
+                  onChange={(e) => setDesde(e.target.value)}
+                  style={{
+                    padding: '12px 16px',
+                    borderRadius: '10px',
+                    border: '2px solid #EB0463',
+                    fontSize: '15px',
+                    fontWeight: '500',
+                    background: '#f3f4f6',
+                    color: '#000000',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    outline: 'none'
+                  }}
+                />
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <label className="admin-card-label" style={{ fontWeight: '600' }}>Hasta:</label>
+                <input
+                  type="date"
+                  value={hasta}
+                  onChange={(e) => setHasta(e.target.value)}
+                  style={{
+                    padding: '12px 16px',
+                    borderRadius: '10px',
+                    border: '2px solid #a65495',
+                    fontSize: '15px',
+                    fontWeight: '500',
+                    background: '#f3f4f6',
+                    color: '#1f2937',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    outline: 'none'
+                  }}
+                />
+              </div>
 
-          <div className="form-section" style={{marginBottom: '1rem'}}>
-            <div className="input-group">
-              <input
-                type="date"
-                value={desde}
-                onChange={(e) => setDesde(e.target.value)}
-              />
-              <input
-                type="date"
-                value={hasta}
-                onChange={(e) => setHasta(e.target.value)}
-              />
-              <button className="btn-primary" type="button" onClick={cargarReporteGanancias}>
-                Actualizar
+              <button
+                type="button" 
+                onClick={cargarReporteGanancias}
+                className="btn-neon-pill"
+                style={{ marginLeft: 'auto', whiteSpace: 'nowrap' }}
+              >
+                📊 Actualizar Reporte
               </button>
             </div>
+            <p className="info-text" style={{ margin: '12px 0 0 0', fontSize: '13px', color: '#666' }}>
+              ℹ️ Usa el rango para ver totales que cuadran con Finanzas.
+            </p>
           </div>
 
           {loadingReporte ? (
-            <p className="loading">Cargando reporte...</p>
+             <div style={{ textAlign: 'center', padding: '40px' }}>
+               <div style={{ 
+                 border: '4px solid #f3f3f3',
+                 borderTop: '4px solid #EB0463',
+                 borderRadius: '50%',
+                 width: '50px',
+                 height: '50px',
+                 animation: 'spin 1s linear infinite',
+                 margin: '0 auto'
+               }}></div>
+               <p style={{ marginTop: '20px', color: '#666' }}>Cargando reporte de ventas...</p>
+             </div>
           ) : (
             <>
-              <div className="resumen" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.75rem', marginBottom: '1rem'}}>
-                {(() => {
-                  const { totalVentasRango, gananciaNetaRango, cantidadVentasRango } = totalesRango();
-                  return (
-                    <>
-                      <div className="resumen-item"><strong>Total Ventas (rango):</strong> ${totalVentasRango.toLocaleString()}</div>
-                      <div className="resumen-item"><strong>Ganancia Neta (rango):</strong> ${gananciaNetaRango.toLocaleString()}</div>
-                      <div className="resumen-item"><strong>Cantidad de ventas:</strong> {cantidadVentasRango}</div>
-                    </>
-                  );
-                })()}
+              {(() => {
+                const { totalVentasRango, gananciaNetaRango, cantidadVentasRango } = totalesRango();
+                return (
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+                    gap: '20px',
+                    marginBottom: '32px'
+                  }}>
+                    {/* Total Ventas */}
+                    <div style={{
+                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                      color: 'white',
+                      padding: '24px',
+                      borderRadius: '16px',
+                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+                    }}>
+                      <div className="admin-stat-label" style={{ fontSize: '15px', opacity: 0.9, marginBottom: '8px' }}>💰 Total Ventas (rango)</div>
+                      <div className="admin-stat-value" style={{ fontSize: '32px', fontWeight: 'bold' }}>
+                        ${totalVentasRango.toLocaleString()}
+                      </div>
+                    </div>
+
+                    {/* Cantidad Ventas */}
+                    <div style={{
+                      background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                      color: 'white',
+                      padding: '24px',
+                      borderRadius: '16px',
+                      boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+                    }}>
+                      <div className="admin-stat-label" style={{ fontSize: '15px', opacity: 0.9, marginBottom: '8px' }}>📦 Cantidad de ventas</div>
+                      <div className="admin-stat-value" style={{ fontSize: '32px', fontWeight: 'bold' }}>
+                        {cantidadVentasRango}
+                      </div>
+                    </div>
+
+                    {/* Ganancia Neta */}
+                    <div style={{
+                      background: 'linear-gradient(135deg, #EB0463 0%, #a65495 100%)',
+                      color: 'white',
+                      padding: '24px',
+                      borderRadius: '16px',
+                      boxShadow: '0 4px 12px rgba(235, 4, 99, 0.3)'
+                    }}>
+                      <div className="admin-stat-label" style={{ fontSize: '15px', opacity: 0.9, marginBottom: '8px' }}>✨ Ganancia Neta (rango)</div>
+                      <div className="admin-stat-value" style={{ fontSize: '32px', fontWeight: 'bold' }}>
+                        ${gananciaNetaRango.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '16px',
+                padding: '24px',
+                marginBottom: '32px',
+                border: '2px solid #EB0463'
+              }}>
+                <h2 className="admin-section-title" style={{ margin: '0 0 20px 0', fontSize: '20px' }}>
+                  💳 Métodos de Pago - {desde} a {hasta}
+                </h2>
+
+                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '32px'}}>
+                  <div style={{padding: '16px', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.2)', textAlign: 'center'}}>
+                    <div style={{fontSize: '28px', marginBottom: '8px'}}>📱</div>
+                    <div style={{fontSize: '22px', fontWeight: 'bold', color: '#3b82f6'}}>{metodosPago?.qr || 0}</div>
+                    <div style={{fontSize: '12px', color: '#6b7280', marginTop: '4px'}}>Código QR</div>
+                    <div style={{fontSize: '12px', color: '#3b82f6', fontWeight: '600', marginTop: '8px'}}>${(ingresosMetodos?.qr || 0).toLocaleString()}</div>
+                  </div>
+                  <div style={{padding: '16px', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)', textAlign: 'center'}}>
+                    <div style={{fontSize: '28px', marginBottom: '8px'}}>💵</div>
+                    <div style={{fontSize: '22px', fontWeight: 'bold', color: '#10b981'}}>{metodosPago?.efectivo || 0}</div>
+                    <div style={{fontSize: '12px', color: '#6b7280', marginTop: '4px'}}>Efectivo</div>
+                    <div style={{fontSize: '12px', color: '#10b981', fontWeight: '600', marginTop: '8px'}}>${(ingresosMetodos?.efectivo || 0).toLocaleString()}</div>
+                  </div>
+                  <div style={{padding: '16px', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.2)', textAlign: 'center'}}>
+                    <div style={{fontSize: '28px', marginBottom: '8px'}}>💳</div>
+                    <div style={{fontSize: '22px', fontWeight: 'bold', color: '#8b5cf6'}}>{metodosPago?.tarjeta || 0}</div>
+                    <div style={{fontSize: '12px', color: '#6b7280', marginTop: '4px'}}>Tarjeta</div>
+                    <div style={{fontSize: '12px', color: '#8b5cf6', fontWeight: '600', marginTop: '8px'}}>${(ingresosMetodos?.tarjeta || 0).toLocaleString()}</div>
+                  </div>
+                </div>
               </div>
 
-              {reporteGanancias.length > 0 ? (
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Fecha</th>
-                      <th>Cantidad Ventas</th>
-                      <th>Total Ventas</th>
-                      <th>Ganancia Neta</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reporteGanancias.map((r, idx) => (
-                      <tr key={idx}>
-                        <td>{r.fecha}</td>
-                        <td>{r.cantidad_ventas}</td>
-                        <td>${Number(r.total_ventas || 0).toLocaleString()}</td>
-                        <td className="ganancia">${Number(r.ganancia_neta || 0).toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>No hay ventas en el rango seleccionado</p>
-              )}
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '16px',
+                padding: '24px',
+                marginBottom: '32px',
+                border: '2px solid #EB0463'
+              }}>
+                <h2 className="admin-section-title" style={{ margin: '0 0 20px 0', fontSize: '20px' }}>
+                  📊 Detalle de Ventas - {desde} a {hasta}
+                </h2>
+                
+                {reporteGanancias.length > 0 ? (
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ background: 'linear-gradient(135deg, #EB0463 0%, #a65495 100%)', color: 'white' }}>
+                          <th style={{ padding: '12px' }}>Fecha</th>
+                          <th style={{ padding: '12px', textAlign: 'center' }}>Cantidad Ventas</th>
+                          <th style={{ padding: '12px', textAlign: 'right' }}>Total Ventas</th>
+                          <th style={{ padding: '12px', textAlign: 'right' }}>Ganancia Neta</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {reporteGanancias.map((r, idx) => (
+                          <tr key={idx} style={{
+                            background: idx % 2 === 0 ? 'rgba(235, 4, 99, 0.03)' : 'transparent',
+                            borderBottom: '1px solid rgba(235, 4, 99, 0.1)'
+                          }}>
+                            <td style={{ padding: '12px', fontWeight: '500' }}>{r.fecha}</td>
+                            <td style={{ padding: '12px', textAlign: 'center' }}>{r.cantidad_ventas}</td>
+                            <td style={{ padding: '12px', textAlign: 'right', fontWeight: '500' }}>${Number(r.total_ventas || 0).toLocaleString()}</td>
+                            <td style={{ padding: '12px', textAlign: 'right', fontWeight: 'bold', color: '#EB0463' }}>${Number(r.ganancia_neta || 0).toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p style={{ textAlign: 'center', padding: '20px', color: '#666' }}>No hay ventas en el rango seleccionado</p>
+                )}
+              </div>
             </>
           )}
         </div>

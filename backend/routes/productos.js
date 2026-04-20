@@ -224,16 +224,6 @@ router.get("/reportes/ganancias", verifyToken, requireAdminOrSupervisor, async (
     const db = getDbFromRequest(req);
     const { desde, hasta } = req.query;
 
-    let query = `
-      SELECT 
-        DATE(v.created_at) as fecha,
-        COUNT(*) as cantidad_ventas,
-        SUM(v.total) as total_ventas,
-        SUM((v.precio_unitario - p.precio_compra) * v.cantidad) as ganancia_neta
-      FROM ventas v
-      JOIN productos p ON v.producto_id = p.id
-    `;
-
     let params = [];
     const conditions = [];
 
@@ -247,14 +237,58 @@ router.get("/reportes/ganancias", verifyToken, requireAdminOrSupervisor, async (
       params.push(hasta);
     }
 
+    let whereClause = "";
     if (conditions.length > 0) {
-      query += " WHERE " + conditions.join(" AND ");
+      whereClause = " WHERE " + conditions.join(" AND ");
     }
 
-    query += " GROUP BY DATE(v.created_at) ORDER BY fecha DESC";
+    const query = `
+      SELECT 
+        DATE(v.created_at) as fecha,
+        COUNT(*) as cantidad_ventas,
+        SUM(v.total) as total_ventas,
+        SUM((v.precio_unitario - p.precio_compra) * v.cantidad) as ganancia_neta
+      FROM ventas v
+      JOIN productos p ON v.producto_id = p.id
+      ${whereClause}
+      GROUP BY DATE(v.created_at) 
+      ORDER BY fecha DESC
+    `;
 
     const reportes = await db.all(query, params);
-    res.json(reportes);
+
+    // Obtener métodos de pago
+    const queryMetodos = `
+      SELECT 
+        v.metodo_pago,
+        COUNT(*) as cantidad,
+        SUM(v.total) as total
+      FROM ventas v
+      ${whereClause}
+      GROUP BY v.metodo_pago
+    `;
+    const metodosResult = await db.all(queryMetodos, params);
+
+    const metodos_pago = { qr: 0, efectivo: 0, tarjeta: 0 };
+    const ingresos_metodos = { qr: 0, efectivo: 0, tarjeta: 0 };
+
+    for (const m of metodosResult) {
+      // Normalizar nombres
+      let key = m.metodo_pago || 'efectivo';
+      if (key === 'codigo_qr') key = 'qr';
+      if (!metodos_pago[key] && metodos_pago[key] !== 0) {
+        metodos_pago[key] = 0;
+        ingresos_metodos[key] = 0;
+      }
+      metodos_pago[key] += m.cantidad;
+      ingresos_metodos[key] += m.total;
+    }
+
+    res.json({
+      reportes,
+      metodos_pago,
+      ingresos_metodos
+    });
   } catch (error) {
     console.error("❌ Error obteniendo reportes:", error);
     res.status(500).json({ error: error.message });
