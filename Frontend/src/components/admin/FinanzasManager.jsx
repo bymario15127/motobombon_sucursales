@@ -1,4 +1,4 @@
-﻿// Frontend/src/components/admin/FinanzasManager.jsx
+// Frontend/src/components/admin/FinanzasManager.jsx
 import { useState, useEffect } from "react";
 import { getDashboard, getGastos, crearGasto, actualizarGasto, eliminarGasto, getMovimientos } from "../../services/finanzasService";
 import { fetchWithSucursal, getHeaders } from "../../services/apiHelper.js";

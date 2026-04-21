@@ -1,4 +1,4 @@
-﻿// Frontend/src/components/admin/ProductosManagement.jsx
+// Frontend/src/components/admin/ProductosManagement.jsx
 import { useState, useEffect } from 'react';
 import { 
   obtenerProductos, 

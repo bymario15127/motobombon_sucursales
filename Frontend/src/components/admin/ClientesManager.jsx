@@ -1,4 +1,4 @@
-﻿// Frontend/src/components/admin/ClientesManager.jsx
+// Frontend/src/components/admin/ClientesManager.jsx
 import { useState, useEffect } from "react";
 import { getClientes, verificarCupon, usarCupon, exportarClientesExcel } from "../../services/clientesService";
 import { fetchWithSucursal, getHeaders } from "../../services/apiHelper.js";
