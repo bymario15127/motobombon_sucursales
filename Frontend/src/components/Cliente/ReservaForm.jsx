@@ -387,7 +387,7 @@ export default function ReservaForm({ sucursalId }) {
               {serviciosDisponibles.map((s) => {
                 const cc = ccNumber || 0;
                 const esBajoCC = cc >= 50 && cc <= 405;
-                const esAltoCC = cc > 405 && cc <= 1200;
+                const esAltoCC = cc > 405;
                 let precioMostrar = s.precio_mostrar || s.precio;
                 if (form.cilindraje && s.precio_bajo_cc && s.precio_alto_cc) {
                   if (esBajoCC) precioMostrar = s.precio_bajo_cc;
