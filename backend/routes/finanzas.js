@@ -247,6 +247,45 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
 
     const utilidadNeta = utilidadDelMes + utilidadMesAnteriorValue;
 
+    // ── Métodos de pago combinados (lavados + ventas de productos) ──────────
+    // Lavados: agrupar citas por metodo_pago
+    const metodosPagoMap = { qr: 0, efectivo: 0, tarjeta: 0 };
+    const ingresosMetodosMap = { qr: 0, efectivo: 0, tarjeta: 0 };
+
+    for (const cita of citas) {
+      const mp = (cita.metodo_pago || 'efectivo').toLowerCase().trim();
+      const precio = calcularPrecioCliente(cita);
+      const key = mp === 'qr' ? 'qr' : mp === 'tarjeta' ? 'tarjeta' : 'efectivo';
+      metodosPagoMap[key] = (metodosPagoMap[key] || 0) + 1;
+      ingresosMetodosMap[key] = (ingresosMetodosMap[key] || 0) + precio;
+    }
+
+    // Ventas de productos: agrupar por metodo_pago
+    let ventasMetodos;
+    if (desde && hasta) {
+      ventasMetodos = await db.all(
+        `SELECT metodo_pago, COUNT(*) as cantidad, COALESCE(SUM(total),0) as total
+         FROM ventas WHERE DATE(created_at) >= ? AND DATE(created_at) <= ?
+         GROUP BY metodo_pago`,
+        [desde, hasta]
+      );
+    } else {
+      ventasMetodos = await db.all(
+        `SELECT metodo_pago, COUNT(*) as cantidad, COALESCE(SUM(total),0) as total
+         FROM ventas WHERE strftime('%Y-%m', created_at) = ?
+         GROUP BY metodo_pago`,
+        [`${anioActual}-${mesActual}`]
+      );
+    }
+
+    for (const v of (ventasMetodos || [])) {
+      const mp = (v.metodo_pago || 'efectivo').toLowerCase().trim();
+      const key = mp === 'qr' ? 'qr' : mp === 'tarjeta' ? 'tarjeta' : 'efectivo';
+      metodosPagoMap[key] = (metodosPagoMap[key] || 0) + Number(v.cantidad || 0);
+      ingresosMetodosMap[key] = (ingresosMetodosMap[key] || 0) + Number(v.total || 0);
+    }
+    // ────────────────────────────────────────────────────────────────────────
+
     res.json({
       ingresos: {
         servicios: ingresosServiciosTotal,
@@ -263,7 +302,9 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
       utilidadMesAnterior: utilidadMesAnteriorValue,
       utilidadNeta,
       mes: mesActual,
-      anio: anioActual
+      anio: anioActual,
+      metodos_pago: metodosPagoMap,
+      ingresos_metodos: ingresosMetodosMap
     });
   } catch (error) {
     console.error("❌ Error obteniendo dashboard:", error);

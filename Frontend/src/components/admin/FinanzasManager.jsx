@@ -1,4 +1,4 @@
-// Frontend/src/components/admin/FinanzasManager.jsx
+﻿// Frontend/src/components/admin/FinanzasManager.jsx
 import { useState, useEffect } from "react";
 import { getDashboard, getGastos, crearGasto, actualizarGasto, eliminarGasto, getMovimientos } from "../../services/finanzasService";
 import { fetchWithSucursal, getHeaders } from "../../services/apiHelper.js";
@@ -213,6 +213,41 @@ export default function FinanzasManager() {
               <small className="admin-stat-small">Meses anteriores: {formatMoney(dashboard.utilidadMesAnterior || 0)}</small>
             </div>
           </div>
+
+          {/* Metodos de Pago Consolidados */}
+          {dashboard.metodos_pago && (
+            <div style={{
+              background: "rgba(255,255,255,0.025)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderRadius: 14,
+              padding: "18px 20px",
+              marginBottom: 20
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 14, fontFamily: "Inter,sans-serif" }}>
+                METODOS DE PAGO · LAVADOS + PRODUCTOS
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+                <div style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: 12, padding: "14px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: 20, marginBottom: 6 }}>📱</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: "#3b82f6", fontFamily: "Inter,sans-serif" }}>{(dashboard.metodos_pago.qr || 0)}</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 4, fontFamily: "Inter,sans-serif" }}>Codigo QR</div>
+                  <div style={{ fontSize: 12, color: "#3b82f6", fontWeight: 700, marginTop: 6, fontFamily: "Inter,sans-serif" }}>{formatMoney(dashboard.ingresos_metodos?.qr || 0)}</div>
+                </div>
+                <div style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.25)", borderRadius: 12, padding: "14px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: 20, marginBottom: 6 }}>💵</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: "#10b981", fontFamily: "Inter,sans-serif" }}>{(dashboard.metodos_pago.efectivo || 0)}</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 4, fontFamily: "Inter,sans-serif" }}>Efectivo</div>
+                  <div style={{ fontSize: 12, color: "#10b981", fontWeight: 700, marginTop: 6, fontFamily: "Inter,sans-serif" }}>{formatMoney(dashboard.ingresos_metodos?.efectivo || 0)}</div>
+                </div>
+                <div style={{ background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.25)", borderRadius: 12, padding: "14px 16px", textAlign: "center" }}>
+                  <div style={{ fontSize: 20, marginBottom: 6 }}>💳</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: "#8b5cf6", fontFamily: "Inter,sans-serif" }}>{(dashboard.metodos_pago.tarjeta || 0)}</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginTop: 4, fontFamily: "Inter,sans-serif" }}>Tarjeta</div>
+                  <div style={{ fontSize: 12, color: "#8b5cf6", fontWeight: 700, marginTop: 6, fontFamily: "Inter,sans-serif" }}>{formatMoney(dashboard.ingresos_metodos?.tarjeta || 0)}</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Gastos por categoría */}
           {dashboard.gastos.porCategoria.length > 0 && (

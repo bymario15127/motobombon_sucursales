@@ -119,6 +119,10 @@ export default function ReservaForm({ sucursalId }) {
 
   const mostrarMensaje = (texto, tipo) => {
     setMensaje({ texto, tipo });
+    
+    // Auto-scroll al top para que en móvil se note la notificación
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     setTimeout(() => setMensaje({ texto: "", tipo: "" }), 5000);
   };
 

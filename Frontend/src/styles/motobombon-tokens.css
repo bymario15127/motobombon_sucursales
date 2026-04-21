@@ -4,7 +4,7 @@
  */
 :root {
   --mb-font-display: "Yeseva One", Georgia, serif;
-  --mb-font-ui: "Poppins", system-ui, -apple-system, sans-serif;
+  --mb-font-ui: "Inter", "Poppins", system-ui, -apple-system, sans-serif;
 
   --mb-bg-deep: #000000;
   --mb-bg-canvas: #0a0a0a;

@@ -1,4 +1,4 @@
-// Frontend/src/components/admin/ClientesManager.jsx
+﻿// Frontend/src/components/admin/ClientesManager.jsx
 import { useState, useEffect } from "react";
 import { getClientes, verificarCupon, usarCupon, exportarClientesExcel } from "../../services/clientesService";
 import { fetchWithSucursal, getHeaders } from "../../services/apiHelper.js";
@@ -133,7 +133,7 @@ export default function ClientesManager() {
     return (
       <div style={{ padding: "2rem" }}>
         <p style={{ color: "#ff6b6b" }}>❌ Error: {error}</p>
-        <ActionButton label="🔄 Reintentar" color="#667eea" onClick={cargarClientes} />
+        <ActionButton label="🔄 Reintentar" color="#8b5cf6" onClick={cargarClientes} />
       </div>
     );
   }
@@ -151,10 +151,10 @@ export default function ClientesManager() {
           gap: "1rem",
           marginBottom: "2rem"
         }}>
-          <StatCard titulo="Total Clientes" valor={clientes.length} gradiente="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" icono="👥" />
-          <StatCard titulo="Total Lavadas (Histórico)" valor={clientes.reduce((sum, c) => sum + (c.total_lavadas_historico || c.lavadas_completadas), 0)} gradiente="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" icono="🚗" />
-          <StatCard titulo="Cupones Disponibles" valor={clientes.reduce((sum, c) => sum + c.lavadas_gratis_pendientes, 0)} gradiente="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" icono="🎫" />
-          <StatCard titulo="Clientes VIP (10+)" valor={clientes.filter((c) => c.lavadas_completadas >= 10).length} gradiente="linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" icono="⭐" />
+          <StatCard titulo="Total Clientes" valor={clientes.length} color="#3b82f6" />
+          <StatCard titulo="Total Lavadas (Histórico)" valor={clientes.reduce((sum, c) => sum + (c.total_lavadas_historico || c.lavadas_completadas), 0)} color="#a855f7" />
+          <StatCard titulo="Cupones Disponibles" valor={clientes.reduce((sum, c) => sum + c.lavadas_gratis_pendientes, 0)} color="#06b6d4" />
+          <StatCard titulo="Clientes VIP (10+)" valor={clientes.filter((c) => c.lavadas_completadas >= 10).length} color="#f59e0b" />
         </div>
 
         {/* Controles */}
@@ -167,19 +167,23 @@ export default function ClientesManager() {
         }}>
           <input
             type="text"
-            placeholder="🔍 Buscar por nombre, email o teléfono..."
+            placeholder="Buscar por nombre, email o teléfono..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             style={{
               flex: "1 1 100%",
               minWidth: "200px",
-              padding: "0.75rem",
-              borderRadius: "8px",
-              border: "2px solid #00d4ff",
-              background: "#0f1419",
+              padding: "10px 14px",
+              borderRadius: "10px",
+              border: "1px solid rgba(255,255,255,0.1)",
+              background: "rgba(255,255,255,0.03)",
               color: "#fff",
-              fontSize: "1rem"
+              fontSize: "13px",
+              fontFamily: "Inter,sans-serif",
+              outline: "none",
             }}
+            onFocus={e => e.target.style.borderColor='rgba(235,4,99,0.5)'}
+            onBlur={e => e.target.style.borderColor='rgba(255,255,255,0.1)'}
           />
 
           <select
@@ -188,22 +192,26 @@ export default function ClientesManager() {
             style={{
               flex: "1 1 100%",
               minWidth: "200px",
-              padding: "0.75rem",
-              borderRadius: "8px",
-              border: "2px solid #00d4ff",
-              background: "#0f1419",
+              padding: "10px 14px",
+              borderRadius: "10px",
+              border: "1px solid rgba(255,255,255,0.1)",
+              background: "rgba(255,255,255,0.03)",
               color: "#fff",
-              fontSize: "1rem"
+              fontSize: "13px",
+              fontFamily: "Inter,sans-serif",
+              outline: "none",
+              colorScheme: "dark",
+              cursor: "pointer",
             }}
           >
             <option value="lavadas">Ordenar por Lavadas</option>
             <option value="nombre">Ordenar por Nombre</option>
           </select>
 
-          <ActionButton label="🔗 Fusionar" color="#ff6b6b" onClick={() => setMostrarFusionar(!mostrarFusionar)} />
-          <ActionButton label="🎫 Cupón" color="#667eea" onClick={() => setMostrarCupon(!mostrarCupon)} />
-          <ActionButton label="📊 Exportar Excel" color="#ffa500" onClick={() => exportarClientesExcel(clientes).catch(err => alert(err.message))} />
-          <ActionButton label="🔄 Actualizar" color="#43e97b" onClick={cargarClientes} />
+          <ActionButton label="Fusionar"       color="#ef4444" onClick={() => setMostrarFusionar(!mostrarFusionar)} />
+          <ActionButton label="Cupón"          color="#8b5cf6" onClick={() => setMostrarCupon(!mostrarCupon)} />
+          <ActionButton label="Exportar Excel" color="#f59e0b" onClick={() => exportarClientesExcel(clientes).catch(err => alert(err.message))} />
+          <ActionButton label="Actualizar"     color="#10b981" onClick={cargarClientes} />
         </div>
 
         {/* Panel Fusionar */}
@@ -228,7 +236,7 @@ export default function ClientesManager() {
               <div>
                 <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold", color: "white" }}>Email Principal:</label>
                 <select value={emailPrincipal} onChange={(e) => setEmailPrincipal(e.target.value)} style={{
-                  width: "100%", padding: "0.75rem", borderRadius: "8px", border: "2px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.1)", color: "white", fontSize: "1rem"
+                  width: "100%", padding: "0.75rem", borderRadius: "8px", border: "2px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.1)", color: "white", fontSize: "13px"
                 }}>
                   <option value="">Seleccionar...</option>
                   {clientes.map(c => (<option key={c.email} value={c.email}>{c.email} ({c.total_lavadas_historico || c.lavadas_completadas})</option>))}
@@ -237,7 +245,7 @@ export default function ClientesManager() {
               <div>
                 <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold", color: "white" }}>Email Duplicado:</label>
                 <select value={emailDuplicado} onChange={(e) => setEmailDuplicado(e.target.value)} style={{
-                  width: "100%", padding: "0.75rem", borderRadius: "8px", border: "2px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.1)", color: "white", fontSize: "1rem"
+                  width: "100%", padding: "0.75rem", borderRadius: "8px", border: "2px solid rgba(255,255,255,0.3)", background: "rgba(255,255,255,0.1)", color: "white", fontSize: "13px"
                 }}>
                   <option value="">Seleccionar...</option>
                   {clientes.map(c => (<option key={c.email} value={c.email}>{c.email} ({c.total_lavadas_historico || c.lavadas_completadas})</option>))}
@@ -313,10 +321,10 @@ export default function ClientesManager() {
                   border: "2px solid rgba(255,255,255,0.3)",
                   background: "rgba(255,255,255,0.1)",
                   color: "white",
-                  fontSize: "1rem"
+                  fontSize: "13px"
                 }}
               />
-              <ActionButton label="🔍 Verificar" color="#43e97b" onClick={verificarCuponHandler} />
+              <ActionButton label="🔍 Verificar" color="#10b981" onClick={verificarCuponHandler} />
               <ActionButton label="✅ Usar Cupón" color="#4facfe" onClick={usarCuponHandler} />
             </div>
 
@@ -489,55 +497,46 @@ export default function ClientesManager() {
   );
 }
 
-function StatCard({ titulo, valor, gradiente, icono }) {
+function StatCard({ titulo, valor, color }) {
   return (
-    <div
-      className="admin-stat-card"
-      style={{
-        background: gradiente,
-        color: "white",
-        padding: "clamp(1rem, 3vw, 2rem)",
-        borderRadius: "15px",
-        textAlign: "center",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-        transition: "transform 0.3s ease",
-        cursor: "pointer",
-        border: "1px solid rgba(255,255,255,0.1)"
-      }}
-      onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-5px)"; }}
-      onMouseOut={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
+    <div style={{
+      background: `${color}12`,
+      border: `1px solid ${color}30`,
+      padding: "20px 22px",
+      borderRadius: "14px",
+      transition: "transform 0.2s",
+      cursor: "default",
+    }}
+    onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-3px)"; }}
+    onMouseOut={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
     >
-      <div style={{ fontSize: "clamp(2rem, 5vw, 3rem)" }}>{icono}</div>
-      <div className="admin-stat-value" style={{ margin: "0.5rem 0" }}>{valor}</div>
-      <div className="admin-stat-label" style={{ opacity: 0.95 }}>{titulo}</div>
+      <div style={{ fontSize: 11, fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8, fontFamily:'Inter,sans-serif' }}>{titulo}</div>
+      <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', fontFamily:'Inter,sans-serif', letterSpacing: '-0.02em' }}>{valor}</div>
     </div>
   );
 }
 
 function ActionButton({ label, color, onClick }) {
+  // Map color to rgba equivalent for ghost style
   return (
     <button onClick={onClick} style={{
       flex: "1 1 auto",
       minWidth: "100px",
-      padding: "0.75rem 1rem",
-      background: color,
-      color: "white",
-      border: "none",
-      borderRadius: "8px",
+      padding: "9px 16px",
+      background: `${color}14`,
+      color: color,
+      border: `1px solid ${color}40`,
+      borderRadius: "9px",
       cursor: "pointer",
-      fontWeight: "600",
-      fontSize: "clamp(0.85rem, 2vw, 1rem)",
-      transition: "all 0.3s ease",
-      boxShadow: "0 4px 15px rgba(0,0,0,0.2)"
+      fontWeight: "700",
+      fontSize: "12.5px",
+      fontFamily: "Inter,sans-serif",
+      transition: "all 0.18s",
+      width: "auto",
+      margin: 0,
     }}
-    onMouseOver={(e) => {
-      e.currentTarget.style.transform = "translateY(-2px)";
-      e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.3)";
-    }}
-    onMouseOut={(e) => {
-      e.currentTarget.style.transform = "translateY(0)";
-      e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.2)";
-    }}
+    onMouseOver={(e) => { e.currentTarget.style.background = `${color}22`; e.currentTarget.style.transform = "translateY(-1px)"; }}
+    onMouseOut={(e) => { e.currentTarget.style.background = `${color}14`; e.currentTarget.style.transform = "translateY(0)"; }}
     >
       {label}
     </button>

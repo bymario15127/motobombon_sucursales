@@ -62,23 +62,24 @@ export default function AdminLayout() {
 
     return (
       <div>
-        {/* Header de la página */}
-        <div className="admin-page-header">
-          <h1 className="admin-page-title">{getPageTitle()}</h1>
-          <p className="admin-page-subtitle">
-            {activeView === 'dashboard' && 'Resumen general de tu negocio'}
-            {activeView === 'calendar' && 'Gestiona las citas en el calendario'}
-            {activeView === 'appointments' && 'Administra las reservas de clientes'}
-            {activeView === 'services' && 'Configura servicios y precios'}
-            {activeView === 'talleres' && 'Gestiona talleres aliados y sus precios especiales'}
-            {activeView === 'lavadores' && 'Administra el equipo de trabajo'}
-            {activeView === 'clientes' && 'Sistema de fidelización y gestión de clientes'}
-            {activeView === 'nomina' && 'Control financiero y reportes de nómina'}
-            {activeView === 'productos' && 'Gestión de bebidas y productos, registro de ventas'}
-            {activeView === 'finanzas' && 'Control de ingresos, gastos y utilidades'}
-            {activeView === 'settings' && 'Preferencias y configuración del sistema'}
-          </p>
-        </div>
+        {/* Header de la página — oculto en dashboard (tiene su propio banner) */}
+        {activeView !== 'dashboard' && (
+          <div className="admin-page-header">
+            <h1 className="admin-page-title">{getPageTitle()}</h1>
+            <p className="admin-page-subtitle">
+              {activeView === 'calendar' && 'Gestiona las citas en el calendario'}
+              {activeView === 'appointments' && 'Administra las reservas de clientes'}
+              {activeView === 'services' && 'Configura servicios y precios'}
+              {activeView === 'talleres' && 'Gestiona talleres aliados y sus precios especiales'}
+              {activeView === 'lavadores' && 'Administra el equipo de trabajo'}
+              {activeView === 'clientes' && 'Sistema de fidelización y gestión de clientes'}
+              {activeView === 'nomina' && 'Control financiero y reportes de nómina'}
+              {activeView === 'productos' && 'Gestión de bebidas y productos, registro de ventas'}
+              {activeView === 'finanzas' && 'Control de ingresos, gastos y utilidades'}
+              {activeView === 'settings' && 'Preferencias y configuración del sistema'}
+            </p>
+          </div>
+        )}
 
         {/* Contenido de la página */}
         <div>

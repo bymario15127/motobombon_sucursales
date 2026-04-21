@@ -1,4 +1,4 @@
-// Frontend/src/components/admin/ProductosManagement.jsx
+﻿// Frontend/src/components/admin/ProductosManagement.jsx
 import { useState, useEffect } from 'react';
 import { 
   obtenerProductos, 
@@ -278,42 +278,100 @@ export default function ProductosManagement() {
 
   return (
     <div className="productos-management">
-      <h2 className="admin-section-title">📦 Gestión de Productos y Ventas</h2>
 
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: 16,
+        marginBottom: 24
+      }}>
+        <div>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: '#ffffff', fontFamily: 'Poppins, sans-serif', letterSpacing: '-0.02em' }}>
+            Productos &amp; Ventas
+          </h2>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: 'rgba(255,255,255,0.4)', fontFamily: 'Poppins, sans-serif' }}>
+            Inventario, registro de ventas y reportes financieros
+          </p>
+        </div>
+
+        {/* Segmented Tab Control */}
+        <div style={{
+          display: 'inline-flex',
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.09)',
+          borderRadius: 12,
+          padding: 4,
+          gap: 2,
+        }}>
+          {[
+            { id: 'ventas',    label: 'Registrar Venta' },
+            { id: 'productos', label: 'Inventario' },
+            { id: 'reportes',  label: 'Reportes' },
+          ].map(({ id, label }) => (
+            <button key={id}
+              onClick={() => setActiveTab(id)}
+              style={{
+                padding: '8px 18px',
+                borderRadius: 9,
+                border: 0,
+                fontSize: 13,
+                fontWeight: activeTab === id ? 700 : 500,
+                fontFamily: 'Poppins, sans-serif',
+                cursor: 'pointer',
+                transition: 'all 0.18s ease',
+                width: 'auto',
+                margin: 0,
+                background: activeTab === id
+                  ? 'linear-gradient(135deg, #EB0463, #a65495)'
+                  : 'transparent',
+                color: activeTab === id ? '#ffffff' : 'rgba(255,255,255,0.45)',
+                boxShadow: activeTab === id ? '0 2px 10px rgba(235,4,99,0.35)' : 'none',
+                letterSpacing: '0.01em',
+              }}
+              onMouseEnter={e => { if (activeTab !== id) e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; }}
+              onMouseLeave={e => { if (activeTab !== id) e.currentTarget.style.color = 'rgba(255,255,255,0.45)'; }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Message alert */}
       {message && (
-        <div className={`message ${message.includes('✅') ? 'success' : 'error'}`}>
+        <div style={{
+          padding: '12px 18px',
+          marginBottom: 20,
+          borderRadius: 12,
+          fontWeight: 600,
+          fontSize: 14,
+          fontFamily: 'Poppins, sans-serif',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          background: message.includes('✅') ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+          border: `1px solid ${message.includes('✅') ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)'}`,
+          color: message.includes('✅') ? '#34d399' : '#f87171',
+          animation: 'fadeIn 0.3s ease',
+        }}>
           {message}
         </div>
       )}
 
-      <div className="tabs">
-        <button 
-          className={`tab ${activeTab === 'ventas' ? 'active' : ''}`}
-          onClick={() => setActiveTab('ventas')}
-        >
-          💰 Registrar Venta
-        </button>
-        <button 
-          className={`tab ${activeTab === 'productos' ? 'active' : ''}`}
-          onClick={() => setActiveTab('productos')}
-        >
-          📦 Productos
-        </button>
-        <button 
-          className={`tab ${activeTab === 'reportes' ? 'active' : ''}`}
-          onClick={() => setActiveTab('reportes')}
-        >
-          📊 Reportes
-        </button>
-      </div>
-
-      {loading && <p className="loading">Cargando...</p>}
+      {loading && (
+        <div style={{ textAlign: 'center', padding: '20px', color: 'rgba(255,255,255,0.4)', fontSize: 13, fontFamily: 'Poppins, sans-serif' }}>
+          Cargando...
+        </div>
+      )}
 
       {/* TAB: PRODUCTOS */}
       {activeTab === 'productos' && (
         <div className="tab-content">
           <div className="form-section">
-            <h3 className="admin-card-title">{editingId ? '✏️ Editar Producto' : '➕ Nuevo Producto'}</h3>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.8)", fontFamily: "Inter,sans-serif", marginBottom: 16 }}>{editingId ? '✏️ Editar Producto' : '➕ Nuevo Producto'}</h3>
             <form onSubmit={handleSubmitProducto}>
               <input
                 type="text"
@@ -365,7 +423,7 @@ export default function ProductosManagement() {
           </div>
 
           <div className="products-list">
-            <h3 className="admin-card-title">Productos registrados</h3>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.8)", fontFamily: "Inter,sans-serif", marginBottom: 16 }}>Productos registrados</h3>
             {productos.length === 0 ? (
               <p>No hay productos registrados</p>
             ) : (
@@ -427,7 +485,7 @@ export default function ProductosManagement() {
       {activeTab === 'ventas' && (
         <div className="tab-content">
           <div className="form-section">
-            <h3 className="admin-card-title">💳 Registrar Nueva Venta</h3>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.8)", fontFamily: "Inter,sans-serif", marginBottom: 16 }}>💳 Registrar Nueva Venta</h3>
             <form onSubmit={handleRegistrarVenta}>
               <select
                 value={formVenta.producto_id}
@@ -464,7 +522,7 @@ export default function ProductosManagement() {
           </div>
 
           <div className="sales-list">
-            <h3 className="admin-card-title">Ventas del día {formatearFechaLegible(filtroFecha)}</h3>
+            <h3 style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "rgba(255,255,255,0.8)", fontFamily: "Inter,sans-serif", marginBottom: 16 }}>Ventas del día {formatearFechaLegible(filtroFecha)}</h3>
             <input 
               type="date" 
               value={filtroFecha}
@@ -537,53 +595,55 @@ export default function ProductosManagement() {
         <div className="tab-content" style={{ padding: '0px' }}>
           {/* Filtros de Fecha estilo Nómina */}
           <div style={{ 
-            background: 'linear-gradient(135deg, rgba(235, 4, 99, 0.1) 0%, rgba(166, 84, 149, 0.1) 100%)',
+            background: 'rgba(255,255,255,0.025)',
             padding: '20px',
-            borderRadius: '12px',
-            marginBottom: '24px',
-            border: '2px solid #EB0463',
+            borderRadius: '14px',
+            marginBottom: '20px',
+            border: '1px solid rgba(255,255,255,0.07)',
             marginTop: '20px'
           }}>
-            <h3 className="admin-section-title" style={{ margin: '0 0 16px 0', fontSize: '18px' }}>📅 Seleccionar Rango de Fechas para Reportes</h3>
+            <h3 style={{ margin: '0 0 14px 0', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'Inter,sans-serif' }}>Rango de fechas</h3>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <label className="admin-card-label" style={{ fontWeight: '600' }}>Desde:</label>
+                <label style={{ fontWeight: 600, fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "Inter,sans-serif" }}>Desde:</label>
                 <input
                   type="date"
                   value={desde}
                   onChange={(e) => setDesde(e.target.value)}
                   style={{
-                    padding: '12px 16px',
+                    padding: '9px 12px',
                     borderRadius: '10px',
-                    border: '2px solid #EB0463',
-                    fontSize: '15px',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    fontSize: '13px',
                     fontWeight: '500',
-                    background: '#f3f4f6',
-                    color: '#000000',
+                    background: 'rgba(255,255,255,0.05)',
+                    color: '#fff',
                     cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    outline: 'none'
+                    outline: 'none',
+                    colorScheme: 'dark',
+                    fontFamily: 'Inter,sans-serif'
                   }}
                 />
               </div>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <label className="admin-card-label" style={{ fontWeight: '600' }}>Hasta:</label>
+                <label style={{ fontWeight: 600, fontSize: 13, color: "rgba(255,255,255,0.5)", fontFamily: "Inter,sans-serif" }}>Hasta:</label>
                 <input
                   type="date"
                   value={hasta}
                   onChange={(e) => setHasta(e.target.value)}
                   style={{
-                    padding: '12px 16px',
+                    padding: '9px 12px',
                     borderRadius: '10px',
-                    border: '2px solid #a65495',
-                    fontSize: '15px',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    fontSize: '13px',
                     fontWeight: '500',
-                    background: '#f3f4f6',
-                    color: '#1f2937',
+                    background: 'rgba(255,255,255,0.05)',
+                    color: '#fff',
                     cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    outline: 'none'
+                    outline: 'none',
+                    colorScheme: 'dark',
+                    fontFamily: 'Inter,sans-serif'
                   }}
                 />
               </div>
@@ -591,13 +651,12 @@ export default function ProductosManagement() {
               <button
                 type="button" 
                 onClick={cargarReporteGanancias}
-                className="btn-neon-pill"
-                style={{ marginLeft: 'auto', whiteSpace: 'nowrap' }}
+                style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, padding: '9px 18px', borderRadius: 10, border: '1px solid rgba(235,4,99,0.35)', background: 'rgba(235,4,99,0.1)', color: '#EB0463', fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'Inter,sans-serif', whiteSpace: 'nowrap', width: 'auto', margin: '0 0 0 auto' }}
               >
                 📊 Actualizar Reporte
               </button>
             </div>
-            <p className="info-text" style={{ margin: '12px 0 0 0', fontSize: '13px', color: '#666' }}>
+            <p className="info-text" style={{ margin: '12px 0 0 0' }}>
               ℹ️ Usa el rango para ver totales que cuadran con Finanzas.
             </p>
           </div>
@@ -628,42 +687,39 @@ export default function ProductosManagement() {
                   }}>
                     {/* Total Ventas */}
                     <div style={{
-                      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                      color: 'white',
-                      padding: '24px',
-                      borderRadius: '16px',
-                      boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+                      background: 'rgba(16,185,129,0.08)',
+                      border: '1px solid rgba(16,185,129,0.25)',
+                      padding: '20px 22px',
+                      borderRadius: '14px'
                     }}>
-                      <div className="admin-stat-label" style={{ fontSize: '15px', opacity: 0.9, marginBottom: '8px' }}>💰 Total Ventas (rango)</div>
-                      <div className="admin-stat-value" style={{ fontSize: '32px', fontWeight: 'bold' }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8, fontFamily: "Inter,sans-serif" }}>Total Ventas (rango)</div>
+                      <div style={{ fontSize: 26, fontWeight: 800, color: "#fff", fontFamily: "Inter,sans-serif", letterSpacing: "-0.02em" }}>
                         ${totalVentasRango.toLocaleString()}
                       </div>
                     </div>
 
                     {/* Cantidad Ventas */}
                     <div style={{
-                      background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                      color: 'white',
-                      padding: '24px',
-                      borderRadius: '16px',
-                      boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+                      background: 'rgba(245,158,11,0.08)',
+                      border: '1px solid rgba(245,158,11,0.25)',
+                      padding: '20px 22px',
+                      borderRadius: '14px'
                     }}>
-                      <div className="admin-stat-label" style={{ fontSize: '15px', opacity: 0.9, marginBottom: '8px' }}>📦 Cantidad de ventas</div>
-                      <div className="admin-stat-value" style={{ fontSize: '32px', fontWeight: 'bold' }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8, fontFamily: "Inter,sans-serif" }}>Cantidad de ventas</div>
+                      <div style={{ fontSize: 26, fontWeight: 800, color: "#fff", fontFamily: "Inter,sans-serif", letterSpacing: "-0.02em" }}>
                         {cantidadVentasRango}
                       </div>
                     </div>
 
                     {/* Ganancia Neta */}
                     <div style={{
-                      background: 'linear-gradient(135deg, #EB0463 0%, #a65495 100%)',
-                      color: 'white',
-                      padding: '24px',
-                      borderRadius: '16px',
-                      boxShadow: '0 4px 12px rgba(235, 4, 99, 0.3)'
+                      background: 'rgba(235,4,99,0.08)',
+                      border: '1px solid rgba(235,4,99,0.25)',
+                      padding: '20px 22px',
+                      borderRadius: '14px'
                     }}>
-                      <div className="admin-stat-label" style={{ fontSize: '15px', opacity: 0.9, marginBottom: '8px' }}>✨ Ganancia Neta (rango)</div>
-                      <div className="admin-stat-value" style={{ fontSize: '32px', fontWeight: 'bold' }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#EB0463", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 8, fontFamily: "Inter,sans-serif" }}>Ganancia Neta (rango)</div>
+                      <div style={{ fontSize: 26, fontWeight: 800, color: "#fff", fontFamily: "Inter,sans-serif", letterSpacing: "-0.02em" }}>
                         ${gananciaNetaRango.toLocaleString()}
                       </div>
                     </div>
@@ -672,46 +728,46 @@ export default function ProductosManagement() {
               })()}
 
               <div style={{
-                background: 'rgba(255,255,255,0.05)',
-                borderRadius: '16px',
-                padding: '24px',
-                marginBottom: '32px',
-                border: '2px solid #EB0463'
+                background: 'rgba(255,255,255,0.025)',
+                borderRadius: '14px',
+                padding: '20px',
+                marginBottom: '20px',
+                border: '1px solid rgba(255,255,255,0.07)'
               }}>
-                <h2 className="admin-section-title" style={{ margin: '0 0 20px 0', fontSize: '20px' }}>
+                <h2 style={{ margin: "0 0 16px 0", fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.07em", fontFamily: "Inter,sans-serif" }}>
                   💳 Métodos de Pago - {desde} a {hasta}
                 </h2>
 
                 <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '32px'}}>
                   <div style={{padding: '16px', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.2)', textAlign: 'center'}}>
-                    <div style={{fontSize: '28px', marginBottom: '8px'}}>📱</div>
-                    <div style={{fontSize: '22px', fontWeight: 'bold', color: '#3b82f6'}}>{metodosPago?.qr || 0}</div>
-                    <div style={{fontSize: '12px', color: '#6b7280', marginTop: '4px'}}>Código QR</div>
+                    <div style={{fontSize: '22px', marginBottom: 6}}>📱</div>
+                    <div style={{fontSize: '20px', fontWeight: 800, color: '#3b82f6'}}>{metodosPago?.qr || 0}</div>
+                    <div style={{fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginTop: '4px'}}>Código QR</div>
                     <div style={{fontSize: '12px', color: '#3b82f6', fontWeight: '600', marginTop: '8px'}}>${(ingresosMetodos?.qr || 0).toLocaleString()}</div>
                   </div>
                   <div style={{padding: '16px', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)', textAlign: 'center'}}>
-                    <div style={{fontSize: '28px', marginBottom: '8px'}}>💵</div>
-                    <div style={{fontSize: '22px', fontWeight: 'bold', color: '#10b981'}}>{metodosPago?.efectivo || 0}</div>
-                    <div style={{fontSize: '12px', color: '#6b7280', marginTop: '4px'}}>Efectivo</div>
+                    <div style={{fontSize: '22px', marginBottom: 6}}>💵</div>
+                    <div style={{fontSize: '20px', fontWeight: 800, color: '#10b981'}}>{metodosPago?.efectivo || 0}</div>
+                    <div style={{fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginTop: '4px'}}>Efectivo</div>
                     <div style={{fontSize: '12px', color: '#10b981', fontWeight: '600', marginTop: '8px'}}>${(ingresosMetodos?.efectivo || 0).toLocaleString()}</div>
                   </div>
                   <div style={{padding: '16px', background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.2)', textAlign: 'center'}}>
-                    <div style={{fontSize: '28px', marginBottom: '8px'}}>💳</div>
-                    <div style={{fontSize: '22px', fontWeight: 'bold', color: '#8b5cf6'}}>{metodosPago?.tarjeta || 0}</div>
-                    <div style={{fontSize: '12px', color: '#6b7280', marginTop: '4px'}}>Tarjeta</div>
+                    <div style={{fontSize: '22px', marginBottom: 6}}>💳</div>
+                    <div style={{fontSize: '20px', fontWeight: 800, color: '#8b5cf6'}}>{metodosPago?.tarjeta || 0}</div>
+                    <div style={{fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginTop: '4px'}}>Tarjeta</div>
                     <div style={{fontSize: '12px', color: '#8b5cf6', fontWeight: '600', marginTop: '8px'}}>${(ingresosMetodos?.tarjeta || 0).toLocaleString()}</div>
                   </div>
                 </div>
               </div>
 
               <div style={{
-                background: 'rgba(255,255,255,0.05)',
-                borderRadius: '16px',
-                padding: '24px',
-                marginBottom: '32px',
-                border: '2px solid #EB0463'
+                background: 'rgba(255,255,255,0.025)',
+                borderRadius: '14px',
+                padding: '20px',
+                marginBottom: '20px',
+                border: '1px solid rgba(255,255,255,0.07)'
               }}>
-                <h2 className="admin-section-title" style={{ margin: '0 0 20px 0', fontSize: '20px' }}>
+                <h2 style={{ margin: "0 0 16px 0", fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "0.07em", fontFamily: "Inter,sans-serif" }}>
                   📊 Detalle de Ventas - {desde} a {hasta}
                 </h2>
                 

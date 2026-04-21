@@ -232,19 +232,21 @@ const CalendarAdmin = () => {
                   )}
 
                   {(cita.placa || cita.marca || cita.modelo || cita.cilindraje) && (
-                    <div className="apt-notes" style={{borderTop: '1px solid #e5e7eb', paddingTop: '8px', marginTop: '8px'}}>
-                      <strong>🏍️ Datos de la Moto:</strong>
-                      <div style={{marginTop: '4px', fontSize: '13px'}}>
-                        {cita.placa && <div>Placa: {cita.placa}</div>}
-                        {cita.marca && <div>Marca: {cita.marca}</div>}
-                        {cita.modelo && <div>Modelo: {cita.modelo}</div>}
-                        {cita.cilindraje && <div>Cilindraje: {cita.cilindraje} cc</div>}
+                    <div style={{gridColumn: '1 / -1', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '8px', marginTop: '8px'}}>
+                      <p style={{fontWeight: '600', marginBottom: '8px', color: 'rgba(255,255,255,0.6)', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.05em'}}>Datos de la Moto</p>
+                      <div style={{marginTop: '4px', fontSize: '13px', color: 'rgba(255,255,255,0.7)', display: 'flex', flexDirection: 'column', gap: 2}}>
+                        {cita.placa && <div>Placa: <strong style={{color:'#fff'}}>{cita.placa}</strong></div>}
+                        {cita.marca && <div>Marca: <strong style={{color:'#fff'}}>{cita.marca}</strong></div>}
+                        {cita.modelo && <div>Modelo: <strong style={{color:'#fff'}}>{cita.modelo}</strong></div>}
+                        {cita.cilindraje && <div>Cilindraje: <strong style={{color:'#fff'}}>{cita.cilindraje} cc</strong></div>}
                       </div>
                     </div>
                   )}
                   {cita.metodo_pago && (
-                    <div className="apt-notes" style={{borderTop: '1px dashed #e5e7eb', paddingTop: '8px', marginTop: '8px'}}>
-                      <strong>💳 Método de pago:</strong> {cita.metodo_pago === 'codigo_qr' ? 'Código QR' : 'Efectivo'}
+                    <div style={{gridColumn: '1 / -1', borderTop: '1px dashed rgba(255,255,255,0.06)', paddingTop: '8px', marginTop: '8px'}}>
+                      <span style={{fontSize:12.5, color:'rgba(255,255,255,0.5)'}}>
+                        Pago: <strong style={{color:'rgba(255,255,255,0.85)'}}>{cita.metodo_pago === 'codigo_qr' ? 'Código QR' : cita.metodo_pago === 'efectivo' ? 'Efectivo' : cita.metodo_pago}</strong>
+                      </span>
                     </div>
                   )}
 
@@ -263,49 +265,39 @@ const CalendarAdmin = () => {
                   )}
 
                   {/* Botones de acción */}
-                  <div className="apt-actions" style={{display: 'flex', gap: '8px', marginTop: '12px', borderTop: '1px solid #e5e7eb', paddingTop: '12px', flexWrap: 'wrap'}}>
+                  <div style={{display: 'flex', gap: '8px', marginTop: '14px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '12px', flexWrap: 'wrap'}}>
                     {cita.estado === 'pendiente' && (
-                      <button 
-                        onClick={() => updateCitaStatus(cita.id, 'confirmada')}
-                        className="btn-neon-pill"
-                        style={{flex: '1', minWidth: '140px'}}
-                      >
+                      <button onClick={() => updateCitaStatus(cita.id, 'confirmada')}
+                        style={{ display:'flex', alignItems:'center', gap:5, padding:'7px 14px', borderRadius:9, border:'1px solid rgba(59,130,246,0.35)', background:'rgba(59,130,246,0.1)', color:'#3b82f6', fontSize:12.5, fontWeight:600, cursor:'pointer', fontFamily:'Inter,sans-serif', width:'auto', margin:0, transition:'background 0.15s' }}
+                        onMouseEnter={e=>e.currentTarget.style.background='rgba(59,130,246,0.18)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(59,130,246,0.1)'}>
                         ✓ Confirmar
                       </button>
                     )}
                     {cita.estado === 'confirmada' && (
-                      <button 
-                        onClick={() => updateCitaStatus(cita.id, 'en curso')}
-                        className="btn-neon-pill"
-                        style={{flex: '1', minWidth: '140px'}}
-                      >
+                      <button onClick={() => updateCitaStatus(cita.id, 'en curso')}
+                        style={{ display:'flex', alignItems:'center', gap:5, padding:'7px 14px', borderRadius:9, border:'1px solid rgba(139,92,246,0.35)', background:'rgba(139,92,246,0.1)', color:'#8b5cf6', fontSize:12.5, fontWeight:600, cursor:'pointer', fontFamily:'Inter,sans-serif', width:'auto', margin:0, transition:'background 0.15s' }}
+                        onMouseEnter={e=>e.currentTarget.style.background='rgba(139,92,246,0.18)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(139,92,246,0.1)'}>
                         ⚡ En curso
                       </button>
                     )}
                     {cita.estado === 'en curso' && (
-                      <button 
-                        onClick={() => updateCitaStatus(cita.id, 'finalizada')}
-                        className="btn-neon-pill"
-                        style={{flex: '1', minWidth: '140px'}}
-                      >
-                        ✔️ Finalizar
+                      <button onClick={() => updateCitaStatus(cita.id, 'finalizada')}
+                        style={{ display:'flex', alignItems:'center', gap:5, padding:'7px 14px', borderRadius:9, border:'1px solid rgba(16,185,129,0.35)', background:'rgba(16,185,129,0.1)', color:'#10b981', fontSize:12.5, fontWeight:600, cursor:'pointer', fontFamily:'Inter,sans-serif', width:'auto', margin:0, transition:'background 0.15s' }}
+                        onMouseEnter={e=>e.currentTarget.style.background='rgba(16,185,129,0.18)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(16,185,129,0.1)'}>
+                        ✔ Finalizar
                       </button>
                     )}
                     {cita.estado !== 'cancelada' && (
-                      <button 
-                        onClick={() => updateCitaStatus(cita.id, 'cancelada')}
-                        className="btn-neon-pill"
-                        style={{flex: '1', minWidth: '140px', boxShadow: '0 0 12px rgba(239, 68, 68, 0.6)'}}
-                      >
+                      <button onClick={() => updateCitaStatus(cita.id, 'cancelada')}
+                        style={{ display:'flex', alignItems:'center', gap:5, padding:'7px 14px', borderRadius:9, border:'1px solid rgba(245,158,11,0.35)', background:'rgba(245,158,11,0.08)', color:'#f59e0b', fontSize:12.5, fontWeight:600, cursor:'pointer', fontFamily:'Inter,sans-serif', width:'auto', margin:0, transition:'background 0.15s' }}
+                        onMouseEnter={e=>e.currentTarget.style.background='rgba(245,158,11,0.18)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(245,158,11,0.08)'}>
                         ✕ Cancelar
                       </button>
                     )}
-                    <button 
-                      onClick={() => handleDeleteCita(cita.id, cita.cliente)}
-                      className="btn-neon-pill"
-                      style={{flex: '1', minWidth: '140px', boxShadow: '0 0 12px rgba(220, 38, 38, 0.8)'}}
-                    >
-                      🗑️ Eliminar
+                    <button onClick={() => handleDeleteCita(cita.id, cita.cliente)}
+                      style={{ display:'flex', alignItems:'center', gap:5, padding:'7px 14px', borderRadius:9, border:'1px solid rgba(239,68,68,0.25)', background:'rgba(239,68,68,0.07)', color:'#ef4444', fontSize:12.5, fontWeight:600, cursor:'pointer', fontFamily:'Inter,sans-serif', width:'auto', margin:'0 0 0 auto', transition:'background 0.15s' }}
+                      onMouseEnter={e=>e.currentTarget.style.background='rgba(239,68,68,0.15)'} onMouseLeave={e=>e.currentTarget.style.background='rgba(239,68,68,0.07)'}>
+                      🗑 Eliminar
                     </button>
                   </div>
                 </div>
@@ -316,23 +308,18 @@ const CalendarAdmin = () => {
       </div>
 
       {/* Resumen del día */}
-      <div className="stats-grid">
-        <div className="stat-card yellow">
-          <h4>Pendientes</h4>
-          <p className="stat-value">{dayAppointments.filter(c => c.estado === 'pendiente').length}</p>
-        </div>
-        <div className="stat-card green">
-          <h4>Confirmadas</h4>
-          <p className="stat-value">{dayAppointments.filter(c => c.estado === 'confirmada').length}</p>
-        </div>
-        <div className="stat-card purple">
-          <h4>Finalizadas</h4>
-          <p className="stat-value">{dayAppointments.filter(c => c.estado === 'finalizada').length}</p>
-        </div>
-        <div className="stat-card red">
-          <h4>Canceladas</h4>
-          <p className="stat-value">{dayAppointments.filter(c => c.estado === 'cancelada').length}</p>
-        </div>
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px,1fr))', gap:12, marginTop: 20 }}>
+        {[
+          { label: 'Pendientes',  count: dayAppointments.filter(c => c.estado === 'pendiente').length,  color: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  border: 'rgba(245,158,11,0.25)' },
+          { label: 'Confirmadas', count: dayAppointments.filter(c => c.estado === 'confirmada').length, color: '#3b82f6', bg: 'rgba(59,130,246,0.1)',  border: 'rgba(59,130,246,0.25)' },
+          { label: 'Finalizadas', count: dayAppointments.filter(c => c.estado === 'finalizada').length, color: '#10b981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.25)' },
+          { label: 'Canceladas',  count: dayAppointments.filter(c => c.estado === 'cancelada').length,  color: '#ef4444', bg: 'rgba(239,68,68,0.1)',  border: 'rgba(239,68,68,0.25)' },
+        ].map(s => (
+          <div key={s.label} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 12, padding: '14px 18px' }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: s.color, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4, fontFamily:'Inter,sans-serif' }}>{s.label}</div>
+            <div style={{ fontSize: 28, fontWeight: 800, color: '#fff', fontFamily:'Inter,sans-serif', lineHeight:1 }}>{s.count}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

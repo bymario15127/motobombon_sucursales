@@ -88,60 +88,67 @@ const NominaManager = () => {
     <div style={{ padding: '20px' }}>
       {/* Filtros */}
       <div style={{ 
-        background: 'linear-gradient(135deg, rgba(235, 4, 99, 0.1) 0%, rgba(166, 84, 149, 0.1) 100%)',
+        background: 'rgba(255,255,255,0.03)',
         padding: '20px',
-        borderRadius: '12px',
+        borderRadius: '14px',
         marginBottom: '24px',
-        border: '2px solid #EB0463'
+        border: '1px solid rgba(255,255,255,0.07)'
       }}>
-        <h3 className="admin-section-title" style={{ margin: '0 0 16px 0', fontSize: '18px' }}>📅 Seleccionar Rango de Fechas</h3>
+        <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', fontFamily:'Inter,sans-serif', textTransform:'uppercase', letterSpacing:'0.06em' }}>Rango de fechas</h3>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label className="admin-card-label" style={{ fontWeight: '600' }}>Desde:</label>
+            <label style={{ fontWeight: '600', fontSize: 13, color: 'rgba(255,255,255,0.5)', fontFamily:'Inter,sans-serif' }}>Desde:</label>
             <input
               type="date"
               value={fechaInicio}
               onChange={(e) => setFechaInicio(e.target.value)}
               style={{
-                padding: '12px 16px',
+                padding: '9px 12px',
                 borderRadius: '10px',
-                border: '2px solid #EB0463',
-                fontSize: '15px',
+                border: '1px solid rgba(255,255,255,0.1)',
+                fontSize: '13px',
                 fontWeight: '500',
-                background: '#f3f4f6',
-                color: '#000000',
+                background: 'rgba(255,255,255,0.05)',
+                color: '#fff',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                outline: 'none'
+                outline: 'none',
+                fontFamily:'Inter,sans-serif',
+                colorScheme: 'dark',
               }}
             />
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <label className="admin-card-label" style={{ fontWeight: '600' }}>Hasta:</label>
+            <label style={{ fontWeight: '600', fontSize: 13, color: 'rgba(255,255,255,0.5)', fontFamily:'Inter,sans-serif' }}>Hasta:</label>
             <input
               type="date"
               value={fechaFin}
               onChange={(e) => setFechaFin(e.target.value)}
               style={{
-                padding: '12px 16px',
+                padding: '9px 12px',
                 borderRadius: '10px',
-                border: '2px solid #a65495',
-                fontSize: '15px',
+                border: '1px solid rgba(255,255,255,0.1)',
+                fontSize: '13px',
                 fontWeight: '500',
-                background: '#f3f4f6',
-                color: '#1f2937',
+                background: 'rgba(255,255,255,0.05)',
+                color: '#fff',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                outline: 'none'
+                outline: 'none',
+                fontFamily:'Inter,sans-serif',
+                colorScheme: 'dark',
               }}
             />
           </div>
 
           <button
             onClick={exportarExcel}
-            className="btn-neon-pill"
-            style={{ marginLeft: 'auto', whiteSpace: 'nowrap' }}
+            style={{
+              marginLeft: 'auto', display:'flex', alignItems:'center', gap:6,
+              padding: '9px 18px', borderRadius: 10,
+              border: '1px solid rgba(16,185,129,0.35)', background: 'rgba(16,185,129,0.1)',
+              color: '#10b981', fontWeight: 700, fontSize: 13, cursor: 'pointer',
+              fontFamily:'Inter,sans-serif', whiteSpace: 'nowrap', width:'auto', margin:'0 0 0 auto',
+            }}
           >
             📊 Exportar Excel
           </button>
@@ -151,69 +158,33 @@ const NominaManager = () => {
       {/* Dashboard de Resumen */}
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-        gap: '20px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
+        gap: '16px',
         marginBottom: '32px'
       }}>
-        {/* Total Ingresos (cliente) */}
-        <div style={{
-          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-          color: 'white',
-          padding: '24px',
-          borderRadius: '16px',
-          boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
-        }}>
-          <div className="admin-stat-label">💰 Ingreso real del cliente</div>
-          <div className="admin-stat-value">{formatearMoneda(totalIngresosCliente)}</div>
-          <div className="admin-stat-small">
-            {resumen.total_servicios} servicios completados
+        {[
+          { label: 'Ingreso real del cliente', value: formatearMoneda(totalIngresosCliente), sub: `${resumen.total_servicios} servicios · Base: ${formatearMoneda(totalIngresosComisionBase)}`, color: '#10b981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.2)' },
+          { label: 'Total Nómina', value: formatearMoneda(resumen.total_nomina), sub: 'A pagar a lavadores', color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.2)' },
+          { label: 'Ganancia Neta', value: formatearMoneda(resumen.ganancia_neta), sub: `Margen: ${resumen.margen_porcentaje}%`, color: '#EB0463', bg: 'rgba(235,4,99,0.08)', border: 'rgba(235,4,99,0.2)' },
+        ].map(k => (
+          <div key={k.label} style={{ background: k.bg, border: `1px solid ${k.border}`, borderRadius: 14, padding: '20px 22px' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: k.color, textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8, fontFamily:'Inter,sans-serif' }}>{k.label}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: '#fff', fontFamily:'Inter,sans-serif', letterSpacing: '-0.02em', marginBottom: 6 }}>{k.value}</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', fontFamily:'Inter,sans-serif' }}>{k.sub}</div>
           </div>
-          <div className="admin-stat-small" style={{ marginTop: 6 }}>
-            Base comisión: {formatearMoneda(totalIngresosComisionBase)}
-          </div>
-        </div>
-
-        {/* Total Nómina */}
-        <div style={{
-          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-          color: 'white',
-          padding: '24px',
-          borderRadius: '16px',
-          boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
-        }}>
-          <div className="admin-stat-label">👥 Total Nómina</div>
-          <div className="admin-stat-value">{formatearMoneda(resumen.total_nomina)}</div>
-          <div className="admin-stat-small">
-            A pagar a lavadores
-          </div>
-        </div>
-
-        {/* Ganancia Neta */}
-        <div style={{
-          background: 'linear-gradient(135deg, #EB0463 0%, #a65495 100%)',
-          color: 'white',
-          padding: '24px',
-          borderRadius: '16px',
-          boxShadow: '0 4px 12px rgba(235, 4, 99, 0.3)'
-        }}>
-          <div className="admin-stat-label">✨ Ganancia Neta</div>
-          <div className="admin-stat-value">{formatearMoneda(resumen.ganancia_neta)}</div>
-          <div className="admin-stat-small">
-            Margen: {resumen.margen_porcentaje}%
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Tabla de Nómina por Lavador */}
+      {/* Métodos de Pago */}
       <div style={{
-        background: 'rgba(255,255,255,0.05)',
-        borderRadius: '16px',
-        padding: '24px',
-        marginBottom: '32px',
-        border: '2px solid #EB0463'
+        background: 'rgba(255,255,255,0.025)',
+        borderRadius: '14px',
+        padding: '22px',
+        marginBottom: '24px',
+        border: '1px solid rgba(255,255,255,0.07)'
       }}>
-        <h2 className="admin-section-title" style={{ margin: '0 0 20px 0', fontSize: '20px' }}>
-          💳 Métodos de Pago - {fechaInicio} a {fechaFin}
+        <h2 style={{ margin: '0 0 18px 0', fontSize: '15px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', fontFamily:'Inter,sans-serif', textTransform:'uppercase', letterSpacing:'0.06em' }}>
+          Métodos de Pago · {fechaInicio} – {fechaFin}
         </h2>
 
         <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '32px'}}>
@@ -249,89 +220,92 @@ const NominaManager = () => {
 
       {/* Tabla de Nómina por Lavador */}
       <div style={{
-        background: 'rgba(255,255,255,0.05)',
-        borderRadius: '16px',
-        padding: '24px',
-        marginBottom: '32px',
-        border: '2px solid #EB0463'
+        background: 'rgba(255,255,255,0.025)',
+        borderRadius: '14px',
+        padding: '22px',
+        marginBottom: '24px',
+        border: '1px solid rgba(255,255,255,0.07)'
       }}>
-        <h2 style={{ margin: '0 0 20px 0', fontSize: '24px', color: '#1f2937' }}>
-          �👥 Reporte de Nómina - {fechaInicio} a {fechaFin}
+        <h2 style={{ margin: '0 0 18px 0', fontSize: '15px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', fontFamily:'Inter,sans-serif', textTransform:'uppercase', letterSpacing:'0.06em' }}>
+          Reporte de Nómina · {fechaInicio} – {fechaFin}
         </h2>
 
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily:'Inter,sans-serif' }}>
             <thead>
-              <tr style={{ background: 'linear-gradient(135deg, #EB0463 0%, #a65495 100%)', color: 'white' }}>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Lavador</th>
-                <th style={{ padding: '12px', textAlign: 'center' }}>Cédula</th>
-                <th style={{ padding: '12px', textAlign: 'center' }}>Servicios</th>
-                <th style={{ padding: '12px', textAlign: 'right' }}>Ingreso cliente</th>
-                <th style={{ padding: '12px', textAlign: 'right' }}>Base comisión</th>
-                <th style={{ padding: '12px', textAlign: 'center' }}>% Comisión</th>
-                <th style={{ padding: '12px', textAlign: 'right' }}>A Pagar</th>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <th style={{ padding: '10px 12px', textAlign: 'left', fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.07em' }}>Lavador</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center', fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.07em' }}>Cédula</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center', fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.07em' }}>Servicios</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right', fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.07em' }}>Ingreso cliente</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right', fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.07em' }}>Base comisión</th>
+                <th style={{ padding: '10px 12px', textAlign: 'center', fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.07em' }}>% Comisión</th>
+                <th style={{ padding: '10px 12px', textAlign: 'right', fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.07em' }}>A Pagar</th>
               </tr>
             </thead>
             <tbody>
               {lavadores.map((lavador, idx) => (
                 <tr key={lavador.lavador_id} style={{
-                  background: idx % 2 === 0 ? 'rgba(235, 4, 99, 0.03)' : 'transparent',
-                  borderBottom: '1px solid rgba(235, 4, 99, 0.1)'
-                }}>
-                  <td style={{ padding: '12px', fontWeight: '500' }}>{lavador.nombre}</td>
-                  <td style={{ padding: '12px', textAlign: 'center', color: '#666' }}>{lavador.cedula || 'N/A'}</td>
-                  <td style={{ padding: '12px', textAlign: 'center' }}>{lavador.cantidad_servicios}</td>
-                  <td style={{ padding: '12px', textAlign: 'right', fontWeight: '500' }}>
+                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  transition: 'background 0.15s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.03)'}
+                onMouseLeave={e => e.currentTarget.style.background='transparent'}
+                >
+                  <td style={{ padding: '12px', fontWeight: '600', color: '#fff', fontSize: 13, fontFamily:'Inter,sans-serif' }}>{lavador.nombre}</td>
+                  <td style={{ padding: '12px', textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>{lavador.cedula || 'N/A'}</td>
+                  <td style={{ padding: '12px', textAlign: 'center', color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>{lavador.cantidad_servicios}</td>
+                  <td style={{ padding: '12px', textAlign: 'right', fontWeight: '500', color: 'rgba(255,255,255,0.8)', fontSize: 13 }}>
                     {formatearMoneda(lavador.ingreso_cliente)}
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'right', fontWeight: '500', color: '#6b7280' }}>
+                  <td style={{ padding: '12px', textAlign: 'right', fontWeight: '500', color: 'rgba(255,255,255,0.4)', fontSize: 13 }}>
                     {formatearMoneda(lavador.total_generado)}
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'center', color: '#10b981', fontWeight: 'bold' }}>
+                  <td style={{ padding: '12px', textAlign: 'center', color: '#10b981', fontWeight: 'bold', fontSize: 13 }}>
                     {lavador.comision_porcentaje}%
                   </td>
-                  <td style={{ padding: '12px', textAlign: 'right', fontSize: '16px', fontWeight: 'bold', color: '#EB0463' }}>
+                  <td style={{ padding: '12px', textAlign: 'right', fontSize: '15px', fontWeight: 'bold', color: '#EB0463' }}>
                     {formatearMoneda(lavador.comision_a_pagar)}
                   </td>
                 </tr>
               ))}
-              <tr style={{ background: 'rgba(235, 4, 99, 0.1)', fontWeight: 'bold', fontSize: '16px' }}>
-                <td colSpan="2" style={{ padding: '16px' }}>TOTAL</td>
-                <td style={{ padding: '16px', textAlign: 'center' }}>{resumen.total_servicios}</td>
-                <td style={{ padding: '16px', textAlign: 'right' }}>{formatearMoneda(totalIngresosCliente)}</td>
-                <td style={{ padding: '16px', textAlign: 'right', color: '#6b7280' }}>{formatearMoneda(totalIngresosComisionBase)}</td>
-                <td style={{ padding: '16px' }}></td>
-                <td style={{ padding: '16px', textAlign: 'right', color: '#EB0463' }}>{formatearMoneda(resumen.total_nomina)}</td>
+              <tr style={{ borderTop: '1px solid rgba(255,255,255,0.1)', background: 'rgba(235,4,99,0.06)', fontWeight: 'bold', fontSize: '14px' }}>
+                <td colSpan="2" style={{ padding: '14px 12px', color: '#fff', fontFamily:'Inter,sans-serif', fontWeight: 800 }}>TOTAL</td>
+                <td style={{ padding: '14px 12px', textAlign: 'center', color: '#fff' }}>{resumen.total_servicios}</td>
+                <td style={{ padding: '14px 12px', textAlign: 'right', color: '#fff' }}>{formatearMoneda(totalIngresosCliente)}</td>
+                <td style={{ padding: '14px 12px', textAlign: 'right', color: 'rgba(255,255,255,0.4)' }}>{formatearMoneda(totalIngresosComisionBase)}</td>
+                <td style={{ padding: '14px 12px' }}></td>
+                <td style={{ padding: '14px 12px', textAlign: 'right', color: '#EB0463', fontSize: 16 }}>{formatearMoneda(resumen.total_nomina)}</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* Estadísticas por Servicio */}
+      {/* Servicios */}
       <div style={{
-        background: 'rgba(255,255,255,0.05)',
-        borderRadius: '16px',
-        padding: '24px',
-        border: '2px solid #a65495'
+        background: 'rgba(255,255,255,0.025)',
+        borderRadius: '14px',
+        padding: '22px',
+        border: '1px solid rgba(255,255,255,0.07)'
       }}>
-        <h2 style={{ margin: '0 0 20px 0', fontSize: '24px', color: '#1f2937' }}>
-          🏍️ Ingresos por Tipo de Servicio
+        <h2 style={{ margin: '0 0 18px 0', fontSize: '15px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', fontFamily:'Inter,sans-serif', textTransform:'uppercase', letterSpacing:'0.06em' }}>
+          Ingresos por Tipo de Servicio
         </h2>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
           {servicios.map((servicio, idx) => (
             <div key={idx} style={{
-              background: `linear-gradient(135deg, rgba(235, 4, 99, ${0.05 + idx * 0.05}) 0%, rgba(166, 84, 149, ${0.05 + idx * 0.05}) 100%)`,
+              background: 'rgba(235,4,99,0.06)',
               padding: '16px',
               borderRadius: '12px',
-              border: '1px solid rgba(235, 4, 99, 0.2)'
+              border: '1px solid rgba(235,4,99,0.15)'
             }}>
-              <div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>{servicio.servicio}</div>
-              <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>
+              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', marginBottom: '6px', fontFamily:'Inter,sans-serif', textTransform:'uppercase', letterSpacing:'0.05em' }}>{servicio.servicio}</div>
+              <div style={{ fontSize: '22px', fontWeight: 'bold', color: '#fff', fontFamily:'Inter,sans-serif', letterSpacing:'-0.01em' }}>
                 {formatearMoneda(servicio.ingreso_total)}
               </div>
-              <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginTop: '6px', fontFamily:'Inter,sans-serif' }}>
                 {servicio.cantidad} servicios ({servicio.porcentaje}%)
               </div>
             </div>

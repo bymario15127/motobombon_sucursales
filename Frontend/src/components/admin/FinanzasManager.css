@@ -1,4 +1,4 @@
-/* Frontend/src/components/admin/FinanzasManager.css */
+﻿/* Frontend/src/components/admin/FinanzasManager.css */
 
 .finanzas-container {
   padding: 0;
@@ -106,40 +106,19 @@
   color: #fff;
 }
 
-.card-ingresos {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
+.card-ingresos { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); }
 
-.card-gastos {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
+.card-gastos { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); }
 
-.card-utilidad {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+.card-utilidad { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.25); }
 
-.card-utilidad.negative {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-}
+.card-utilidad.negative { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.35); }
 
-.dashboard-card h3 {
-  margin: 0;
-  font-size: 0.9rem;
-  opacity: 0.9;
-}
+.dashboard-card h3 { margin: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; opacity: 1; font-family: Inter, sans-serif; }
 
-.dashboard-card p {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin: 0.5rem 0 0 0;
-}
+.dashboard-card p { font-size: 1.8rem; font-weight: 800; margin: 0.5rem 0 0 0; color: #fff; font-family: Inter, sans-serif; letter-spacing: -0.02em; }
 
-.dashboard-card small {
-  opacity: 0.8;
-  display: block;
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-}
+.dashboard-card small { opacity: 0.5; display: block; margin-top: 0.4rem; font-size: 0.78rem; color: rgba(255,255,255,0.6); font-family: Inter, sans-serif; }
 
 .card-button {
   margin-top: 1rem;
@@ -207,24 +186,14 @@
   background: rgba(235, 4, 99, 0.1);
 }
 
-.gastos-categoria {
-  background: #1a1a1a;
-  padding: 1.5rem;
-  border-radius: 8px;
-}
+.gastos-categoria { background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); padding: 1.5rem; border-radius: 12px; }
 
 .gastos-categoria h3 {
   color: #fff;
   margin-top: 0;
 }
 
-.gastos-categoria-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #333;
-  color: #fff;
-}
+.gastos-categoria-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); font-family: Inter, sans-serif; font-size: 13px; }
 
 .gastos-categoria-item span:last-child {
   color: #EB0463;
