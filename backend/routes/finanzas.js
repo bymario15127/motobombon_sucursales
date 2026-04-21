@@ -255,7 +255,7 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
     for (const cita of citas) {
       const mp = (cita.metodo_pago || 'efectivo').toLowerCase().trim();
       const precio = calcularPrecioCliente(cita);
-      const key = mp === 'qr' ? 'qr' : mp === 'tarjeta' ? 'tarjeta' : 'efectivo';
+      const key = (mp === 'qr' || mp === 'codigo_qr') ? 'qr' : mp === 'tarjeta' ? 'tarjeta' : 'efectivo';
       metodosPagoMap[key] = (metodosPagoMap[key] || 0) + 1;
       ingresosMetodosMap[key] = (ingresosMetodosMap[key] || 0) + precio;
     }
@@ -280,7 +280,7 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
 
     for (const v of (ventasMetodos || [])) {
       const mp = (v.metodo_pago || 'efectivo').toLowerCase().trim();
-      const key = mp === 'qr' ? 'qr' : mp === 'tarjeta' ? 'tarjeta' : 'efectivo';
+      const key = (mp === 'qr' || mp === 'codigo_qr') ? 'qr' : mp === 'tarjeta' ? 'tarjeta' : 'efectivo';
       metodosPagoMap[key] = (metodosPagoMap[key] || 0) + Number(v.cantidad || 0);
       ingresosMetodosMap[key] = (ingresosMetodosMap[key] || 0) + Number(v.total || 0);
     }
