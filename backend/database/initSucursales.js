@@ -88,6 +88,7 @@ async function initSucursalDb(sucursalId) {
         email TEXT,
         activo INTEGER DEFAULT 1,
         comision_porcentaje REAL DEFAULT 30.0,
+        eliminado INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -99,6 +100,7 @@ async function initSucursalDb(sucursalId) {
       const alterLavadores = [];
       if (!hasLavCol('cedula')) alterLavadores.push("ALTER TABLE lavadores ADD COLUMN cedula TEXT");
       if (!hasLavCol('comision_porcentaje')) alterLavadores.push("ALTER TABLE lavadores ADD COLUMN comision_porcentaje REAL DEFAULT 30.0");
+      if (!hasLavCol('eliminado')) alterLavadores.push("ALTER TABLE lavadores ADD COLUMN eliminado INTEGER DEFAULT 0");
 
       for (const stmt of alterLavadores) {
         try {

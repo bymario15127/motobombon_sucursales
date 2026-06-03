@@ -63,12 +63,46 @@ const LavadoresManager = () => {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('¿Estás seguro de desactivar este lavador?')) return;
+  const handleDeactivate = async (lavador) => {
+    if (!confirm(`¿Estás seguro de desactivar al lavador "${lavador.nombre}"?`)) return;
     
     try {
-      await deleteLavador(id);
+      await updateLavador(lavador.id, {
+        nombre: lavador.nombre,
+        cedula: lavador.cedula,
+        comision_porcentaje: lavador.comision_porcentaje,
+        activo: 0
+      });
       alert('✅ Lavador desactivado');
+      loadLavadores();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleActivate = async (lavador) => {
+    if (!confirm(`¿Estás seguro de activar al lavador "${lavador.nombre}"?`)) return;
+    
+    try {
+      await updateLavador(lavador.id, {
+        nombre: lavador.nombre,
+        cedula: lavador.cedula,
+        comision_porcentaje: lavador.comision_porcentaje,
+        activo: 1
+      });
+      alert('✅ Lavador activado');
+      loadLavadores();
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleEliminar = async (lavador) => {
+    if (!confirm(`¿Estás seguro de eliminar al lavador "${lavador.nombre}"?\nEsta acción lo quitará de la lista, pero conservará su historial de citas y nóminas anteriores.`)) return;
+    
+    try {
+      await deleteLavador(lavador.id);
+      alert('✅ Lavador eliminado exitosamente');
       loadLavadores();
     } catch (error) {
       alert(error.message);
@@ -141,17 +175,51 @@ const LavadoresManager = () => {
                   <h3 className="admin-card-title" style={{ margin: 0 }}>
                     {lavador.nombre}
                   </h3>
-                  <span style={{
-                    padding: '6px 14px',
-                    borderRadius: '20px',
-                    fontSize: '12px',
-                    fontWeight: 'bold',
-                    background: lavador.activo ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                    color: 'white',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                  }}>
-                    {lavador.activo ? '✓ Activo' : '✗ Inactivo'}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{
+                      padding: '6px 14px',
+                      borderRadius: '20px',
+                      fontSize: '12px',
+                      fontWeight: 'bold',
+                      background: lavador.activo ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                      color: 'white',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                    }}>
+                      {lavador.activo ? '✓ Activo' : '✗ Inactivo'}
+                    </span>
+                    <button
+                      onClick={() => handleEliminar(lavador)}
+                      title="Eliminar lavador"
+                      style={{
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                        color: '#ef4444',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        padding: '6px 10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '8px',
+                        transition: 'all 0.2s ease',
+                        width: 'auto',
+                        marginTop: 0,
+                        boxShadow: 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+                        e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                        e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    >
+                      🗑️
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -177,13 +245,21 @@ const LavadoresManager = () => {
                 >
                   Editar
                 </button>
-                {lavador.activo === 1 && (
+                {lavador.activo === 1 ? (
                   <button
-                    onClick={() => handleDelete(lavador.id)}
+                    onClick={() => handleDeactivate(lavador)}
                     className="btn-neon-pill"
                     style={{ flex: 1, minWidth: '120px', boxShadow: '0 0 12px rgba(239, 68, 68, 0.8)' }}
                   >
                     🗑️ Desactivar
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleActivate(lavador)}
+                    className="btn-neon-pill"
+                    style={{ flex: 1, minWidth: '120px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', border: '2px solid #10b981', boxShadow: '0 0 12px rgba(16, 185, 129, 0.8)' }}
+                  >
+                    ✓ Activar
                   </button>
                 )}
               </div>

@@ -22,6 +22,7 @@ async function initLavadores() {
         cedula TEXT,
         activo INTEGER DEFAULT 1,
         comision_porcentaje REAL DEFAULT 30.0,
+        eliminado INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);

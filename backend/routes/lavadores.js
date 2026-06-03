@@ -4,11 +4,11 @@ import { getDbFromRequest } from "../database/dbManager.js";
 
 const router = express.Router();
 
-// GET todos los lavadores
+// GET todos los lavadores (no eliminados)
 router.get("/", async (req, res) => {
   try {
     const db = getDbFromRequest(req);
-    const lavadores = await db.all("SELECT * FROM lavadores ORDER BY nombre");
+    const lavadores = await db.all("SELECT * FROM lavadores WHERE eliminado = 0 ORDER BY nombre");
     res.json(lavadores);
   } catch (error) {
     console.error("Error al obtener lavadores:", error);
@@ -16,11 +16,11 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET solo lavadores activos
+// GET solo lavadores activos (no eliminados)
 router.get("/activos", async (req, res) => {
   try {
     const db = getDbFromRequest(req);
-    const lavadores = await db.all("SELECT * FROM lavadores WHERE activo = 1 ORDER BY nombre");
+    const lavadores = await db.all("SELECT * FROM lavadores WHERE activo = 1 AND eliminado = 0 ORDER BY nombre");
     res.json(lavadores);
   } catch (error) {
     console.error("Error al obtener lavadores activos:", error);
@@ -81,7 +81,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE lavador (eliminación lógica, marcarlo como inactivo)
+// DELETE lavador (borrado suave, marcar como eliminado)
 router.delete("/:id", async (req, res) => {
   try {
     const db = getDbFromRequest(req);
@@ -91,14 +91,14 @@ router.delete("/:id", async (req, res) => {
       return res.status(400).json({ error: "ID de lavador inválido" });
     }
     
-    // Marcarlo como inactivo en lugar de eliminarlo
-    const result = await db.run("UPDATE lavadores SET activo = 0 WHERE id = ?", id);
+    // Marcarlo como eliminado (borrado suave)
+    const result = await db.run("UPDATE lavadores SET eliminado = 1 WHERE id = ?", id);
     
     if (result.changes === 0) {
       return res.status(404).json({ error: "Lavador no encontrado" });
     }
     
-    res.json({ message: "Lavador desactivado exitosamente" });
+    res.json({ message: "Lavador eliminado exitosamente" });
   } catch (error) {
     console.error("Error al eliminar lavador:", error.message);
     res.status(500).json({ error: error.message || "Error interno del servidor" });

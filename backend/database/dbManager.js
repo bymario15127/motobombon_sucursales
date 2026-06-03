@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { ensureFinanzasSchema } from "./ensureFinanzasSchema.js";
 import { ensureServiciosSchema } from "./ensureServiciosSchema.js";
+import { ensureLavadoresSchema } from "./ensureLavadoresSchema.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,6 +56,7 @@ export async function getDbConnection(sucursalId) {
 
   await ensureFinanzasSchema(db);
   await ensureServiciosSchema(db);
+  await ensureLavadoresSchema(db);
 
   // Guardar en cache
   dbConnections[sucursalId] = db;
