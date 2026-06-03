@@ -14,6 +14,17 @@ const LavadoresManager = () => {
     comision_porcentaje: 30.0
   });
 
+  const [confirmConfig, setConfirmConfig] = useState({
+    show: false,
+    title: '',
+    message: '',
+    subMessage: '',
+    confirmText: '',
+    confirmColor: '',
+    confirmShadow: '',
+    onConfirm: null
+  });
+
   useEffect(() => {
     loadLavadores();
   }, []);
@@ -63,50 +74,77 @@ const LavadoresManager = () => {
     setShowModal(true);
   };
 
-  const handleDeactivate = async (lavador) => {
-    if (!confirm(`¿Estás seguro de desactivar al lavador "${lavador.nombre}"?`)) return;
-    
-    try {
-      await updateLavador(lavador.id, {
-        nombre: lavador.nombre,
-        cedula: lavador.cedula,
-        comision_porcentaje: lavador.comision_porcentaje,
-        activo: 0
-      });
-      alert('✅ Lavador desactivado');
-      loadLavadores();
-    } catch (error) {
-      alert(error.message);
-    }
+  const handleDeactivate = (lavador) => {
+    setConfirmConfig({
+      show: true,
+      title: '👤 Desactivar Lavador',
+      message: `¿Estás seguro de desactivar al lavador "${lavador.nombre}"?`,
+      subMessage: 'El lavador pasará a estar inactivo y no aparecerá en la selección para nuevas citas, pero seguirá visible en el panel.',
+      confirmText: 'Desactivar',
+      confirmColor: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+      confirmShadow: 'rgba(239, 68, 68, 0.4)',
+      onConfirm: async () => {
+        try {
+          await updateLavador(lavador.id, {
+            nombre: lavador.nombre,
+            cedula: lavador.cedula,
+            comision_porcentaje: lavador.comision_porcentaje,
+            activo: 0
+          });
+          alert('✅ Lavador desactivado');
+          loadLavadores();
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+    });
   };
 
-  const handleActivate = async (lavador) => {
-    if (!confirm(`¿Estás seguro de activar al lavador "${lavador.nombre}"?`)) return;
-    
-    try {
-      await updateLavador(lavador.id, {
-        nombre: lavador.nombre,
-        cedula: lavador.cedula,
-        comision_porcentaje: lavador.comision_porcentaje,
-        activo: 1
-      });
-      alert('✅ Lavador activado');
-      loadLavadores();
-    } catch (error) {
-      alert(error.message);
-    }
+  const handleActivate = (lavador) => {
+    setConfirmConfig({
+      show: true,
+      title: '👤 Activar Lavador',
+      message: `¿Estás seguro de activar al lavador "${lavador.nombre}"?`,
+      subMessage: 'El lavador volverá a estar disponible para recibir servicios y citas.',
+      confirmText: 'Activar',
+      confirmColor: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+      confirmShadow: 'rgba(16, 185, 129, 0.4)',
+      onConfirm: async () => {
+        try {
+          await updateLavador(lavador.id, {
+            nombre: lavador.nombre,
+            cedula: lavador.cedula,
+            comision_porcentaje: lavador.comision_porcentaje,
+            activo: 1
+          });
+          alert('✅ Lavador activado');
+          loadLavadores();
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+    });
   };
 
-  const handleEliminar = async (lavador) => {
-    if (!confirm(`¿Estás seguro de eliminar al lavador "${lavador.nombre}"?\nEsta acción lo quitará de la lista, pero conservará su historial de citas y nóminas anteriores.`)) return;
-    
-    try {
-      await deleteLavador(lavador.id);
-      alert('✅ Lavador eliminado exitosamente');
-      loadLavadores();
-    } catch (error) {
-      alert(error.message);
-    }
+  const handleEliminar = (lavador) => {
+    setConfirmConfig({
+      show: true,
+      title: '🗑️ Eliminar Lavador',
+      message: `¿Estás seguro de eliminar al lavador "${lavador.nombre}"?`,
+      subMessage: 'Esta acción lo quitará de la lista, pero conservará su historial de citas y nóminas anteriores de forma permanente.',
+      confirmText: 'Eliminar',
+      confirmColor: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+      confirmShadow: 'rgba(239, 68, 68, 0.4)',
+      onConfirm: async () => {
+        try {
+          await deleteLavador(lavador.id);
+          alert('✅ Lavador eliminado exitosamente');
+          loadLavadores();
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+    });
   };
 
   const handleCloseModal = () => {
@@ -342,6 +380,77 @@ const LavadoresManager = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmación Genérico y Estilizado */}
+      {confirmConfig.show && (
+        <div className="modal-overlay" onClick={() => setConfirmConfig({ ...confirmConfig, show: false })}>
+          <div 
+            className="modal-content" 
+            style={{ 
+              maxWidth: '450px', 
+              border: `2px solid ${confirmConfig.confirmText === 'Activar' ? '#10b981' : '#ef4444'}`, 
+              boxShadow: `0 0 20px ${confirmConfig.confirmShadow}`,
+              background: '#0a0a0a'
+            }} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <h2 style={{ 
+                color: confirmConfig.confirmText === 'Activar' ? '#10b981' : '#ef4444', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                margin: 0 
+              }}>
+                {confirmConfig.title}
+              </h2>
+              <button type="button" className="modal-close" onClick={() => setConfirmConfig({ ...confirmConfig, show: false })}>×</button>
+            </div>
+            
+            <div style={{ padding: '20px 0', color: '#ffffff' }}>
+              <p style={{ fontSize: '15px', lineHeight: '1.6', margin: '0 0 12px 0' }}>
+                {confirmConfig.message}
+              </p>
+              {confirmConfig.subMessage && (
+                <p style={{ fontSize: '13px', color: '#9ca3af', lineHeight: '1.5', margin: 0 }}>
+                  {confirmConfig.subMessage}
+                </p>
+              )}
+            </div>
+
+            <div className="form-actions" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '10px' }}>
+              <button 
+                type="button" 
+                onClick={() => setConfirmConfig({ ...confirmConfig, show: false })} 
+                className="btn-secondary"
+                style={{ margin: 0, padding: '0.6rem 1.4rem', borderRadius: '999px', width: 'auto' }}
+              >
+                Cancelar
+              </button>
+              <button 
+                type="button" 
+                onClick={async () => {
+                  const currentConfirm = confirmConfig.onConfirm;
+                  setConfirmConfig(prev => ({ ...prev, show: false }));
+                  if (currentConfirm) await currentConfirm();
+                }} 
+                className="btn-primary"
+                style={{ 
+                  margin: 0, 
+                  padding: '0.6rem 1.4rem', 
+                  borderRadius: '999px', 
+                  width: 'auto', 
+                  background: confirmConfig.confirmColor,
+                  border: 'none',
+                  boxShadow: `0 0 12px ${confirmConfig.confirmShadow}`
+                }}
+              >
+                {confirmConfig.confirmText}
+              </button>
+            </div>
           </div>
         </div>
       )}
