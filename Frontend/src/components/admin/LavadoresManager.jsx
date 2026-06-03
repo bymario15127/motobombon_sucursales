@@ -385,48 +385,146 @@ const LavadoresManager = () => {
       )}
 
       {/* Modal de Confirmación Genérico y Estilizado */}
+      {/* Modal de Confirmación Genérico y Estilizado */}
       {confirmConfig.show && (
         <div className="modal-overlay" onClick={() => setConfirmConfig({ ...confirmConfig, show: false })}>
           <div 
             className="modal-content" 
             style={{ 
-              maxWidth: '450px', 
-              border: `2px solid ${confirmConfig.confirmText === 'Activar' ? '#10b981' : '#ef4444'}`, 
-              boxShadow: `0 0 20px ${confirmConfig.confirmShadow}`,
-              background: '#0a0a0a'
+              maxWidth: '440px', 
+              borderRadius: '16px',
+              border: '1px solid rgba(255, 255, 255, 0.08)', 
+              boxShadow: `0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px ${confirmConfig.confirmShadow}22`,
+              background: '#0d0d0d',
+              padding: '24px',
+              overflow: 'hidden',
+              position: 'relative'
             }} 
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="modal-header" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-              <h2 style={{ 
-                color: confirmConfig.confirmText === 'Activar' ? '#10b981' : '#ef4444', 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                margin: 0 
-              }}>
-                {confirmConfig.title}
-              </h2>
-              <button type="button" className="modal-close" onClick={() => setConfirmConfig({ ...confirmConfig, show: false })}>×</button>
+            {/* Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '10px',
+                  background: confirmConfig.confirmText === 'Activar' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: `1px solid ${confirmConfig.confirmText === 'Activar' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`
+                }}>
+                  {confirmConfig.confirmText === 'Activar' ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                      <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                  ) : confirmConfig.confirmText === 'Desactivar' ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <line x1="9" y1="9" x2="15" y2="15" />
+                      <line x1="15" y1="9" x2="9" y2="15" />
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      <line x1="10" y1="11" x2="10" y2="17" />
+                      <line x1="14" y1="11" x2="14" y2="17" />
+                    </svg>
+                  )}
+                </div>
+                <h3 style={{ 
+                  color: '#ffffff', 
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  margin: 0,
+                  fontFamily: '"Inter", "Poppins", sans-serif'
+                }}>
+                  {confirmConfig.title.replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDFFF]/g, '').trim()}
+                </h3>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setConfirmConfig({ ...confirmConfig, show: false })}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(255, 255, 255, 0.4)',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '6px',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#ffffff';
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.4)';
+                  e.currentTarget.style.background = 'none';
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
             </div>
             
-            <div style={{ padding: '20px 0', color: '#ffffff' }}>
-              <p style={{ fontSize: '15px', lineHeight: '1.6', margin: '0 0 12px 0' }}>
+            {/* Body */}
+            <div style={{ marginBottom: '24px', color: '#ffffff' }}>
+              <p style={{ 
+                fontSize: '15px', 
+                lineHeight: '1.5', 
+                margin: '0 0 8px 0',
+                fontWeight: '500',
+                color: 'rgba(255, 255, 255, 0.95)'
+              }}>
                 {confirmConfig.message}
               </p>
               {confirmConfig.subMessage && (
-                <p style={{ fontSize: '13px', color: '#9ca3af', lineHeight: '1.5', margin: 0 }}>
+                <p style={{ 
+                  fontSize: '13px', 
+                  color: 'rgba(255, 255, 255, 0.5)', 
+                  lineHeight: '1.45', 
+                  margin: 0 
+                }}>
                   {confirmConfig.subMessage}
                 </p>
               )}
             </div>
 
-            <div className="form-actions" style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '10px' }}>
+            {/* Actions */}
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
               <button 
                 type="button" 
                 onClick={() => setConfirmConfig({ ...confirmConfig, show: false })} 
-                className="btn-secondary"
-                style={{ margin: 0, padding: '0.6rem 1.4rem', borderRadius: '999px', width: 'auto' }}
+                style={{ 
+                  margin: 0, 
+                  padding: '10px 20px', 
+                  borderRadius: '10px', 
+                  width: 'auto',
+                  background: 'transparent',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontWeight: '600',
+                  fontSize: '13.5px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                  e.currentTarget.style.color = '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                }}
               >
                 Cancelar
               </button>
@@ -437,15 +535,29 @@ const LavadoresManager = () => {
                   setConfirmConfig(prev => ({ ...prev, show: false }));
                   if (currentConfirm) await currentConfirm();
                 }} 
-                className="btn-primary"
                 style={{ 
                   margin: 0, 
-                  padding: '0.6rem 1.4rem', 
-                  borderRadius: '999px', 
+                  padding: '10px 20px', 
+                  borderRadius: '10px', 
                   width: 'auto', 
                   background: confirmConfig.confirmColor,
                   border: 'none',
-                  boxShadow: `0 0 12px ${confirmConfig.confirmShadow}`
+                  color: '#ffffff',
+                  fontWeight: '700',
+                  fontSize: '13.5px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  boxShadow: `0 4px 14px ${confirmConfig.confirmShadow}`
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.filter = 'brightness(1.1)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = `0 6px 18px ${confirmConfig.confirmShadow}`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.filter = 'none';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = `0 4px 14px ${confirmConfig.confirmShadow}`;
                 }}
               >
                 {confirmConfig.confirmText}
