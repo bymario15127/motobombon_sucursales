@@ -27,7 +27,7 @@ router.post("/", verifyToken, requireAdminOrSupervisor, async (req, res) => {
       return res.status(400).json({ error: "Faltan campos requeridos" });
     }
 
-    if (precio_venta < precio_compra) {
+    if (Number(precio_venta) < Number(precio_compra)) {
       return res.status(400).json({ error: "El precio de venta debe ser mayor o igual al de compra" });
     }
 
@@ -63,7 +63,7 @@ router.put("/:id", verifyToken, requireAdminOrSupervisor, async (req, res) => {
       return res.status(400).json({ error: "Faltan campos requeridos" });
     }
 
-    if (precio_venta < precio_compra) {
+    if (Number(precio_venta) < Number(precio_compra)) {
       return res.status(400).json({ error: "El precio de venta debe ser mayor o igual al de compra" });
     }
 
