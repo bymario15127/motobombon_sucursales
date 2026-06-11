@@ -64,6 +64,7 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
     const promociones = await db.all("SELECT * FROM promociones").catch(() => []);
     const talleres = await db.all("SELECT * FROM talleres").catch(() => []);
     const lavadores = await db.all("SELECT * FROM lavadores WHERE activo = 1");
+    let citas;
     if (desde && hasta) {
       citas = await db.all(
         `SELECT c.* FROM citas c 
