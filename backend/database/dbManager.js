@@ -28,6 +28,25 @@ const sucursalesConfig = {
 };
 
 /**
+ * Asegurar que la columna deleted_at existe en la tabla citas
+ */
+async function ensureCitasSchema(db) {
+  try {
+    const columns = await db.all("PRAGMA table_info(citas)");
+    if (columns.length > 0) {
+      const hasDeletedAt = columns.some(c => c.name === 'deleted_at');
+      if (!hasDeletedAt) {
+        console.log("📝 Agregando columna 'deleted_at' a la tabla citas...");
+        await db.exec("ALTER TABLE citas ADD COLUMN deleted_at DATETIME");
+        console.log("✅ Columna 'deleted_at' agregada exitosamente");
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error asegurando esquema de citas (deleted_at):", error.message);
+  }
+}
+
+/**
  * Obtener conexión a la base de datos de una sucursal específica
  * @param {string} sucursalId - ID de la sucursal (sucursal1, sucursal2, etc.)
  * @returns {Promise<Database>} Conexión a la base de datos
@@ -57,6 +76,7 @@ export async function getDbConnection(sucursalId) {
   await ensureFinanzasSchema(db);
   await ensureServiciosSchema(db);
   await ensureLavadoresSchema(db);
+  await ensureCitasSchema(db);
 
   // Guardar en cache
   dbConnections[sucursalId] = db;

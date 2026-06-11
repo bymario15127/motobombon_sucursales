@@ -144,8 +144,8 @@ router.get("/", async (req, res) => {
       ),
       db.all(
         `SELECT email, placa FROM citas
-         WHERE placa IS NOT NULL AND id IN (
-           SELECT MAX(id) FROM citas WHERE placa IS NOT NULL GROUP BY email
+         WHERE deleted_at IS NULL AND placa IS NOT NULL AND id IN (
+           SELECT MAX(id) FROM citas WHERE deleted_at IS NULL AND placa IS NOT NULL GROUP BY email
          )`
       ),
     ]);

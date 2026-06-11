@@ -36,6 +36,7 @@ async function initAll() {
         comentarios TEXT,
         estado TEXT DEFAULT 'pendiente',
         metodo_pago TEXT,
+        deleted_at DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (lavador_id) REFERENCES lavadores(id)
       )

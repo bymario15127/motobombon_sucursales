@@ -64,12 +64,11 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
     const promociones = await db.all("SELECT * FROM promociones").catch(() => []);
     const talleres = await db.all("SELECT * FROM talleres").catch(() => []);
     const lavadores = await db.all("SELECT * FROM lavadores WHERE activo = 1");
-    let citas;
     if (desde && hasta) {
       citas = await db.all(
         `SELECT c.* FROM citas c 
          LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
-         WHERE c.lavador_id IS NOT NULL 
+         WHERE c.deleted_at IS NULL AND c.lavador_id IS NOT NULL 
            AND c.fecha >= ? AND c.fecha <= ? 
            AND COALESCE(c.estado,'') IN ('finalizada','confirmada')
            AND cup.id IS NULL
@@ -80,7 +79,7 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
       citas = await db.all(
         `SELECT c.* FROM citas c 
          LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
-         WHERE c.lavador_id IS NOT NULL 
+         WHERE c.deleted_at IS NULL AND c.lavador_id IS NOT NULL 
            AND strftime('%Y-%m', c.fecha) = ? 
            AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada')
            AND cup.id IS NULL
@@ -195,7 +194,7 @@ router.get("/dashboard", verifyToken, requireAdminOrSupervisor, async (req, res)
       const citasAnteriores = await db.all(
         `SELECT c.* FROM citas c 
          LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
-         WHERE c.lavador_id IS NOT NULL 
+         WHERE c.deleted_at IS NULL AND c.lavador_id IS NOT NULL 
            AND c.fecha >= ? AND c.fecha < ?
            AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada')
            AND cup.id IS NULL`,
@@ -572,10 +571,10 @@ router.get("/movimientos", verifyToken, requireAdminOrSupervisor, async (req, re
     let citasParams = [];
     
     if (desde && hasta) {
-      citasCondition = "WHERE lavador_id IS NOT NULL AND COALESCE(estado,'') IN ('finalizada', 'confirmada') AND fecha >= ? AND fecha <= ?";
+      citasCondition = "WHERE deleted_at IS NULL AND lavador_id IS NOT NULL AND COALESCE(estado,'') IN ('finalizada', 'confirmada') AND fecha >= ? AND fecha <= ?";
       citasParams = [desde, hasta];
     } else {
-      citasCondition = "WHERE lavador_id IS NOT NULL AND COALESCE(estado,'') IN ('finalizada', 'confirmada') AND strftime('%Y-%m', fecha) = ?";
+      citasCondition = "WHERE deleted_at IS NULL AND lavador_id IS NOT NULL AND COALESCE(estado,'') IN ('finalizada', 'confirmada') AND strftime('%Y-%m', fecha) = ?";
       citasParams = [`${anioActual}-${mesActual}`];
     }
     
@@ -637,7 +636,7 @@ router.get("/exportar-excel", verifyToken, requireAdminOrSupervisor, async (req,
         [desde, hasta]
       );
       citas = await db.all(
-        `SELECT c.* FROM citas c WHERE c.lavador_id IS NOT NULL AND c.fecha >= ? AND c.fecha <= ? AND COALESCE(c.estado,'') IN ('finalizada','confirmada') ORDER BY c.fecha, c.hora`,
+        `SELECT c.* FROM citas c WHERE c.deleted_at IS NULL AND c.lavador_id IS NOT NULL AND c.fecha >= ? AND c.fecha <= ? AND COALESCE(c.estado,'') IN ('finalizada','confirmada') ORDER BY c.fecha, c.hora`,
         [desde, hasta]
       );
     } else {
@@ -654,7 +653,7 @@ router.get("/exportar-excel", verifyToken, requireAdminOrSupervisor, async (req,
         [`${anioActual}-${mesActual}`]
       );
       citas = await db.all(
-        `SELECT c.* FROM citas c WHERE c.lavador_id IS NOT NULL AND strftime('%Y-%m', c.fecha) = ? AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada') ORDER BY c.fecha, c.hora`,
+        `SELECT c.* FROM citas c WHERE c.deleted_at IS NULL AND c.lavador_id IS NOT NULL AND strftime('%Y-%m', c.fecha) = ? AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada') ORDER BY c.fecha, c.hora`,
         [`${anioActual}-${mesActual}`]
       );
     }
@@ -759,7 +758,7 @@ router.get("/exportar-excel", verifyToken, requireAdminOrSupervisor, async (req,
       const citasAnterioresExp = await db.all(
         `SELECT c.* FROM citas c 
          LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
-         WHERE c.lavador_id IS NOT NULL 
+         WHERE c.deleted_at IS NULL AND c.lavador_id IS NOT NULL 
            AND c.fecha >= ? AND c.fecha < ?
            AND COALESCE(c.estado,'') IN ('finalizada', 'confirmada')
            AND cup.id IS NULL`,

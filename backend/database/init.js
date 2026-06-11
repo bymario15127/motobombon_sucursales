@@ -26,6 +26,7 @@ async function init() {
         email TEXT,
         comentarios TEXT,
         estado TEXT DEFAULT 'pendiente',
+        deleted_at DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);

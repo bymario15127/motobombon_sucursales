@@ -117,7 +117,8 @@ router.get("/comparar-ingresos", async (req, res) => {
     // Query NÓMINA (con COALESCE)
     const citasNomina = await db.all(`
       SELECT c.* FROM citas c
-      WHERE c.lavador_id IS NOT NULL
+      WHERE c.deleted_at IS NULL
+        AND c.lavador_id IS NOT NULL
         AND c.fecha >= ?
         AND c.fecha <= ?
         AND COALESCE(c.estado,'') IN ('finalizada','confirmada')
@@ -127,7 +128,8 @@ router.get("/comparar-ingresos", async (req, res) => {
     // Query FINANZAS (con COALESCE también)
     const citasFinanzas = await db.all(`
       SELECT c.* FROM citas c 
-      WHERE c.lavador_id IS NOT NULL 
+      WHERE c.deleted_at IS NULL
+        AND c.lavador_id IS NOT NULL 
         AND c.fecha >= ? 
         AND c.fecha <= ? 
         AND COALESCE(c.estado,'') IN ('finalizada','confirmada') 

@@ -110,7 +110,8 @@ router.get("/", async (req, res) => {
       citas = await db.all(`
         SELECT c.* FROM citas c
         LEFT JOIN cupones cup ON c.id = cup.cita_id AND cup.usado = 1
-        WHERE c.lavador_id IS NOT NULL
+        WHERE c.deleted_at IS NULL
+          AND c.lavador_id IS NOT NULL
           AND c.fecha >= ?
           AND c.fecha <= ?
           AND COALESCE(c.estado,'') IN ('finalizada','confirmada')
@@ -245,7 +246,8 @@ router.get("/exportar-excel", async (req, res) => {
     try {
       citas = await db.all(`
         SELECT c.* FROM citas c
-        WHERE c.lavador_id IS NOT NULL
+        WHERE c.deleted_at IS NULL
+          AND c.lavador_id IS NOT NULL
           AND c.fecha >= ?
           AND c.fecha <= ?
           AND COALESCE(c.estado,'') IN ('finalizada','confirmada')

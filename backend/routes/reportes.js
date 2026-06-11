@@ -14,6 +14,7 @@ router.get("/promociones-excel", async (req, res) => {
     const filters = [];
     const params = [];
 
+    filters.push("c.deleted_at IS NULL");
     filters.push("c.promocion_id IS NOT NULL");
 
     if (from && /^\d{4}-\d{2}-\d{2}$/.test(from)) {

@@ -36,6 +36,7 @@ async function initSucursalDb(sucursalId) {
         tipo_cliente TEXT DEFAULT 'cliente',
         taller_id INTEGER,
         promocion_id INTEGER,
+        deleted_at DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
