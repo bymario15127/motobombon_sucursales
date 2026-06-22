@@ -171,24 +171,29 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-#### Opción B: PM2 + Firewall
+#### Opción B: PM2 + Clúster (Recomendado)
+
+PM2 se utiliza para mantener el servidor corriendo en segundo plano y recuperarlo automáticamente tras caídas o reinicios. Para producción, ambos proyectos se despliegan en **Modo Clúster** con 2 instancias para habilitar balanceo de carga, redundancia y recargas sin caídas de servicio.
 
 ```bash
-# Instalar PM2 para mantener el servidor corriendo
+# Instalar PM2 globalmente (si no está instalado)
 npm install -g pm2
 
-# Iniciar aplicación
-pm2 start backend/index.js --name motobombon-api
+# Iniciar aplicación usando el archivo de ecosistema (Modo Clúster con 2 instancias)
+cd /var/www/motobombon && pm2 start ecosystem.config.json
 
-# Configurar inicio automático
+# Configurar inicio automático en el sistema operativo
 pm2 startup
 pm2 save
 
-# Ver logs
-pm2 logs motobombon-api
+# Ver status y procesos activos (verás 2 instancias corriendo en paralelo)
+pm2 status
 
-# Reiniciar
-pm2 restart motobombon-api
+# Ver logs en tiempo real
+pm2 logs motobombon-backend
+
+# Recargar código de forma segura y sin caídas (Zero-Downtime)
+pm2 reload motobombon-backend
 ```
 
 ### PASO 5: Configurar Firewall
